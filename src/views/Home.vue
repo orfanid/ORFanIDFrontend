@@ -1,402 +1,253 @@
 <template>
-  <div class="container">
-    <!--      id="input_form"
-      action="/analyse"
-      th:action="@{/analyse}"
-      th:object="${sequence}"
-      method="post" -->
-    <form id="input_form" @submit="saveData">
-      <div class="row">
-        <div class="col s4 offset-s1">
-          <div class="file-field input-field">
-            <div class="btn">
-              <input
-                id="fastafile"
-                type="file"
-                accept=".fasta"
-                onchange="setFileContent(this.value);"
-              />
-              <i class="large material-icons" style="height: 50px; width: 50px"
-                >cloud_upload</i
-              >
-            </div>
-            <div class="file-path-wrapper">
-              <input
-                class="file-path validate"
-                id="fastaFileName"
-                type="text"
-                placeholder="Upload file"
-              />
-            </div>
+  <v-layout wrap>
+    <v-app-bar color="white" hide-on-scroll>
+      <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
+      <v-spacer></v-spacer>
+      <v-toolbar-title w-100>
+        <v-row>
+              <v-spacer />
+              <v-col cols="9">
+                  <h4>ORFanID</h4>
+              </v-col>
+              <v-spacer />
+        </v-row>
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
+    </v-app-bar>
+    <v-flex xs12 sm12>
+      <v-parallax src="../../public/ORFanID_files/background1.jpg">
+        <v-layout column align-center justify-center row="4">
+          <v-spacer />
+          <h1 class="center white-text text-lighten-2 h1">
+            ORFanID
+          </h1>
+          <h5 class="center white-text text-lighten-2">
+            Identifying Orfan Genes
+          </h5>
+          <div class="row center justify mt-2">
+            <v-btn class="center" to="input" color="teal"><span color="white">Get Started</span></v-btn>
           </div>
-        </div>
-        <div class="col s1">
-          <div class="row">
-            <div class="col s10">
-              <div>
-                <p>
-                  <label>
-                    <input
-                      class="with-gap"
-                      name="accessionType"
-                      type="radio"
-                      value="protein"
-                      v-model="from.accessionType"
-                      checked
-                    />
-                    <span>Protein</span>
-                  </label>
-                </p>
-                <p>
-                  <label>
-                    <input
-                      class="with-gap"
-                      name="accessionType"
-                      type="radio"
-                      value="nucleotide"
-                      v-model="from.accessionType"
-                    />
-                    <span>Gene</span>
-                  </label>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col s5">
-          <div class="row">
-            <div class="col s10">
-              <div class="input-field">
-                <input
-                  id="ncbi_accession_input"
-                  class="validate"
-                  name="accession"
-                  type="text"
-                  data-length="100"
-                  v-model="from.ncbiAccessionInput"
-                  ref="ncbiAccessionInput"
-                />
-                <label for="ncbi_accession_input"
-                  >NCBI or Uniprot Accession(s) seperated by comma</label
+        </v-layout>
+      </v-parallax>
+      <v-row>
+        <v-col cols="s12">
+          <div class="parallex-container-wrapper">
+            <v-row>
+              <v-spacer />
+              <v-col cols="9">
+                <v-card-title class="justify-center"
+                  ><h4>ORFanID</h4></v-card-title
                 >
-                <span
-                  id="ncbi_accession_input_helper"
-                  class="helper-text"
-                  style="font-size: small; color: #818181"
-                ></span>
+                <v-card-text class="headerPara">
+                  <p>
+                    ORFanID is a web-based software engine that identifies ORFan
+                    genes from the genomes of specified species or from a given
+                    list of DNA sequences. The scope of the search for orphan
+                    genes can be defined by the selection of the taxonomy level
+                    of interest. Detectable homologous sequences are found for
+                    candidate gene in the NCBI databases. From these findings
+                    the ORFanID engine identifies and depicts orphan genes.
+                    Results may be viewed and analyzed graphically for the
+                    purpose of scientific research and inquiry.
+                  </p>
+                </v-card-text>
+              </v-col>
+              <v-spacer />
+            </v-row>
+          </v-card>
+          </div>
+        </v-col>
+      </v-row>
+      <v-parallax src="../../public/ORFanID_files/background2.jpg">
+        <v-layout align-center justify-center row="4">
+          <h5
+            class="header col s12 center h2 text-center mt-2"
+            style="color:#ffe57f;"
+          >
+            Orphan genes are an unraveling mystery. We hope that ORFanID will
+            help reveal the intricacies of their origin and function.
+          </h5>
+        </v-layout>
+      </v-parallax>
+      <v-row>
+        <v-col cols="12">
+          <div class="parallex-container-wrapper">
+            <v-card width="100%">
+            <v-row>
+              <v-spacer />
+              <v-col cols="3">
+                <div class="col s12 m4">
+                <div class="icon-block">
+                  <h2 class="text-center brown-text" >
+                    <i class="material-icons" style="color:#795548;">flash_on</i>
+                  </h2>
+                  <h5 class="center text-center" style="">ORFan Genes</h5>
+                  <p>
+                    Orphan genes (also known as taxonomically restricted genes)
+                    are genes that do not have related ancestral genes in other
+                    species or at the specified taxonomy level. At the molecular
+                    level, ORFan genes consist of DNA sequences that have no
+                    homology with sequences found in common DNA databases such
+                    as Genbank. While the prevailing dogma has defined genes in
+                    different species as a result of gene duplication or
+                    recombination, the presence of orphan gene ubiquity in
+                    various sequenced genomes is a mystery, perhaps even a
+                    significant problem to be solved.
+                  </p>
+                  <p>&nbsp;</p>
+                </div>
+                </div>
+              </v-col>
+              <v-col cols="3">
+                <div class="col s12 m4">
+                  <div class="icon-block">
+                    <h2 class="text-center brown-text">
+                      <i class="material-icons" style="color:#795548;">verified_user</i>
+                    </h2>
+                    <h5 class="center text-center" style="">Biology</h5>
+                    <p>
+                      Historically, gene function is known to be expressed
+                      through proteins. There are specific organisms that have
+                      been
+                      <strong>found </strong>with unique proteins expressed by
+                      orphan genes such as Hydra, various Mollusks, Salamander
+                      and others. It appears that the anatomy of Hydra is
+                      mediated by orphan genes that give rise to unique
+                      proteins. Similarly, the mantle of various Mollusks has
+                      been found to be expressed from orphan genes, while the
+                      regeration of salamander limbs are mediated by orphans
+                      (Dr. Paul Nelson, 2017)
+                    </p>
+                  </div>
+                </div>
+              </v-col>
+              <v-col cols="3">
+                <div class="col s12 m4">
+                  <div class="icon-block">
+                    <h2 class="text-center brown-text">
+                      <i class="material-icons" style="color:#795548;">settings</i>
+                    </h2>
+                    <h5 class="center text-center" style="">Discovery</h5>
+                    <p>
+                      By identifying these unique DNA sequences, ORFanID can
+                      help discover the origin, function and other significance
+                      of orphan genes. The software is able to identify genes
+                      unique to genus, family, or species etc. at differing
+                      taxonomy levels. Based on the parameters specified, some
+                      of orphans (also called Taxonomy Restricted Genes) may or
+                      may not fall under the given classification for strict
+                      ORFans. &nbsp; As such, ORFanID can help delineate the
+                      actual sequence and function of
+                      <em>de novo</em> genes discovered in species and at all
+                      levels of the taxonomy tree.
+                    </p>
+                  </div>
+                </div>
+              </v-col>
+              <v-spacer />
+            </v-row>
+          </v-card>
+          </div>
+        </v-col>
+      </v-row>
+      <v-parallax src="../../public/ORFanID_files/background3.jpg">
+        <v-layout column align-center justify-center row="4">
+          <h1 class="center white-text text-lighten-2 h1" style="font-size:2em">
+            Orphan genes, a frontier for discovery
+          </h1>
+        </v-layout>
+      </v-parallax>
+      <v-footer color="teal">
+        <v-row>
+          <v-spacer />
+          <v-col cols="9" class="pa-6">
+            <div class="row footer-content-wrapper">
+              <h5 class="grey-text text-lighten-4" style="color:white;">References</h5>
+              <div class="copyrights">
+                <p class="grey-text text-lighten-4 text-justify" style="color:white;">
+                  Altschul, S.F., Gish, W., Miller, W., Myers, E.W. &amp;
+                  Lipman, D.J. (1990) "Basic local alignment search tool." J.
+                  Mol. Biol. 215:403-410
+                </p>
+                <p class="grey-text text-lighten-4 text-justify" style="color:white;">
+                  Ekstrom, A. &amp; Yin, Y. (2016) "ORFanFinder: automated
+                  identification of taxonomically restricted orphan genes."
+                  Bioinformatics; 32 (13): 2053-2055. doi:
+                  10.1093/bioinformatics/btw122
+                </p>
+                <p class="grey-text text-lighten-4 text-justify" style="color:white;">
+                  Clamp, M., Fry, B., Kamal, M., Xie, X., Cuff, J., Lin, M.F.,
+                  Kellis, K., Lindblad-Toh, K., and Lander, E. S. (2007)
+                  “Distinguishing protein-coding and noncoding genes in the
+                  human genome”. PNAS 2007 December, 104 (49) 19428-19433
+                </p>
+                <p class="grey-text text-lighten-4 text-justify" style="color:white;">
+                  R. S. Gunasekera, Hewpathirana, S., Gunasekera, V., Dias, S.
+                  and Nelson, P., A Web-Based Computational Algorithm, ORFanID,
+                  for Discovering and Cataloging Orphan and Taxonomically
+                  Restricted Genes in Various Species, International Society for
+                  Computational Biology, Chicago, USA, B-847, 2018
+                </p>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col offset-s1 s10">
-          <div class="input-field">
-            <TextareaAutosize
-              id="sequence"
-              name="sequence"
-              class="materialize-textarea validate"
-              raw="5"
-              data-length="10000"
-              style="overflow-y: scroll"
-              v-model="from.sequence"
-              ref="sequence"
-            ></TextareaAutosize>
-            <label for="sequence">Gene Sequence</label>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col s10 offset-s1">
-          <div class="row">
-            <div class="input-field col s12">
-              <input
-                type="text"
-                id="organism"
-                name="organism"
-                class="autocomplete validate"
-                required="required"
-                v-model="from.organism"
-                ref="organism"
-              />
-              <label for="organism">Organism</label>
-            </div>
-          </div>
-        </div>
-        <div id="organismIcon" class="col s1"></div>
-      </div>
+          </v-col>
+          <v-spacer />
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-row class="footer-copyright">
+              <v-spacer />
+              <v-col cols="12" class="pl-0 pr-0">
+                <div class="d-flex container inner-content">
+                <div class=" text-left float-left" style="color:white;">
+                  Copyright &nbsp;© Gunasekera 2021
+                </div>
 
-      <div
-        class="row v-fade"
-        id="advanceparameterssection"
-        v-show="toggleAdvanceparameters"
-      >
-        <div
-          class="col offset-s1 s10"
-          v-bind:class="{ hidden: !toggleAdvanceparameters }"
-        >
-          <h6>Advanced parameters:</h6>
-          <br />
-          <p class="range-field">
-            <label for="maxevalue"
-              >Maximum
-              <a
-                href="https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs&DOC_TYPE=FAQ"
-                >E-value</a
-              >
-              for BLAST(e-10):</label
-            >
-            <input
-              type="range"
-              id="maxevalue"
-              name="maxEvalue"
-              min="1"
-              max="10"
-              value="3"
-              v-model="from.maxEvalue"
-            />
-            <label for="maxtargets">Maximum target sequences for BLAST:</label>
-            <input
-              type="range"
-              id="maxtargets"
-              name="maxTargetSequence"
-              min="100"
-              max="1000"
-              value=""
-              v-model="from.maxTargetSequence"
-            /><!--{{Config::get('orfanid.default_maxtargetseq')}} -->
-            <label for="identity">Identity:</label>
-            <input
-              type="range"
-              id="identity"
-              name="identity"
-              min="60"
-              max="100"
-              value="60"
-              v-model="from.identity"
-            />
-          </p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col offset-s1 s8">
-          <div class="switch">
-            <p>Try out by:</p>
-            <label>
-              sequence
-              <input
-                id="example_method"
-                type="checkbox"
-                v-model="from.exampleMethod"
-              />
-              <span class="lever"></span>
-              accessions
-            </label>
-          </div>
-          <a
-            id="load-ecoli-example-data"
-            class="waves-effect waves-light tooltipped load-example-data"
-            name="Escherichia coli(562)"
-            data-position="bottom"
-            data-tooltip="Escherichia coli"
-            v-on:click="loadExampleData('Escherichia coli(562)')"
-          >
-            <i class="icon medium icon-species icon-ecoli"></i> </a
-          >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <a
-            id="load-fly-example-data"
-            class="waves-effect waves-light tooltipped load-example-data"
-            name="Drosophila melanogaster(7227)"
-            data-position="bottom"
-            data-tooltip="Drosophila melanogaster"
-            v-on:click="loadExampleData('Drosophila melanogaster(7227)')"
-          >
-            <i class="icon medium icon-species icon-fly"></i> </a
-          >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <a
-            id="load-human-example-data"
-            class="waves-effect waves-light tooltipped load-example-data"
-            name="Homo sapiens(9606)"
-            data-position="bottom"
-            data-tooltip="Homo sapiens"
-            v-on:click="loadExampleData('Homo sapiens(9606)')"
-          >
-            <i class="icon medium icon-species icon-human"></i> </a
-          >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <a
-            id="load-thaliana-example-data"
-            class="waves-effect waves-light tooltipped load-example-data"
-            name="Arabidopsis thaliana(3702)"
-            data-position="bottom"
-            data-tooltip="Arabidopsis thaliana"
-            v-on:click="loadExampleData('Arabidopsis thaliana(3702)')"
-          >
-            <i class="icon medium icon-species icon-brassica"></i> </a
-          >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <br />
-        </div>
-        <div class="col s3">
-          <a
-            id="advanceparameterslink"
-            class="waves-effect waves-light"
-            v-on:click="toggleAdvanceparameters = !toggleAdvanceparameters"
-            ><i class="small material-icons">add</i>Advanced parameters</a
-          >
-        </div>
-      </div>
-
-      <div
-        id="input_progressbar"
-        class="modal"
-        style="background-color: #f6f7f9"
-      >
-        <div class="modal-content">
-          <h6>ORFanID In Progress....</h6>
-          <div class="progress">
-            <div cl ass="indeterminate"></div>
-          </div>
-          <div class="row">
-            <div class="col s12" style="margin-top: 40px">
-              <div class="col offset-s3 s1">
-                <img src="assets/images/loading4.gif" alt="progressbar" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col offset-s10 s2">
-          <button
-            class="btn waves-effect waves-light"
-            type="submit"
-            name="action"
-            id="submit"
-          >
-            Submit
-            <i class="material-icons right">send</i>
-          </button>
-        </div>
-      </div>
-    </form>
-    <div class="vld-parent">
-      <Loading
-        :active.sync="isLoading"
-        :can-cancel="true"
-        :on-cancel="onCancel"
-        :is-full-page="fullPage"
-      ></Loading>
-    </div>
-  </div>
+                <!-- <p class="mb-0 float-right" style="color:white;">
+                  <a
+                    class="grey-text text-lg-right footer-link"
+                    href="mailto:sureshhewabi@gmail.com?cc=vinodh@thegunasekeras.org,richgun01@gmail.com&Subject=ORFanID%20Online%20Issues"
+                    >Contact Us</a
+                  >
+                </p> -->
+                </div>
+              </v-col>
+              <v-spacer />
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-footer>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
-import $ from 'jquery';
-import analysis from '@/api/analysis';
-import Loading from 'vue-loading-overlay';
+// @ is an alias to /src
 
 export default {
-  name: 'Home',
-  components: { Loading },
-  methods: {
-    loadExampleData(_exampleName) {
-      this.from.exampleName = _exampleName;
-      let url = '';
-      if (this.from.exampleMethod === true) {
-        this.$refs.ncbiAccessionInput.$el.focus();
-        if (this.from.accessionType === 'protein') {
-          this.from.ncbiAccessionInput = this.exampleProteinDataValues[
-            this.from.exampleName
-          ];
-        } else {
-          this.from.ncbiAccessionInput = this.exampleNucliotideDataValues[
-            this.from.exampleName
-          ];
-        }
-        this.from.sequence = '';
-      } else {
-        url = `/data/example-${this.from.accessionType}-${this.from.exampleName}.fasta`;
-        $.get(url, (data) => {
-          this.from.sequence = data;
-          this.$refs.sequence.$el.focus();
-        });
-        this.from.ncbiAccessionInput = '';
-      }
-      this.from.organism = this.from.exampleName;
-      this.$refs.organism.$el.focus();
-    },
-    saveData(e) {
-      console.log(this.from);
-
-      this.isLoading = true;
-      e.preventDefault();
-
-      // validate/accessions
-      // TODO
-
-      // analyse
-      analysis
-        .saveAnalysis(this.from)
-        .then((response) => {
-          this.data = response.data;
-          this.isLoading = false;
-          this.$router.push('result');
-          // this.$router.push({ name: `result?analysisId=${from.analysisId}` });
-        })
-        .catch((error) => {
-          this.isLoading = false;
-          console.log(error);
-          // reject(error);
-        });
-    },
-    onCancel() {
-      console.log('a');
-    },
-  },
-  data() {
-    return {
-      isLoading: false,
-      fullPage: true,
-      toggleAdvanceparameters: false,
-      from: {
-        analysisId: new Date().toJSON().replace(/-/g, '/'),
-        exampleName: '',
-        accessionType: 'protein',
-        ncbiAccessionInput: '',
-        exampleMethod: false,
-        sequence: '',
-        organism: '',
-        maxEvalue: 3,
-        maxTargetSequence: 550,
-        identity: 60,
-      },
-      exampleProteinDataValues: {
-        'Escherichia coli(562)': 'NP_415100.1,YP_002791247.1,NP_414542.1',
-        'Drosophila melanogaster(7227)': 'NP_524859.2',
-        'Homo sapiens(9606)': 'NP_001119584.1',
-        'Arabidopsis thaliana(3702)': 'NP_187663.1',
-      },
-      exampleNucliotideDataValues: {
-        'Escherichia coli(562)': 'NZ_JAACYZ010000241.1,X86971.1',
-        'Drosophila melanogaster(7227)': 'NM_080120.3',
-        'Homo sapiens(9606)': 'NM_001126112.2',
-        'Arabidopsis thaliana(3702)': 'NM_111887.3',
-      },
-    };
-  },
+  name: "Home",
 };
 </script>
-<style scoped>
-.v-fade {
-  display: inherit !important; /* override v-show display: none */
-  transition: opacity 0.5s;
-}
 
-.v-fade[style*="display: none;"] {
-  opacity: 0;
-  pointer-events: none; /* disable user interaction */
-  user-select: none; /* disable user selection */
-  height: 0px !important;
+<style scoped>
+.parallaxImg {
+  height: 100%;
+  width: 100%;
+}
+.headerPara {
+  width: 100%;
+  margin: auto;
+}
+.copyrights {
+  font:white!important;
 }
 </style>
-<!--export default class Home extends Vue {}-->

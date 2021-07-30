@@ -5,10 +5,10 @@
                 <div id="perform_analysis" class="section scrollspy">
                     <h4>How to Run an Example Sequence</h4>
                     <p>1. Visit the ORFanGenes website (http://orfangenes.com/) and click <Strong>Get Started</Strong> on our landing page to do your analysis.</p>
-                    <img class="materialboxed" width="650" src="../assets/images/documentation/GetStarted.png">
+                    <img class="materialboxed" width="650" src="../../public/assets/images/documentation/GetStarted.png">
 
                     <p>2. Now you are in the Input page. You can perform your analysis bu only providing your gene/protein sequence and the organism.
-                    <img class="materialboxed" width="650" src="../assets/images/documentation/Input_options.png">
+                    <img class="materialboxed" width="650" src="../../public/assets/images/documentation/Input_options.png">
                         There are manly three ways that you can give your input sequence. Please click your preferred option below to see more details:
                     <ul class="collapsible">
                         <li>
@@ -34,10 +34,10 @@
                     </ul>
                     <p>3. Secondly, you can specify the organism of the input gene using the auto-completion selection textbox. When you start typing, auto-completion will help you to select the organism quickly
                     by showing the Scientific name, NCBI Taxonomy ID and a image.</p>
-                    <img class="materialboxed" width="650" src="../assets/images/documentation/organism_selection.png">
+                    <img class="materialboxed" width="650" src="../../public/assets/images/documentation/organism_selection.png">
                         <p>You have simply provided data for the analysis. If you click on the "Example" link on the bottom left, text fields will automatically get filled with an example input sequence of genes of E. Coli.</p>
                     <p>5.You can fine tune other optional parameters by clicking on the "Advance Parameter" link. You can mainly change following parameters:</p>
-                    <img class="materialboxed" width="650" src="../assets/images/documentation/advance_parameters.png">
+                    <img class="materialboxed" width="650" src="../../public/assets/images/documentation/advance_parameters.png">
                     <ul class="collapsible">
                         <li>
                             <div class="collapsible-header"><i class="material-icons">looks_one</i>E-Value</div>
@@ -53,15 +53,15 @@
                     </ul>
 
                     <p>4. Select "Submit" and wait for around 10 minutes or more until ORFanGenes processes the input sequence and returns the results.</p>
-                    <img class="materialboxed" width="650" src="../assets/images/documentation/classify.png">
+                    <img class="materialboxed" width="650" src="../../public/assets/images/documentation/classify.png">
                 </div>
 
                 <div id="results_interpretation" class="section scrollspy">
                     <h4>How to Interpret Results</h4>
                     <p>5. View the results of the example sequence</p>
-                    <img class="materialboxed" width="650" src="../assets/images/documentation/result.png">
+                    <img class="materialboxed" width="650" src="../../public/assets/images/documentation/result.png">
                     <p>The example input contains three genes. Out of the three genes, two of which are Genus Restricted Genes, and the other is an ORFan Gene. The Blast Results table shows the taxonomies (and their parents) for each gene in the input sequence from the BLAST search.</p>
-                    <img class="materialboxed" width="650" src="../assets/images/documentation/blast_results_chart.png">
+                    <img class="materialboxed" width="650" src="../../public/assets/images/documentation/blast_results_chart.png">
                 </div>
                 <div id="ORFanBase_access" class="section scrollspy">
                     <h4>ORFanBase Database</h4>
@@ -83,11 +83,8 @@
     </div>
 </template>
 
-<script >
-import { Component, Vue } from 'vue-property-decorator';
-
-@Component({
-  components: { },
-})
-export default class Instructions extends Vue {}
+<script>
+export default {
+    
+}
 </script>

@@ -1,0 +1,10 @@
+version: '3'
+services:
+  orfanid-front:
+    container_name: orfanid-front
+    image: orfanid-front
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 80:80

@@ -1,32 +1,34 @@
-  <template>
-  <div id="app">
+<template>
+  <v-app>
     <Header v-if="!isHome"/>
-    <HeaderWelcome v-if="isHome" />
-    <main>
-      <div>
-        <router-view/>
-      </div>
-    </main>
-    <Footer/>
-  </div>
+    <v-main v-if="!isHome">
+      <router-view></router-view>
+    </v-main>
+    <router-view v-if="isHome"></router-view>
+    <Footer v-if="!isHome"/>
+  </v-app>
 </template>
 
 <script>
-import Footer from '@/components/Footer.vue';
-import Header from '@/components/Header.vue';
-import HeaderWelcome from '@/components/HeaderWelcome.vue';
-import M from 'materialize-css';
-
+import Header from '../src/components/Header'
+import Footer from '../src/components/Footer'
+import M from 'materialize-css'
 export default {
   name: 'App',
-  components: { Header, Footer, HeaderWelcome },
+  components: {
+    Header,
+    Footer
+  },
   computed: {
     isHome() {
-      return this.$route.name === 'Welcome';
+      return this.$route.name === 'home';
     },
   },
-  mounted() {
-    M.AutoInit();
-  },
+  mounted () {
+    M.AutoInit()
+},
+  data: () => ({
+    //
+  }),
 };
 </script>
