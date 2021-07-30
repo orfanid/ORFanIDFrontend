@@ -1,4 +1,4 @@
-# orfanid
+# ORFanIDFrontend
 
 ## Project setup
 ```
