@@ -1,4 +1,4 @@
-# orfanidfrontendv2
+# ORFanIDFrontend
 
 ## Project setup
 ```
