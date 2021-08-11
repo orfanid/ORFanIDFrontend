@@ -167,7 +167,7 @@
     </v-row>
     <v-row class="text-right">
       <v-col cols="11">
-        <v-dialog v-model="saveResultDialog" persistent max-width="600px">
+        <!-- <v-dialog v-model="saveResultDialog" persistent max-width="600px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn class="mx-2" v-bind="attrs" v-on="on" small color="teal">
               <v-icon color="white">
@@ -268,7 +268,7 @@
               </v-btn>
             </v-card-actions>
           </v-card>
-        </v-dialog>
+        </v-dialog> -->
       </v-col>
       <v-col cols="1"> </v-col>
     </v-row>

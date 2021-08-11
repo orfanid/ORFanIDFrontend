@@ -7,12 +7,11 @@
             <template v-slot:activator="{ on, attrs }">
           <v-text-field
             v-model="from.email"
-            label="E-mail"
+            label="E-mail - (Optional)"
             required
             v-bind="attrs"
             v-on="on"
           ></v-text-field>
-          <label>(Optional)</label>
             </template>
             <span>Optional. Email will be useful to find your dataset quickly</span>
           </v-tooltip>
