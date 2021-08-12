@@ -397,6 +397,7 @@ import {
   requiredIf,
   email,
 } from "vuelidate/lib/validators";
+import router from '@/router';
 
 export default {
   name: "Home",
@@ -463,6 +464,14 @@ export default {
               console.log(error);
             });
           this.analyseSubmited = true;
+
+          //Close the DialogBox and Redirect to ResultPage
+          let that = this;
+          setTimeout(function(){ 
+            that.isLoading = false
+            router.push({name:'results'})
+           }, 3000);
+
         }
       }
     },
