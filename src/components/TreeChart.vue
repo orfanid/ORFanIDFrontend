@@ -1,6 +1,5 @@
 <template>
-  <v-chart class="chart" :option="chartData" />
-  <!-- <pre>{{chartData}}</pre> -->
+  <v-chart class="chart" :option="chartData"  :loading="loading" :loadingOptions="treeLoadingOptions" />
 </template>
 
 <script>
@@ -35,10 +34,23 @@ export default {
       type: Object,
       require: true,
     },
+    loading: {
+      type: Boolean,
+      require: true
+    }
   },
   data() {
-    return {}
+    return {
+      treeLoadingOptions: {
+        text: "Loading…",
+        color: "#4ea397",
+        maskColor: "rgba(255, 255, 255, 0.4)"
+      },
+    }
   },
+  methods: {
+
+  }
 };
 </script>
 
