@@ -129,7 +129,7 @@
                     >
                   </template>
                   <v-card>
-                    <TreeChart :chartData="blastResult" />
+                    <TreeChart :chartData="blastResult" :loading="treeChartLoading" />
                     <v-divider></v-divider>
                     <v-card-actions>
                       <v-spacer></v-spacer>
@@ -288,6 +288,7 @@ export default {
   },
   data() {
     return {
+      treeChartLoading: false,
       organismList: [],
       saveResultDialog: false,
       analysisId: this.$route.params.analysisId,
@@ -452,24 +453,17 @@ export default {
       });
     },
     loadBlastData(sessionId, geneId) {
+      this.blastResult.series[0].data = [];
+      this.treeChartLoading = true;
       const that = this;
       console.log("Loadding Blast " + sessionId + " " + geneId);
       analysisAPI
         .getBlastSummary({ geneId: geneId, sessionId: sessionId })
         .then((response) => {
-          console.log(response);
-          // response.data.tree.children.forEach(function(datum, index) {
-          //   index % 2 === 0 && (datum.collapsed = true);
-          // });
+        this.treeChartLoading = false;
           response.data.tree.children.forEach((item) => {
             that.blastResult.series[0].data.push(item);
           });
-
-
-         blastResult.series[0].data.children.forEach(function (datum, index) {
-              index % 2 === 0 && (datum.collapsed = true);
-          });
-
         });
     },
     saveAnalysis() {
