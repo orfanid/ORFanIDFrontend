@@ -358,11 +358,8 @@
 
         <v-card-text>
           <div class="pa-3">
-            <h5 v-if="analyseSubmited == false">
+            <h5>
               <center>Please Confirm Sequence Submission</center>
-            </h5>
-            <h5 v-if="analyseSubmited == true">
-              <center>Your request has been submitted successfully.</center>
             </h5>
           </div>
         </v-card-text>
@@ -374,14 +371,11 @@
           <v-btn
             color="primary"
             text
-            @click="isLoading = false"
-            v-if="!analyseSubmited"
-          >
+            @click="isLoading = false">
             Cancel
           </v-btn>
           <v-btn color="primary" text @click="analysData">
-            <span v-if="!analyseSubmited">Submit</span>
-            <span v-if="analyseSubmited">OK</span>
+            <span>Submit</span>
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -431,10 +425,6 @@ export default {
       this.from.organismName = "";
     },
     analysData() {
-      if (this.analyseSubmited) {
-        this.reSetData();
-        this.goToResultsPage();
-      } else {
         this.$v.$touch();
         if (this.$v.$invalid == false) {
           console.log(this.from);
@@ -463,16 +453,11 @@ export default {
             .catch((error) => {
               console.log(error);
             });
-          this.analyseSubmited = true;
 
-          //Close the DialogBox and Redirect to ResultPage
-          let that = this;
+          this.isLoading = false
           setTimeout(function(){ 
-            that.isLoading = false
             router.push({name:'results'})
-           }, 3000);
-
-        }
+           }, 600);
       }
     },
     analysConformation() {
@@ -486,7 +471,6 @@ export default {
     },
     reSetData() {
       this.isLoading = false;
-      this.analyseSubmited = false;
     },
     validate() {
       analysis
@@ -527,7 +511,6 @@ export default {
       fullPage: true,
       toggleAdvanceparameters: false,
       organismList: [],
-      analyseSubmited: false,
       from: {
         sequenceGroup: 1,
         analysisId: new Date().toJSON().replace(/-/g, "/"),
