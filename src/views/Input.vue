@@ -28,6 +28,8 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-file-input
+              :disabled="from.submissionMode === 'sequence' || from.submissionMode ==='accessions'"
+              v-model="from.fileAttachment"
                 placeholder="Upload your documents"
                 label="Upload File"
                 multiple
@@ -62,6 +64,7 @@
                 @blur="validate"
                 v-bind="attrs"
                 v-on="on"
+                :disabled="from.submissionMode === 'upload' || from.submissionMode === 'sequence'"
               ></v-text-field>
             </template>
           <span>NCBI/Uniprot accession. Multiple accessions should be separated by comma(s)</span>
@@ -92,6 +95,7 @@
                 :rules="textAreaRules"
                 v-bind="attrs"
                 v-on="on"
+                :disabled="from.submissionMode === 'upload' || from.submissionMode ==='accessions'"
               ></v-textarea>
             </template>
             <span>Enter query sequence(s) in the text area. It strictly follows FASTA file format.
@@ -113,6 +117,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
           <v-autocomplete
+            :disabled="from.submissionMode === 'upload'"
             v-model="from.organismName"
             :items="organismList"
             label="Organism"
@@ -140,25 +145,6 @@
           >
             Organism is required.
           </div>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="s6" offset-s1>
-          <v-container fluid class="d-flex align-center pl-0">
-            <p class="mb-0 mr-2">Search By:</p>
-            <label class="d-flex align-center">
-              sequence
-              <v-switch
-                true-value="true"
-                false-value="false"
-                class="ml-2"
-                v-model="from.exampleMethod"
-                @change="clearAccessionSequenceAndOrganism"
-              >
-              </v-switch>
-              <span class="d-inline lever">accessions</span>
-            </label>
-          </v-container>
         </v-col>
       </v-row>
       <v-row>
@@ -247,6 +233,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
+                :disabled="from.submissionMode === 'upload'"
                 size="72"
                 color="green darken-2"
                 class="icon icon-species icon-human pa-4"
@@ -262,6 +249,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
+                :disabled="from.submissionMode === 'upload'"
                 size="72"
                 color="green darken-2"
                 class="icon icon-species icon-fly pa-4"
@@ -277,6 +265,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
+                :disabled="from.submissionMode === 'upload'"
                 size="72"
                 color="green darken-2"
                 class="icon icon-species icon-ecoli pa-4"
@@ -291,6 +280,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
+                :disabled="from.submissionMode === 'upload'"
                 size="72"
                 color="green darken-2"
                 class="icon icon-species icon-brassica pa-4"
@@ -304,6 +294,25 @@
           </v-tooltip>
         </v-col>
         <v-spacer />
+      </v-row>
+      <v-row>
+        <v-col cols="s6" offset-s1>
+          <v-container fluid class="d-flex align-center pl-0">
+            <p class="mb-0 mr-2">Example Search By:</p>
+            <label class="d-flex align-center">
+              sequence
+              <v-switch
+                true-value="true"
+                false-value="false"
+                class="ml-2"
+                v-model="from.exampleMethod"
+                @change="clearAccessionSequenceAndOrganism"
+              >
+              </v-switch>
+              <span class="d-inline lever">accessions</span>
+            </label>
+          </v-container>
+        </v-col>
       </v-row>
       <v-row>
         <v-col cols="10"></v-col>
@@ -511,6 +520,38 @@ export default {
       return str.replace(/[\r]+/gm, "");
     },
   },
+  watch : {
+    'from.fileAttachment': {
+            handler: function (after, before) {
+                if(after.length > 0){
+                  this.from.submissionMode = 'upload'
+                }else {
+                  this.from.submissionMode = ''
+                }
+            },
+            deep: true
+        },
+        'from.sequence': {
+          handler: function (after, before) {
+                if(after != ""){
+                  this.from.submissionMode = 'sequence'
+                }else {
+                  this.from.submissionMode = ''
+                }
+            },
+            deep: true
+        },
+        'from.ncbiAccessionInput': {
+          handler: function (after, before) {
+                if(after != ""){
+                  this.from.submissionMode = 'accessions'
+                }else {
+                  this.from.submissionMode = ''
+                }
+            },
+            deep: true
+        }
+  },
   mounted() {
     analysis.getOrganismList().then((response) => {
       Object.entries(response.data).forEach((element) => {
@@ -541,6 +582,8 @@ export default {
         maxTargetSequence: 550,
         identity: 60,
         email: "",
+        fileAttachment: null,
+        submissionMode:''
       },
       analyseResult: {
         session: "",
@@ -572,10 +615,15 @@ export default {
         maxLength: maxLength(5000),
       },
       organismName: {
-        required,
+        required : requiredIf(function(){
+          return this.from.submissionMode === 'accessions'
+        })
       },
       ncbiAccessionInput: {
         required: function ncbiAccessionRequired(val) {
+          if(this.from.submissionMode === 'upload')
+          return true;
+
           if (this.from.exampleMethod == "true" && val == "") {
             return false;
           } else {
@@ -585,6 +633,9 @@ export default {
       },
       sequence: {
         required: function sequenceRequired(val) {
+          if(this.from.submissionMode === 'upload')
+          return true;
+
           if (this.from.exampleMethod == "false" && val == "") {
             return false;
           } else {
