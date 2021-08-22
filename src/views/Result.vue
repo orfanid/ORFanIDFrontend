@@ -476,6 +476,9 @@ export default {
         });
       }
     },
+    closeTreeChartDialog() {
+      
+    }
   },
   validations: {
     analysisResult: {
