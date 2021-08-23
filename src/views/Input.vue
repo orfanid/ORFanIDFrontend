@@ -139,7 +139,6 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-autocomplete
-                :disabled="from.submissionMode === 'upload'"
                 v-model="from.organismName"
                 :items="organismList"
                 label="Organism"
@@ -481,6 +480,7 @@ export default {
 
         if (this.from.submissionMode === "upload") {
           requestInfo.sequence = this.uploadFileContent;
+          requestInfo.organismName = "Homo sapiens(9606)";
         } else {
           if (this.from.exampleMethod == "true") {
             requestInfo.accession = this.from.ncbiAccessionInput;
@@ -646,7 +646,7 @@ export default {
       },
       organismName: {
         required: requiredIf(function () {
-          return this.from.submissionMode === "accessions";
+          return this.from.submissionMode === "accessions" || this.from.submissionMode === 'upload';
         }),
       },
       ncbiAccessionInput: {
