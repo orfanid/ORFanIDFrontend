@@ -1,6 +1,5 @@
 <template>
   <v-container>
-    {{ this.uploadFileContent }}
     <v-form id="input_form">
       <v-row>
         <v-col cols="4">
