@@ -547,6 +547,7 @@ export default {
       reader.readAsText(this.from.fileAttachment[0]);
       reader.onload = () => {
         this.uploadFileContent = reader.result;
+        this.from.sequence =reader.result;
       };
     },
   },
