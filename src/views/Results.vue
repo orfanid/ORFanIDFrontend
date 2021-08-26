@@ -147,11 +147,16 @@ export default {
       desserts: [],
       sortBy: ["date"],
       sortDesc: [true],
+      intervalHandler: null,
     };
   },
   mounted() {
     this.loadData();
-    setInterval(this.loadData,30000 );
+    this.intervalHandler = setInterval(this.loadData,30000 );
+  },
+  beforeDestroy() {
+    clearInterval(this.intervalHandler);
+    this.intervalHandler =0;
   },
   methods: {
     cancelAnalyse(analysisId) {
