@@ -1,7 +1,6 @@
 <template>
   <v-container>
     <v-form id="input_form">
-      <pre>{{$v.from.sequence}}</pre>
       <v-row>
         <v-col cols="4">
           <v-tooltip bottom>
@@ -85,14 +84,6 @@
               by comma(s)</span
             >
           </v-tooltip>
-          <label
-            style="color: red"
-            v-if="
-              $v.from.ncbiAccessionInput.$dirty &&
-              !$v.from.ncbiAccessionInput.maxLength
-            "
-            >Maximum of 10 Accession Allowed</label
-          >
           <label v-if="errors.invalidAccession" style="color: red"
             >Invalid Accession(s)- {{ errors.invalidAccessionMsg }}</label
           >
@@ -139,12 +130,6 @@
             v-if="$v.from.sequence.$dirty && !$v.from.sequence.required"
           >
             Sequence is required.
-          </div>
-          
-          <div
-            style="color: red"
-            v-if="$v.from.sequence.$dirty && !$v.from.sequence.maxSequence"
-          >Maximum of 10 Sequences Allowed.
           </div>
         </v-col>
       </v-row>
@@ -437,7 +422,6 @@
 </template>
 <script>
 import $ from "jquery";
-import _ from "lodash";
 import analysis from "@/api/analysis";
 import {
   maxLength,
@@ -659,24 +643,6 @@ export default {
     from: {
       sequence: {
         maxLength: maxLength(5000),
-        maxSequence : function sequenceMaxLength(val) {
-          if(val != null && val.length > 0) {
-           var section= _.words(val, /[>]+/g)
-           if(section.length > 10) {
-             return false;
-           }
-         }
-          return true;
-        },
-        required: function sequenceRequired(val) {
-          if (this.from.submissionMode === "upload") return true;
-
-          if (this.from.exampleMethod == "false" && val == "") {
-            return false;
-          } else {
-            return true;
-          }
-        }
       },
       organismName: {
         required: requiredIf(function () {
@@ -693,15 +659,17 @@ export default {
             return true;
           }
         },
-        maxLength: function ncbiAccessionMaxLength(val) {
-         if(val != null && val.length > 0) {
-           var section= _.words(val, /[, ]+/g)
-           if(section.length > 10) {
-             return false;
-           }
-         }
-         return true;
-        }
+      },
+      sequence: {
+        required: function sequenceRequired(val) {
+          if (this.from.submissionMode === "upload") return true;
+
+          if (this.from.exampleMethod == "false" && val == "") {
+            return false;
+          } else {
+            return true;
+          }
+        },
       },
       email: {
         email,
