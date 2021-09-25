@@ -153,7 +153,7 @@
                 true-value="true"
                 false-value="false"
                 class="ml-2"
-                v-model="from.exampleMethod"
+                v-model="from.isExampleSequence"
                 @change="clearAccessionSequenceAndOrganism"
               >
               </v-switch>
@@ -406,7 +406,7 @@ export default {
       this.clearAccessionSequenceAndOrganism();
       this.from.exampleName = _exampleName;
       let url = "";
-      if (this.from.exampleMethod == "true") {
+      if (this.from.isExampleSequence == "true") {
         if (this.from.accessionType === "protein") {
           this.from.ncbiAccessionInput =
             this.exampleProteinDataValues[this.from.exampleName];
@@ -449,7 +449,7 @@ export default {
             email: this.from.email != "" ? this.from.email : null,
           };
 
-          if (this.from.exampleMethod == "true") {
+          if (this.from.isExampleSequence == "true") {
             requestInfo.accession = this.from.ncbiAccessionInput;
           } else {
             requestInfo.sequence = this.from.sequence;
@@ -526,7 +526,7 @@ export default {
         exampleName: "",
         accessionType: "protein",
         ncbiAccessionInput: "",
-        exampleMethod: "false",
+        isExampleSequence: "false",
         sequence: "",
         organismName: "",
         maxEvalue: 3,
@@ -568,7 +568,7 @@ export default {
       },
       ncbiAccessionInput: {
         required: function ncbiAccessionRequired(val) {
-          if (this.from.exampleMethod == "true" && val == "") {
+          if (this.from.ncbiAccessionInput == "" && this.from.sequence == "") {
             return false;
           } else {
             return true;
@@ -577,7 +577,7 @@ export default {
       },
       sequence: {
         required: function sequenceRequired(val) {
-          if (this.from.exampleMethod == "false" && val == "") {
+          if (this.from.ncbiAccessionInput == "" && this.from.sequence == "") {
             return false;
           } else {
             return true;
