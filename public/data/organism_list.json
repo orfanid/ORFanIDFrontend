@@ -155,5 +155,6 @@
   "Vulpes vulpes(9627)":"http://www.ensembl.org/i/species/Vulpes_vulpes.png",
   "Xenopus tropicalis(8364)":"http://www.ensembl.org/i/species/Xenopus_tropicalis.png",
   "Xiphophorus couchianus(32473)":"http://www.ensembl.org/i/species/Xiphophorus_couchianus.png",
-  "Xiphophorus maculatus(8083)":"http://www.ensembl.org/i/species/Xiphophorus_maculatus.png"
+  "Xiphophorus maculatus(8083)":"http://www.ensembl.org/i/species/Xiphophorus_maculatus.png",
+  "Fraxinus excelsior(38873)" : "https://en.wikipedia.org/wiki/Fraxinus_excelsior#/media/File:Fraxinus_excelsior.jpg" 
 }
