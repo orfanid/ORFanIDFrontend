@@ -13,13 +13,9 @@
                 v-on="on"
               ></v-text-field>
             </template>
-            <span
-              >Optional. Email will be useful to find your dataset quickly</span
-            >
+            <span>Optional. Email will be useful to find your dataset quickly</span>
           </v-tooltip>
-          <label
-            style="color: red"
-            v-if="$v.from.email.$dirty && !$v.from.email.email"
+          <label style="color: red" v-if="$v.from.email.$dirty && !$v.from.email.email"
             >Invalid email address</label
           >
         </v-col>
@@ -31,8 +27,7 @@
             <template v-slot:activator="{ on, attrs }">
               <v-file-input
                 :disabled="
-                  from.submissionMode === 'sequence' ||
-                  from.submissionMode === 'accessions'
+                  from.submissionMode === 'sequence' || from.submissionMode === 'accessions'
                 "
                 v-model="from.fileAttachment"
                 @change="readFile"
@@ -52,9 +47,8 @@
               </v-file-input>
             </template>
             <span
-              >Enter query sequence(s) in the text area. It strictly follows
-              FASTA file format. Multiple sequence can be separated by new
-              line</span
+              >Enter query sequence(s) in the text area. It strictly follows FASTA file format.
+              Multiple sequence can be separated by new line</span
             >
           </v-tooltip>
         </v-col>
@@ -73,26 +67,17 @@
                 @blur="validate"
                 v-bind="attrs"
                 v-on="on"
-                :disabled="
-                  from.submissionMode === 'upload' ||
-                  from.submissionMode === 'sequence'
-                "
+                :disabled="from.submissionMode === 'upload' || from.submissionMode === 'sequence'"
               ></v-text-field>
             </template>
-            <span
-              >NCBI/Uniprot accession. Multiple accessions should be separated
-              by comma(s)</span
-            >
+            <span>NCBI/Uniprot accession. Multiple accessions should be separated by comma(s)</span>
           </v-tooltip>
           <label v-if="errors.invalidAccession" style="color: red"
             >Invalid Accession(s)- {{ errors.invalidAccessionMsg }}</label
           >
           <label
             style="color: red"
-            v-if="
-              $v.from.ncbiAccessionInput.$dirty &&
-              !$v.from.ncbiAccessionInput.required
-            "
+            v-if="$v.from.ncbiAccessionInput.$dirty && !$v.from.ncbiAccessionInput.required"
             >Accession is required.</label
           >
           <v-chip class="ma-n3 float-right" x-small>
@@ -110,34 +95,30 @@
                 :rules="textAreaRules"
                 v-bind="attrs"
                 v-on="on"
-                :disabled="
-                  from.submissionMode === 'upload' ||
-                  from.submissionMode === 'accessions'
-                "
+                :disabled="from.submissionMode === 'upload' || from.submissionMode === 'accessions'"
               ></v-textarea>
             </template>
             <span
-              >Enter query sequence(s) in the text area. It strictly follows
-              FASTA file format. Multiple sequence can be separated by new
-              line</span
+              >Enter query sequence(s) in the text area. It strictly follows FASTA file format.
+              Multiple sequence can be separated by new line</span
             >
           </v-tooltip>
-          <v-chip class="ma-n3 float-right" x-small>
-            {{ from.sequence.length }}/5000
-          </v-chip>
-          <div
-            style="color: red"
-            v-if="$v.from.sequence.$dirty && !$v.from.sequence.required"
-          >
+          <v-chip class="ma-n3 float-right" x-small> {{ from.sequence.length }}/5000 </v-chip>
+          <div style="color: red" v-if="$v.from.sequence.$dirty && !$v.from.sequence.required">
             Sequence is required.
           </div>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12">
+          <v-radio-group v-model="organismSelection" mandatory>
+            <v-radio label="Select Organism from list" value="dropdown"></v-radio>
+            <v-radio label="Enter Organism Name" value="textfield"></v-radio>
+          </v-radio-group>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-autocomplete
+                :disabled ="organismSelection =='textfield'"
                 v-model="from.organismName"
                 :items="organismList"
                 label="Organism"
@@ -151,20 +132,18 @@
                     <img :src="data.item.img" />
                   </v-list-item-avatar>
                   <v-list-item-content>
-                    <v-list-item-title
-                      v-html="data.item.name"
-                    ></v-list-item-title>
+                    <v-list-item-title v-html="data.item.name"></v-list-item-title>
                   </v-list-item-content>
                 </template>
               </v-autocomplete>
             </template>
             <span
-              >Organism name and the Taxonomy ID according to the NCBI Taxonomy
-              Database. Only most common taxa will be shown. If the Organism is
-              not available here, type them here in the format of ORGANISM
-              NAME(TAXONOMY ID)</span
+              >Organism name and the Taxonomy ID according to the NCBI Taxonomy Database. Only most
+              common taxa will be shown. If the Organism is not available here, type them here in
+              the format of ORGANISM NAME(TAXONOMY ID)</span
             >
           </v-tooltip>
+          <v-text-field label="Organism" :disabled="organismSelection == 'dropdown'" v-model="from.organismName"></v-text-field>
           <div
             style="color: red"
             v-if="$v.from.organismName.$dirty && !$v.from.organismName.required"
@@ -197,12 +176,10 @@
                       >
                     </template>
                     <span
-                      >The Expect value (E) is a parameter that describes the
-                      number of hits one can "expect" to see by chance when
-                      searching a database of a particular size. The lower the
-                      E-value, or the closer it is to zero, the more
-                      "significant" the match is. E value shown here are e-10
-                      values.</span
+                      >The Expect value (E) is a parameter that describes the number of hits one can
+                      "expect" to see by chance when searching a database of a particular size. The
+                      lower the E-value, or the closer it is to zero, the more "significant" the
+                      match is. E value shown here are e-10 values.</span
                     >
                   </v-tooltip>
                   <v-slider
@@ -220,11 +197,10 @@
                       >
                     </template>
                     <span
-                      >Maximum number of target sequences for BLAST is used to
-                      filter best hits from the BLAST output. Eg: 500 means it
-                      will return only top 500 records from the output. Higher
-                      the number, less relevant data might get includes while
-                      fewer the number might miss matching subjects.</span
+                      >Maximum number of target sequences for BLAST is used to filter best hits from
+                      the BLAST output. Eg: 500 means it will return only top 500 records from the
+                      output. Higher the number, less relevant data might get includes while fewer
+                      the number might miss matching subjects.</span
                     >
                   </v-tooltip>
                   <v-slider
@@ -237,13 +213,11 @@
                   ></v-slider>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                      <v-subheader class="pa-0" v-bind="attrs" v-on="on"
-                        >Identity:</v-subheader
-                      >
+                      <v-subheader class="pa-0" v-bind="attrs" v-on="on">Identity:</v-subheader>
                     </template>
                     <span
-                      >Percentage value(%) of how much subject and query
-                      sequences are identical.</span
+                      >Percentage value(%) of how much subject and query sequences are
+                      identical.</span
                     >
                   </v-tooltip>
                   <v-slider
@@ -373,9 +347,7 @@
         <v-col cols="2" offset-10>
           <v-btn
             @click="analysConformation"
-            :disabled="
-              ($v.$invalid && $v.$dirty) || this.errors.invalidAccession
-            "
+            :disabled="($v.$invalid && $v.$dirty) || this.errors.invalidAccession"
             style="color: white"
             color="teal"
             >Submit
@@ -386,12 +358,7 @@
         </v-col>
       </v-row>
     </v-form>
-    <v-dialog
-      v-model="isLoading"
-      width="800"
-      height="200"
-      overlay-color="#506c87"
-    >
+    <v-dialog v-model="isLoading" width="800" height="200" overlay-color="#506c87">
       <v-card>
         <v-card-title class="text-h5 teal lighten-2">
           <span style="color: white">ORFanID</span>
@@ -423,12 +390,7 @@
 <script>
 import $ from "jquery";
 import analysis from "@/api/analysis";
-import {
-  maxLength,
-  required,
-  requiredIf,
-  email,
-} from "vuelidate/lib/validators";
+import { maxLength, required, requiredIf, email } from "vuelidate/lib/validators";
 import router from "@/router";
 
 export default {
@@ -440,17 +402,15 @@ export default {
       let url = "";
       if (this.from.exampleMethod == "true") {
         if (this.from.accessionType === "protein") {
-          this.from.ncbiAccessionInput =
-            this.exampleProteinDataValues[this.from.exampleName];
+          this.from.ncbiAccessionInput = this.exampleProteinDataValues[this.from.exampleName];
         } else {
-          this.from.ncbiAccessionInput =
-            this.exampleNucliotideDataValues[this.from.exampleName];
+          this.from.ncbiAccessionInput = this.exampleNucliotideDataValues[this.from.exampleName];
         }
         this.from.sequence = "";
       } else {
         url = `/data/example-${this.from.accessionType}-${this.from.exampleName}.fasta`;
         let that = this;
-        $.get(url, (data) => {
+        $.get(url, data => {
           that.from.sequence = this.remove_linebreaks(data);
         });
         this.from.ncbiAccessionInput = "";
@@ -474,12 +434,12 @@ export default {
           maxTargetSequence: this.from.maxTargetSequence,
           organismName: this.from.organismName,
           sequence: this.from.sequence,
-          email: this.from.email != "" ? this.from.email : null,
+          email: this.from.email != "" ? this.from.email : null
         };
 
         if (this.from.submissionMode === "upload") {
           requestInfo.sequence = this.uploadFileContent;
-          requestInfo.organismName = "Homo sapiens(9606)";
+          requestInfo.organismName = this.from.organismName;
         } else {
           if (this.from.exampleMethod == "true") {
             requestInfo.accession = this.from.ncbiAccessionInput;
@@ -491,15 +451,15 @@ export default {
         this.isLoading = true;
         analysis
           .analyse(requestInfo)
-          .then((response) => {
+          .then(response => {
             this.analyseResult.session = response.data;
           })
-          .catch((error) => {
+          .catch(error => {
             console.log(error);
           });
 
         this.isLoading = false;
-        setTimeout(function () {
+        setTimeout(function() {
           router.push({ name: "results" });
         }, 600);
       }
@@ -520,12 +480,11 @@ export default {
       analysis
         .validate({
           accessions: this.from.ncbiAccessionInput,
-          accessionType: this.from.accessionType,
+          accessionType: this.from.accessionType
         })
-        .then((response) => {
+        .then(response => {
           if (response.data.isValid == false) {
-            this.errors.invalidAccessionMsg =
-              response.data.invalidAccessions.join(", ");
+            this.errors.invalidAccessionMsg = response.data.invalidAccessions.join(", ");
             this.errors.invalidAccession = true;
           } else {
             this.errors.invalidAccession = false;
@@ -547,54 +506,55 @@ export default {
       reader.readAsText(this.from.fileAttachment[0]);
       reader.onload = () => {
         this.uploadFileContent = reader.result;
-        this.from.sequence =reader.result;
+        this.from.sequence = reader.result;
       };
-    },
+    }
   },
   watch: {
     "from.fileAttachment": {
-      handler: function (after, before) {
+      handler: function(after, before) {
         if (after.length > 0) {
           this.from.submissionMode = "upload";
         } else {
           this.from.submissionMode = "";
         }
       },
-      deep: true,
+      deep: true
     },
     "from.sequence": {
-      handler: function (after, before) {
+      handler: function(after, before) {
         if (after != "") {
           this.from.submissionMode = "sequence";
         } else {
           this.from.submissionMode = "";
         }
       },
-      deep: true,
+      deep: true
     },
     "from.ncbiAccessionInput": {
-      handler: function (after, before) {
+      handler: function(after, before) {
         if (after != "") {
           this.from.submissionMode = "accessions";
         } else {
           this.from.submissionMode = "";
         }
       },
-      deep: true,
-    },
+      deep: true
+    }
   },
   mounted() {
-    analysis.getOrganismList().then((response) => {
-      Object.entries(response.data).forEach((element) => {
+    analysis.getOrganismList().then(response => {
+      Object.entries(response.data).forEach(element => {
         this.organismList.push({
           name: element[0],
-          img: element[1],
+          img: element[1]
         });
       });
     });
   },
   data() {
     return {
+      organismSelection: "dropdown",
       isLoading: false,
       fullPage: true,
       toggleAdvanceparameters: false,
@@ -613,41 +573,39 @@ export default {
         identity: 60,
         email: "",
         fileAttachment: null,
-        submissionMode: "",
+        submissionMode: ""
       },
       analyseResult: {
-        session: "",
+        session: ""
       },
       errors: {
         invalidAccession: false,
-        invalidAccessionMsg: "",
+        invalidAccessionMsg: ""
       },
-      textAreaRules: [
-        (value) => (value || "").length <= 5000 || "Max 5000 characters",
-      ],
+      textAreaRules: [value => (value || "").length <= 5000 || "Max 5000 characters"],
       exampleProteinDataValues: {
         "Escherichia coli(562)": "NP_415100.1,YP_002791247.1,NP_414542.1",
         "Drosophila melanogaster(7227)": "NP_524859.2",
         "Homo sapiens(9606)": "NP_001119584.1",
-        "Arabidopsis thaliana(3702)": "NP_187663.1",
+        "Arabidopsis thaliana(3702)": "NP_187663.1"
       },
       exampleNucliotideDataValues: {
         "Escherichia coli(562)": "NZ_JAACYZ010000241.1,X86971.1",
         "Drosophila melanogaster(7227)": "NM_080120.3",
         "Homo sapiens(9606)": "NM_001126112.2",
-        "Arabidopsis thaliana(3702)": "NM_111887.3",
-      },
+        "Arabidopsis thaliana(3702)": "NM_111887.3"
+      }
     };
   },
   validations: {
     from: {
       sequence: {
-        maxLength: maxLength(5000),
+        maxLength: maxLength(5000)
       },
       organismName: {
-        required: requiredIf(function () {
-          return this.from.submissionMode === "accessions" || this.from.submissionMode === 'upload';
-        }),
+        required: requiredIf(function() {
+          return this.from.submissionMode === "accessions" || this.from.submissionMode === "upload";
+        })
       },
       ncbiAccessionInput: {
         required: function ncbiAccessionRequired(val) {
@@ -658,7 +616,7 @@ export default {
           } else {
             return true;
           }
-        },
+        }
       },
       sequence: {
         required: function sequenceRequired(val) {
@@ -669,13 +627,13 @@ export default {
           } else {
             return true;
           }
-        },
+        }
       },
       email: {
-        email,
-      },
-    },
-  },
+        email
+      }
+    }
+  }
 };
 </script>
 <style scoped>
