@@ -112,7 +112,7 @@
       <v-row>
         <v-col cols="12">
           <v-radio-group v-model="organismSelection" mandatory>
-            <v-radio label="Select Organism from list" value="dropdown"></v-radio>
+            <v-radio label="Select Organism Name from list" value="dropdown"></v-radio>
             <v-radio label="Enter Organism Name" value="textfield"></v-radio>
           </v-radio-group>
           <v-tooltip bottom>
