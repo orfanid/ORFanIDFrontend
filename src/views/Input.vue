@@ -118,7 +118,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-autocomplete
-                :disabled ="organismSelection =='textfield'"
+                :disabled="organismSelection == 'textfield'"
                 v-model="from.organismName"
                 :items="organismList"
                 label="Organism"
@@ -143,12 +143,22 @@
               the format of ORGANISM NAME(TAXONOMY ID)</span
             >
           </v-tooltip>
-          <v-text-field label="Organism" :disabled="organismSelection == 'dropdown'" v-model="from.organismName"></v-text-field>
+          <v-text-field
+            label="Organism"
+            :disabled="organismSelection == 'dropdown'"
+            v-model="from.organismName"
+          ></v-text-field>
           <div
             style="color: red"
             v-if="$v.from.organismName.$dirty && !$v.from.organismName.required"
           >
             Organism is required.
+          </div>
+          <div style="color: red" v-if="$v.from.organismName.$dirty && !$v.from.organismName.alpha">
+            The format entered for the organism name is incorrect. Please enter the Organism Name as follows: "organism name (tax id)"
+          </div>
+          <div style="color: orange" v-if="$v.from.organismName.$dirty && !$v.from.organismName.validOrganism">
+            This species name is not found in the ncbi lineage database. Taxonomic results will be limited. Do you still want to proceed. 
           </div>
         </v-col>
       </v-row>
@@ -347,7 +357,7 @@
         <v-col cols="2" offset-10>
           <v-btn
             @click="analysConformation"
-            :disabled="($v.$invalid && $v.$dirty) || this.errors.invalidAccession"
+            :disabled="disableSubmit"
             style="color: white"
             color="teal"
             >Submit
@@ -390,8 +400,10 @@
 <script>
 import $ from "jquery";
 import analysis from "@/api/analysis";
-import { maxLength, required, requiredIf, email } from "vuelidate/lib/validators";
+import { maxLength, required, requiredIf, email, helpers } from "vuelidate/lib/validators";
 import router from "@/router";
+
+const organism = helpers.regex("organism", /\(\d*\)$/g);
 
 export default {
   name: "Home",
@@ -424,7 +436,9 @@ export default {
     },
     analysData() {
       this.$v.$touch();
-      if (this.$v.$invalid == false) {
+      if (this.$v.from.sequence.$invalid == false &&
+         this.$v.from.ncbiAccessionInput.$invalid == false &&
+         this.$v.from.email.$invalid == false) {
         console.log(this.from);
 
         var requestInfo = {
@@ -466,7 +480,7 @@ export default {
     },
     analysConformation() {
       this.$v.$touch();
-      if (this.$v.$invalid == false) {
+      if (this.disableSubmit ==  false) {
         this.isLoading = true;
       }
     },
@@ -508,6 +522,13 @@ export default {
         this.uploadFileContent = reader.result;
         this.from.sequence = reader.result;
       };
+    },
+    organismValid() {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve(false);
+        }, 500);
+      });
     }
   },
   watch: {
@@ -597,6 +618,13 @@ export default {
       }
     };
   },
+  computed :{
+    disableSubmit : function() {
+      return this.$v.$dirty == true && ( this.$v.from.sequence.$invalid == true ||
+         this.$v.from.ncbiAccessionInput.$invalid == true &&
+         this.$v.from.email.$invalid == true )
+    }
+  },
   validations: {
     from: {
       sequence: {
@@ -605,7 +633,9 @@ export default {
       organismName: {
         required: requiredIf(function() {
           return this.from.submissionMode === "accessions" || this.from.submissionMode === "upload";
-        })
+        }),
+        alpha: organism,
+        validOrganism: analysis.validateOrganism
       },
       ncbiAccessionInput: {
         required: function ncbiAccessionRequired(val) {

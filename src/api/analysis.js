@@ -93,6 +93,27 @@ const analysisAPI = {
       url: `${config.baseUrl()}/validate/accessions?accessions=${values.accessions}&accessionType=${values.accessionType}`,
       headers: getHeaders()
     });
+  },
+  validateOrganism(values) {
+    if(values == null || values == "")
+    return new Promise((resolve, reject) => {
+      return reject(true);
+    })
+
+    return axios({
+      method: 'get',
+      url: `${config.baseUrl()}/validate-organism/${values}`,
+      headers: getHeaders()
+    }).then(function (response) {
+      return new Promise((resolve, reject) => {
+        return resolve(Boolean(response.data.isValid));
+      })
+    })
+    .catch(function (error) {
+      return new Promise((resolve, reject) => {
+        return reject(false);
+      })
+    })
   }
 };
 
