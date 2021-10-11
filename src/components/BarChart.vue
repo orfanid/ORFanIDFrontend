@@ -1,5 +1,5 @@
 <template>
-  <v-chart class="chart" :option="chartData" />
+  <v-chart class="chart barchart" :option="chartData" />
   <!-- <pre>{{chartData}}</pre> -->
 </template>
 

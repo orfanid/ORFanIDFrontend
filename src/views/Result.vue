@@ -129,7 +129,7 @@
                     >
                   </template>
                   <v-card>
-                    <TreeChart :chartData="blastResult" />
+                    <TreeChart :chartData="blastResult" :loading="treeChartLoading" />
                     <v-divider></v-divider>
                     <v-card-actions>
                       <v-spacer></v-spacer>
@@ -167,7 +167,7 @@
     </v-row>
     <v-row class="text-right">
       <v-col cols="11">
-        <v-dialog v-model="saveResultDialog" persistent max-width="600px">
+        <!-- <v-dialog v-model="saveResultDialog" persistent max-width="600px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn class="mx-2" v-bind="attrs" v-on="on" small color="teal">
               <v-icon color="white">
@@ -268,7 +268,7 @@
               </v-btn>
             </v-card-actions>
           </v-card>
-        </v-dialog>
+        </v-dialog> -->
       </v-col>
       <v-col cols="1"> </v-col>
     </v-row>
@@ -288,6 +288,7 @@ export default {
   },
   data() {
     return {
+      treeChartLoading: false,
       organismList: [],
       saveResultDialog: false,
       analysisId: this.$route.params.analysisId,
@@ -452,24 +453,17 @@ export default {
       });
     },
     loadBlastData(sessionId, geneId) {
+      this.blastResult.series[0].data = [];
+      this.treeChartLoading = true;
       const that = this;
       console.log("Loadding Blast " + sessionId + " " + geneId);
       analysisAPI
         .getBlastSummary({ geneId: geneId, sessionId: sessionId })
         .then((response) => {
-          console.log(response);
-          // response.data.tree.children.forEach(function(datum, index) {
-          //   index % 2 === 0 && (datum.collapsed = true);
-          // });
+        this.treeChartLoading = false;
           response.data.tree.children.forEach((item) => {
             that.blastResult.series[0].data.push(item);
           });
-
-
-         blastResult.series[0].data.children.forEach(function (datum, index) {
-              index % 2 === 0 && (datum.collapsed = true);
-          });
-
         });
     },
     saveAnalysis() {
@@ -482,6 +476,9 @@ export default {
         });
       }
     },
+    closeTreeChartDialog() {
+      
+    }
   },
   validations: {
     analysisResult: {

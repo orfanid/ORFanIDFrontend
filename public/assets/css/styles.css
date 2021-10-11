@@ -159,12 +159,12 @@ h1{
 .upload-button .v-icon::before{
     color: #ffffff !important;
 }
-.chart[data-v-22e0623b]{
+x-vue-echarts.barchart{
     width: 100% !important;
 }
-.chart[data-v-22e0623b] >div{
+x-vue-echarts.barchart >div{
     width: 100% !important;
 }
-.chart[data-v-22e0623b] canvas{
+x-vue-echarts.barchart canvas{
     width: 100% !important;
 }

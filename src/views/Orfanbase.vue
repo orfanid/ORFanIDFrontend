@@ -15,6 +15,8 @@
               ></v-text-field>
             </v-card-title>
             <v-data-table
+              :sort-by.sync="sortBy"
+              :sort-desc.sync="sortDesc"
               :headers="headers"
               :items="desserts"
               :page.sync="page"
@@ -68,7 +70,19 @@ export default {
       pageCount: 0,
       itemsPerPage: 10,
       headers: [
-        { text: "Date", align: "start", sortable: true, value: "date" },
+        {
+          text: "Date",
+          sort: (a, b) => {
+            return (
+              moment(a, "YYYY-MM-DD HH:mm:ss") -
+              moment(b, "YYYY-MM-DD HH:mm:ss")
+            );
+          },
+          formatter: (x) => (x ? moment(x).format(this.dateFormat) : null),
+          align: "start",
+          sortable: true,
+          value: "date",
+        },
         { text: "Organism", value: "organism", sortable: true },
         { text: "Genes ID", value: "geneId", sortable: true },
         { text: "Description", value: "description", sortable: true },
@@ -76,6 +90,8 @@ export default {
         { text: "", value: "analysisIdNav", sortable: true },
       ],
       desserts: [],
+      sortBy: ["date"],
+      sortDesc: [true],
     };
   },
   mounted() {
@@ -84,7 +100,10 @@ export default {
       console.log(response);
       response.data.forEach((element) => {
         that.desserts.push({
-          date: moment(element.analysisDate).format("YYYY-MM-DD HH:mm:ss"),
+          date: moment
+              .utc(element.analysisDate)
+              .local()
+              .format("YYYY-MM-DD HH:mm:ss"),
           organism: element.organism,
           geneId: element.geneId,
           description: element.description,
@@ -94,6 +113,21 @@ export default {
         });
       });
     });
+  },
+  methods: {
+    sortByDate(items, index, isDescending) {
+      items.sort((a, b) => {
+        if (index[0] === "date") {
+          if (isDescending) {
+            return moment(b.date) - moment(a.date);
+          } else {
+            return moment(a.date) - moment(b.date);
+          }
+        }
+      });
+
+      return items;
+    },
   },
 };
 </script>
