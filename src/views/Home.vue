@@ -189,7 +189,6 @@
                       proteins. Similarly, the mantle of various Mollusks has
                       been found to be expressed from orphan genes, while the
                       regeration of salamander limbs are mediated by orphans
-                      (Dr. Paul Nelson, 2017)
                     </p>
                   </div>
                 </div>
@@ -273,7 +272,7 @@
               <v-col cols="12" class="pl-0 pr-0">
                 <div class="d-flex container inner-content">
                 <div class=" text-left float-left" style="color:white;">
-                  Copyright &nbsp;© Gunasekera 2022
+                  Copyright &nbsp;© Gunasekera 2018 - 2022
                 </div>
                 </div>
               </v-col>

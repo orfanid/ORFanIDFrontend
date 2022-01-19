@@ -21,7 +21,7 @@
               <v-row>
                 <v-col cols="8">
                   <div class="container text-left" style="color:white;">
-                    Copyright &nbsp;© Gunasekera 2022
+                    Copyright &nbsp;© Gunasekera 2018 - 2022
                   </div>
                 </v-col>
                 <v-col cols="4" class="align-center d-flex justify-end">
