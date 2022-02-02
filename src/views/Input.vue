@@ -85,6 +85,30 @@
           </v-chip>
         </v-col>
       </v-row>
+      <v-row v-if="this.from.accessionType === 'protein'">
+        <v-col cols="6">
+          <div>
+            <h7>Program Selection</h7>
+            <v-radio-group mandatory v-model="from.program">
+              <v-radio
+                label="PSI-BLAST (Position-Specific Iterated BLAST)"
+                value="PSI-BLAST"
+              ></v-radio>
+              <v-radio label="BLAST" value="BLAST"></v-radio>
+            </v-radio-group>
+          </div>
+        </v-col>
+        <v-col cols="6" v-if="from.program == 'PSI-BLAST'">
+          <v-select
+            label="Number of iterations"
+            :items="num_iterations"
+            item-text="text"
+            item-value="value"
+            v-model="from.num_iteration"
+          >
+          </v-select>
+        </v-col>
+      </v-row>
       <v-row>
         <v-col cols="12">
           <v-tooltip bottom>
@@ -155,10 +179,15 @@
             Organism is required.
           </div>
           <div style="color: red" v-if="$v.from.organismName.$dirty && !$v.from.organismName.alpha">
-            The format entered for the organism name is incorrect. Please enter the Organism Name as follows: "organism name (tax id)"
+            The format entered for the organism name is incorrect. Please enter the Organism Name as
+            follows: "organism name (tax id)"
           </div>
-          <div style="color: orange" v-if="$v.from.organismName.$dirty && !$v.from.organismName.validOrganism">
-            This species name is not found in the ncbi lineage database. Taxonomic results will be limited. Do you still want to proceed. 
+          <div
+            style="color: orange"
+            v-if="$v.from.organismName.$dirty && !$v.from.organismName.validOrganism"
+          >
+            This species name is not found in the ncbi lineage database. Taxonomic results will be
+            limited. Do you still want to proceed.
           </div>
         </v-col>
       </v-row>
@@ -232,7 +261,7 @@
                   </v-tooltip>
                   <v-slider
                     max="100"
-                    min="60"
+                    min="40"
                     v-model="from.identity"
                     thumb-label
                     ticks
@@ -436,9 +465,11 @@ export default {
     },
     analysData() {
       this.$v.$touch();
-      if (this.$v.from.sequence.$invalid == false &&
-         this.$v.from.ncbiAccessionInput.$invalid == false &&
-         this.$v.from.email.$invalid == false) {
+      if (
+        this.$v.from.sequence.$invalid == false &&
+        this.$v.from.ncbiAccessionInput.$invalid == false &&
+        this.$v.from.email.$invalid == false
+      ) {
         console.log(this.from);
 
         var requestInfo = {
@@ -448,7 +479,9 @@ export default {
           maxTargetSequence: this.from.maxTargetSequence,
           organismName: this.from.organismName,
           sequence: this.from.sequence,
-          email: this.from.email != "" ? this.from.email : null
+          email: this.from.email != "" ? this.from.email : null,
+          isPsiBlast: this.from.program == "PSI-BLAST" ? true : false,
+          num_iteration: parseInt(this.from.num_iteration)
         };
 
         if (this.from.submissionMode === "upload") {
@@ -480,7 +513,7 @@ export default {
     },
     analysConformation() {
       this.$v.$touch();
-      if (this.disableSubmit ==  false) {
+      if (this.disableSubmit == false) {
         this.isLoading = true;
       }
     },
@@ -580,6 +613,14 @@ export default {
       fullPage: true,
       toggleAdvanceparameters: false,
       organismList: [],
+      num_iterations: [
+        { text: "0", value: 0 },
+        { text: "1", value: 1 },
+        { text: "2", value: 2 },
+        { text: "3", value: 3 },
+        { text: "4", value: 4 },
+        { text: "5", value: 5 }
+      ],
       from: {
         sequenceGroup: 1,
         analysisId: new Date().toJSON().replace(/-/g, "/"),
@@ -594,7 +635,9 @@ export default {
         identity: 60,
         email: "",
         fileAttachment: null,
-        submissionMode: ""
+        submissionMode: "",
+        program: null,
+        num_iteration: 2
       },
       analyseResult: {
         session: ""
@@ -618,11 +661,13 @@ export default {
       }
     };
   },
-  computed :{
-    disableSubmit : function() {
-      return this.$v.$dirty == true && ( this.$v.from.sequence.$invalid == true ||
-         this.$v.from.ncbiAccessionInput.$invalid == true &&
-         this.$v.from.email.$invalid == true )
+  computed: {
+    disableSubmit: function() {
+      return (
+        this.$v.$dirty == true &&
+        (this.$v.from.sequence.$invalid == true ||
+          (this.$v.from.ncbiAccessionInput.$invalid == true && this.$v.from.email.$invalid == true))
+      );
     }
   },
   validations: {
