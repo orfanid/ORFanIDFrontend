@@ -88,12 +88,11 @@
               <h5 class="center">Biology</h5>
               <p>
                 Historically, gene function is known to be expressed through proteins. There are
-                specific organisms that have been
-                <strong>found </strong>with unique proteins expressed by orphan genes such as Hydra,
-                various Mollusks, Salamander and others. It appears that the anatomy of Hydra is
-                mediated by orphan genes that give rise to unique proteins. Similarly, the mantle of
-                various Mollusks has been found to be expressed from orphan genes, while the
-                regeration of salamander limbs are mediated by orphans
+                specific organisms that have been found with unique proteins expressed by orphan
+                genes such as Hydra, various Mollusks, Salamander and others. It appears that the
+                anatomy of Hydra is mediated by orphan genes that give rise to unique proteins.
+                Similarly, the mantle of various Mollusks has been found to be expressed from orphan
+                genes, while the regeration of salamander limbs are mediated by orphans.
               </p>
             </div>
           </div>
