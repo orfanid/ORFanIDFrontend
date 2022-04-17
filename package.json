@@ -21,6 +21,7 @@
     "vue": "^2.6.11",
     "vue-analytics": "^5.22.1",
     "vue-echarts": "^6.0.0-rc.5",
+    "vue-gtm": "^3.5.0",
     "vue-loading-overlay": "^4.0.3",
     "vue-router": "^3.2.0",
     "vue-youtube": "^1.4.0",
