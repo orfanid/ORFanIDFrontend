@@ -19,6 +19,7 @@
     "materialize-css": "^1.0.0-rc.2",
     "moment": "^2.29.1",
     "vue": "^2.6.11",
+    "vue-analytics": "^5.22.1",
     "vue-echarts": "^6.0.0-rc.5",
     "vue-loading-overlay": "^4.0.3",
     "vue-router": "^3.2.0",
