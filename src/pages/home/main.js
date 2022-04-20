@@ -1,20 +1,23 @@
-import Vue from 'vue'
-import App from './App.vue'
-import vuetify from './plugins/vuetify'
-import router from './router'
-import ECharts from 'vue-echarts'
+import Vue from "vue";
+import App from "./App.vue";
+import vuetify from "./plugins/vuetify";
+import router from "./router";
+import ECharts from "vue-echarts";
 import "echarts";
-import Vuelidate from 'vuelidate'
-import VueAnalytics from 'vue-analytics';
+import Vuelidate from "vuelidate";
+import VueAnalytics from "vue-analytics";
 import { createGtm } from "vue-gtm";
 
-Vue.component('v-chart', ECharts)
+Vue.component("v-chart", ECharts);
 
-Vue.use(Vuelidate)
+Vue.use(Vuelidate);
 
 Vue.use(VueAnalytics, {
-  id: 'G-37PVYZFCHN',
-  router
+  appName: "OrfanId", // Mandatory
+  appVersion: "3", // Mandatory
+  trackingId: "G-37PVYZFCHN", // Mandatory
+  debug: true, // Whether or not display console logs debugs (optional)
+  vueRouter: router // Pass the router instance to automatically sync with router (optional)
 });
 
 App.use(
@@ -24,7 +27,7 @@ App.use(
       // Add url query string when load gtm.js with GTM ID (optional)
       gtm_auth: "AB7cDEf3GHIjkl-MnOP8qr",
       gtm_preview: "env-4",
-      gtm_cookies_win: "x",
+      gtm_cookies_win: "x"
     },
     defer: false, // Script can be set to `defer` to speed up page load at the cost of less accurate results (in case visitor leaves before script is loaded, which is unlikely but possible). Defaults to false, so the script is loaded `async` by default
     compatibility: false, // Will add `async` and `defer` to the script tag to not block requests for old browsers that do not support `async`
@@ -33,12 +36,13 @@ App.use(
     loadScript: true, // Whether or not to load the GTM Script (Helpful if you are including GTM manually, but need the dataLayer functionality in your components) (optional)
     vueRouter: router, // Pass the router instance to automatically sync with router (optional)
     ignoredViews: ["homepage"], // Don't trigger events for specified router names (case insensitive) (optional)
-    trackOnNextTick: false, // Whether or not call trackView in Vue.nextTick
-  }))
+    trackOnNextTick: false // Whether or not call trackView in Vue.nextTick
+  })
+);
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 new Vue({
   vuetify,
   router,
   render: h => h(App)
-}).$mount('#app')
+}).$mount("#app");
