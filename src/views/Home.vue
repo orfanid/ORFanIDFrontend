@@ -290,6 +290,7 @@ export default {
     };
   },
   mounted: function () {
+    this.$gtag.event('Home', { method: 'Google' })
     const youtubeEmbedTemplate = "https://www.youtube.com/embed/";
 
     let url = this.videoOneUrl.split(
