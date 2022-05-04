@@ -12,7 +12,7 @@ Vue.component("v-chart", ECharts);
 Vue.use(Vuelidate);
 
 Vue.use(VueGtag, {
-  config: { id: "G-BGRKE33308" },
+  config: { id: "G-37PVYZFCHN" },
   router
 });
 
