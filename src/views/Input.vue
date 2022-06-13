@@ -65,10 +65,51 @@
                 label="NCBI or Uniprot Accession(s)"
                 v-model="from.ncbiAccessionInput"
                 @blur="validate"
+                @click:append-outer="accessionLookup"
                 v-bind="attrs"
                 v-on="on"
                 :disabled="from.submissionMode === 'upload' || from.submissionMode === 'sequence'"
+                :append-outer-icon="'mdi-store-search-outline'"
               ></v-text-field>
+              <v-dialog v-model="showAccessionLookup" persistent max-width="450">
+                <v-card>
+                  <v-card-title class="text-h5">
+                    NCBI or Uniprot Accession(s) Lookup
+                  </v-card-title>
+                  <v-card-text>
+                    <v-row>
+                      <v-col>
+                        <v-text-field label="Gene name"></v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col>
+                        <v-list dense>
+                          <v-list-item-group v-model="AccesionLookup.selectedItem" color="primary">
+                            <v-list-item v-for="(item, i) in AccesionLookup.items" :key="i">
+                              <v-list-item-icon>
+                                <v-icon v-text="item.icon"></v-icon>
+                              </v-list-item-icon>
+                              <v-list-item-content>
+                                <v-list-item-title v-text="item.text"></v-list-item-title>
+                              </v-list-item-content>
+                            </v-list-item>
+                          </v-list-item-group>
+                        </v-list>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="green darken-1" text @click="accesionLookupClose">
+                      Close
+                    </v-btn>
+                    <v-btn color="green darken-1" text @click="accesionLookupApply">
+                      Apply
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
             </template>
             <span>NCBI/Uniprot accession. Multiple accessions should be separated by comma(s)</span>
           </v-tooltip>
@@ -562,6 +603,20 @@ export default {
           resolve(false);
         }, 500);
       });
+    },
+    accessionLookup() {
+      this.showAccessionLookup = true;
+    },
+    accesionLookupApply() {
+      if (this.AccesionLookup.selectedItem >= 0) {
+        this.from.ncbiAccessionInput = this.AccesionLookup.items[
+          this.AccesionLookup.selectedItem
+        ].text;
+      }
+      this.showAccessionLookup = false;
+    },
+    accesionLookupClose() {
+      this.showAccessionLookup = false;
     }
   },
   watch: {
@@ -608,6 +663,14 @@ export default {
   },
   data() {
     return {
+      showAccessionLookup: false,
+      AccesionLookup: {
+        selectedItem: 1,
+        items: [
+          { text: "NP_001119584.1", icon: "mdi-flag" },
+          { text: "NP_524859.2", icon: "mdi-flag" }
+        ]
+      },
       organismSelection: "dropdown",
       isLoading: false,
       fullPage: true,
