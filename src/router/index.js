@@ -1,58 +1,64 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Results from '../views/Results'
-import Result from '../views/Result'
-import Instructions from '../views/Instructions.vue'
-import Home from '../views/Home'
-import OrfanBase from '../views/Orfanbase'
-import Input from '../views/Input'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Results from "../views/Results";
+import Result from "../views/Result";
+import Instructions from "../views/Instructions.vue";
+import Home from "../views/Home";
+import OrfanBase from "../views/Orfanbase";
+import Input from "../views/Input";
+import Accession from "../views/Accession.vue";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
+    path: "/",
+    name: "home",
     component: Home
   },
   {
-    path: '/input',
-    name: 'input',
+    path: "/input",
+    name: "input",
     component: Input
   },
   {
-    path: '/results',
-    name: 'results',
+    path: "/results",
+    name: "results",
     component: Results
   },
   {
-    path: '/orfanBase',
-    name: 'orfanBase',
+    path: "/orfanBase",
+    name: "orfanBase",
     component: OrfanBase
   },
   {
-    path: '/result/:analysisId',
-    name: 'result',
+    path: "/result/:analysisId",
+    name: "result",
     component: Result
   },
   {
-    path: '/instructions',
-    name: 'instructions',
+    path: "/instructions",
+    name: "instructions",
     component: Instructions
   },
   {
-    path: '/about',
-    name: 'About',
+    path: "/accession",
+    name: "accession",
+    component: Accession
+  },
+  {
+    path: "/about",
+    name: "About",
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    component: () => import(/* webpackChunkName: "about" */ "../views/About.vue")
   }
-]
+];
 
 const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
-})
+});
 
-export default router
+export default router;

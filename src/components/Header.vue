@@ -20,6 +20,11 @@
       <!-- <v-icon>mdi-map-marker</v-icon> -->
     </v-btn>
 
+    <v-btn value="nearby" text color="white" to="/accession">
+      <span>Accessions</span>
+      <!-- <v-icon>mdi-map-marker</v-icon> -->
+    </v-btn>
+
     <v-btn value="nearby" text color="white" @click="navInstruction">
       <span>Instructions</span>
       <!-- <v-icon>mdi-map-marker</v-icon> -->
@@ -31,13 +36,13 @@ export default {
   name: "Header",
   data() {
     return {
-      value: null,
+      value: null
     };
   },
-  methods : {
+  methods: {
     navInstruction() {
-      let routeData = this.$router.resolve({name: 'instructions'});
-      window.open(routeData.href, '_blank');
+      let routeData = this.$router.resolve({ name: "instructions" });
+      window.open(routeData.href, "_blank");
       //window.open("https://docs.google.com/document/d/1YfvC9pTchIy58m9ONug2po59BwALcpCO3Ix5KfB6dUk/edit",'_blank');
     }
   }
