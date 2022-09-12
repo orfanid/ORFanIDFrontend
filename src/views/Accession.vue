@@ -18,6 +18,7 @@
                     </template>
                   </v-text-field>
                 </v-card>
+                <a href="#" @click="downloadPageFile(downloadSummaryResult)">Download</a>
               </v-col>
               <v-spacer></v-spacer>
             </v-row>
@@ -88,7 +89,8 @@ export default {
         noOfPages: null,
         currentPage: 1
       },
-      pubMedApi: null
+      pubMedApi: null,
+      downloadSummaryResult:[]
     };
   },
   async mounted() {
@@ -126,13 +128,13 @@ export default {
         }
         let pageIds = await that.getCurretPageIds();
 
-        let summaryResult = await that.getESearchSummary(pageIds);
-        if (summaryResult && summaryResult.result) {
-          Object.values(summaryResult.result).forEach(val => {
+        that.downloadSummaryResult = await that.getESearchSummary(pageIds);
+        if (that.downloadSummaryResult && that.downloadSummaryResult.result) {
+          Object.values(that.downloadSummaryResult.result).forEach(val => {
             that.searchResult.resultSummary.push(val);
           });
 
-          this.downloadPageFile(summaryResult);
+          //this.downloadPageFile(that.downloadSummaryResult);
         }
       } catch (error) {
         console.log(error);
@@ -176,14 +178,14 @@ export default {
       that.searchResult.resultSummary = [];
       let pageIds = await that.getCurretPageIds();
 
-      let summaryResult = await that.getESearchSummary(pageIds);
-      if (summaryResult && summaryResult.result) {
-        Object.values(summaryResult.result).forEach(val => {
+      that.downloadSummaryResult = await that.getESearchSummary(pageIds);
+      if (that.downloadSummaryResult && that.downloadSummaryResult.result) {
+        Object.values(that.downloadSummaryResult.result).forEach(val => {
           that.searchResult.resultSummary.push(val);
         });
       }
 
-      this.downloadPageFile(summaryResult);
+      //this.downloadPageFile(summaryResult);
     },
     downloadPageFile(summaryResult) {
       let acceessionList = lodash.map(summaryResult.result, function(i) {
