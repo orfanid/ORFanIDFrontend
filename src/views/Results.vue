@@ -29,6 +29,7 @@
               :items-per-page="itemsPerPage"
               :search="search"
               class="elevation-1"
+              hide-default-footer
               @page-count="pageCount = $event"
             >
               <template v-slot:item.analysisIdNav="{ item }">
@@ -125,7 +126,7 @@ export default {
       itemsPerPage: 10,
       headers: [
         {
-          text: "Date",
+          text: "Date and time",
           align: "start",
           sortable: true,
           value: "date",
@@ -185,6 +186,7 @@ export default {
     },
     loadData() {
       const that = this;
+      that.$Progress.start()
       that.desserts.splice(0,that.desserts.length)
       analysisAPI.getAll().then((response) => {
         console.log(response);
@@ -202,6 +204,7 @@ export default {
             status: element.status,
           });
         });
+        that.$Progress.finish()
       });
     },
   },

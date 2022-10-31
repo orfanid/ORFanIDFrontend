@@ -5,14 +5,18 @@
       <router-view></router-view>
     </v-main>
     <router-view v-if="isHome"></router-view>
+    <vue-progress-bar></vue-progress-bar>
     <Footer v-if="!isHome"/>
+    <vue-progress-bar></vue-progress-bar>
   </v-app>
 </template>
 
 <script>
+import VueProgressBar from 'vue-progressbar'
 import Header from '../src/components/Header'
 import Footer from '../src/components/Footer'
 import M from 'materialize-css'
+
 export default {
   name: 'App',
   components: {

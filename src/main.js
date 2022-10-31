@@ -5,9 +5,13 @@ import router from './router'
 import ECharts from 'vue-echarts'
 import "echarts";
 import Vuelidate from 'vuelidate'
-// import 'materialize-css/dist/css/materialize.min.css'
-// import 'material-design-icons/iconfont/material-icons.css'
+import VueProgressBar from 'vue-progressbar'
 
+Vue.use(VueProgressBar, {
+  color: 'rgb(143, 255, 199)',
+  failedColor: 'red',
+  height: '4px'
+})
 Vue.component('v-chart', ECharts)
 
 Vue.use(Vuelidate)

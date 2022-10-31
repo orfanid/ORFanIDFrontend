@@ -116,6 +116,8 @@
               :headers="genesCategorization.headers"
               :items="genesCategorization.desserts"
               :search="genesCategorization.search"
+              hide-default-footer
+              class="elevation-1"
             >
               <template v-slot:item.sessionId="{ item }">
                 <v-dialog v-model="item.showDialog" v-if="item.orfanLevel !='Strict ORFan'" width="1200" height="1200">
@@ -167,108 +169,6 @@
     </v-row>
     <v-row class="text-right">
       <v-col cols="11">
-        <!-- <v-dialog v-model="saveResultDialog" persistent max-width="600px">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn class="mx-2" v-bind="attrs" v-on="on" small color="teal">
-              <v-icon color="white">
-                mdi-download
-              </v-icon>
-              SAVE RESULTS
-            </v-btn>
-          </template>
-          <v-card>
-            <v-card-title>
-              <span class="text-h5">SAVE RESULT</span>
-            </v-card-title>
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12">
-                    <v-text-field
-                      v-model="analysisResult.firstName"
-                      label="First Name*"
-                      required
-                      prepend-icon="mdi-account-circle"
-                    ></v-text-field>
-                    <v-alert
-                      dense
-                      outlined
-                      type="error"
-                      v-if="
-                        $v.analysisResult.firstName.$dirty &&
-                          $v.analysisResult.firstName.$invalid
-                      "
-                    >
-                      Firstname is required
-                    </v-alert>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field
-                      v-model="analysisResult.lastName"
-                      label="Last Name*"
-                      prepend-icon="mdi-account-circle"
-                      required
-                    ></v-text-field>
-                    <v-alert
-                      dense
-                      outlined
-                      type="error"
-                      v-if="
-                        $v.analysisResult.lastName.$dirty &&
-                          $v.analysisResult.lastName.$invalid
-                      "
-                    >
-                      Lastname is required
-                    </v-alert>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field
-                      v-model="analysisResult.email"
-                      label="Email*"
-                      prepend-icon="mdi-mail"
-                      required
-                    ></v-text-field>
-                    <v-alert
-                      dense
-                      outlined
-                      type="error"
-                      v-if="
-                        $v.analysisResult.email.$dirty &&
-                          $v.analysisResult.email.$invalid
-                      "
-                    >
-                      Email is required
-                    </v-alert>
-                    <v-alert
-                      dense
-                      outlined
-                      type="error"
-                      v-if="
-                        $v.analysisResult.email.$dirty &&
-                          !$v.analysisResult.email.email
-                      "
-                    >
-                      Invalid email
-                    </v-alert>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="saveResultDialog = false"
-              >
-                Close
-              </v-btn>
-              <v-btn color="blue darken-1" text @click="saveAnalysis">
-                Save
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog> -->
       </v-col>
       <v-col cols="1"> </v-col>
     </v-row>
@@ -279,12 +179,14 @@ import analysisAPI from "../api/analysis";
 import BarChart from "../components/BarChart";
 import TreeChart from "../components/TreeChart";
 import { required, email } from "vuelidate/lib/validators";
+import VueProgressBar from 'vue-progressbar'
 
 export default {
   name: "Result",
   components: {
     BarChart,
-    TreeChart
+    TreeChart,
+    VueProgressBar
   },
   data() {
     return {
@@ -392,9 +294,11 @@ export default {
         return { key: key, value: response.data[key] };
       });
     });
+    this.$Progress.start()
     analysisAPI
       .getAnalysis({ sessionId: this.$route.params.analysisId })
       .then((response) => {
+        that.$Progress.finish()
         console.log(response.data);
         that.analysisParameters.analysisId = response.data.analysisId;
         that.analysisParameters.organism = response.data.organism;

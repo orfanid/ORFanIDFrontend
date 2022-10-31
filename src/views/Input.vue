@@ -22,6 +22,99 @@
         <v-col cols="8"></v-col>
       </v-row>
       <v-row>
+        <v-col cols="s6" offset-s1>
+          <v-container fluid class="d-flex align-center pl-0">
+            {{ from.searchMethod }}
+            <p class="mb-0 mr-2">Search By:</p>
+            <label class="d-flex align-center">
+              Sequence
+              <v-switch
+                true-value="a"
+                false-value="s"
+                class="ml-2"
+                v-model="from.searchMethod"
+                @change="onSequenceAccessionSwitch"
+              >
+              </v-switch>
+              <span class="d-inline lever">Accessions</span>
+            </label>
+          </v-container>
+        </v-col>
+        <v-col cols="s6">
+          <v-expansion-panels inset>
+            <v-expansion-panel>
+              <v-expansion-panel-header>Examples</v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <v-col cols="12">
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-icon
+                        :disabled="from.submissionMode === 'upload'"
+                        size="72"
+                        color="green darken-2"
+                        class="icon icon-species icon-human pa-4"
+                        v-on:click="loadExampleData('Homo sapiens(9606)')"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                      </v-icon>
+                    </template>
+                    <span>Homo sapiens</span>
+                  </v-tooltip>
+
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-icon
+                        :disabled="from.submissionMode === 'upload'"
+                        size="72"
+                        color="green darken-2"
+                        class="icon icon-species icon-fly pa-4"
+                        v-on:click="loadExampleData('Drosophila melanogaster(7227)')"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                      </v-icon>
+                    </template>
+                    <span>Drosophila melanogaster</span>
+                  </v-tooltip>
+
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-icon
+                        :disabled="from.submissionMode === 'upload'"
+                        size="72"
+                        color="green darken-2"
+                        class="icon icon-species icon-ecoli pa-4"
+                        v-on:click="loadExampleData('Escherichia coli(562)')"
+                        v-bind="attrs"
+                        v-on="on"
+                      ></v-icon>
+                    </template>
+                    <span>Escherichia coli</span>
+                  </v-tooltip>
+
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-icon
+                        :disabled="from.submissionMode === 'upload'"
+                        size="72"
+                        color="green darken-2"
+                        class="icon icon-species icon-brassica pa-4"
+                        v-on:click="loadExampleData('Arabidopsis thaliana(3702)')"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                      </v-icon>
+                    </template>
+                    <span>Arabidopsis thaliana</span>
+                  </v-tooltip>
+                </v-col>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </v-col>
+      </v-row>
+      <v-row>
         <v-col cols="4" offset-s1>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -53,7 +146,7 @@
           </v-tooltip>
         </v-col>
         <v-col cols="2">
-          <v-radio-group v-model="from.accessionType" mandatory>
+          <v-radio-group v-model="from.accessionType" mandatory @change="onAccessionSelect">
             <v-radio label="Protein" value="protein"></v-radio>
             <v-radio label="Gene" value="nucleotide"></v-radio>
           </v-radio-group>
@@ -66,9 +159,9 @@
                 v-model="from.ncbiAccessionInput"
                 @blur="validate"
                 @click:append-outer="accessionLookup"
+                :disabled="from.searchMethod == 's'"
                 v-bind="attrs"
                 v-on="on"
-                :disabled="from.submissionMode === 'upload' || from.submissionMode === 'sequence'"
                 :append-outer-icon="'mdi-store-search-outline'"
               ></v-text-field>
               <v-dialog v-model="showAccessionLookup" persistent max-width="450">
@@ -79,12 +172,17 @@
                   <v-card-text>
                     <v-row>
                       <v-col>
-                        <v-text-field label="Gene name"></v-text-field>
+                        <v-text-field
+                          label="Gene name"
+                          v-model="geneName"
+                          :append-outer-icon="'mdi-store-search-outline'"
+                          @click:append-outer="accessionSearch"
+                        ></v-text-field>
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col>
-                        <v-list dense>
+                        <v-list dense style="height:200px; overflow-y:auto">
                           <v-list-item-group v-model="AccesionLookup.selectedItem" color="primary">
                             <v-list-item v-for="(item, i) in AccesionLookup.items" :key="i">
                               <v-list-item-icon>
@@ -99,7 +197,7 @@
                       </v-col>
                     </v-row>
                   </v-card-text>
-                  <v-card-actions>
+                  <v-card-actions style="position: absolute; position:0;">
                     <v-spacer></v-spacer>
                     <v-btn color="green darken-1" text @click="accesionLookupClose">
                       Close
@@ -113,8 +211,10 @@
             </template>
             <span>NCBI/Uniprot accession. Multiple accessions should be separated by comma(s)</span>
           </v-tooltip>
-          <label v-if="errors.invalidAccession" style="color: red"
-            >Invalid Accession(s)- {{ errors.invalidAccessionMsg }}</label
+          <label
+            v-if="errors.showInvalidAccession == true && errors.invalidAccession == true"
+            style="color: red"
+            >Invalid Accession(s) - {{ errors.invalidAccessionMsg }}</label
           >
           <label
             style="color: red"
@@ -160,7 +260,7 @@
                 :rules="textAreaRules"
                 v-bind="attrs"
                 v-on="on"
-                :disabled="from.submissionMode === 'upload' || from.submissionMode === 'accessions'"
+                :disabled="from.searchMethod == 'a'"
               ></v-textarea>
             </template>
             <span
@@ -180,39 +280,31 @@
             <v-radio label="Select Organism Name from list" value="dropdown"></v-radio>
             <v-radio label="Enter Organism Name" value="textfield"></v-radio>
           </v-radio-group>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-autocomplete
-                :disabled="organismSelection == 'textfield'"
-                v-model="from.organismName"
-                :items="organismList"
-                label="Organism"
-                item-text="name"
-                item-value="name"
-                v-bind="attrs"
-                v-on="on"
-              >
-                <template v-slot:item="data">
-                  <v-list-item-avatar>
-                    <img :src="data.item.img" />
-                  </v-list-item-avatar>
-                  <v-list-item-content>
-                    <v-list-item-title v-html="data.item.name"></v-list-item-title>
-                  </v-list-item-content>
-                </template>
-              </v-autocomplete>
+          <v-autocomplete
+            v-if="organismSelection == 'dropdown'"
+            v-model="from.organismName"
+            :items="organismList"
+            label="Organism"
+            item-text="name"
+            item-value="name"
+            v-bind="attrs"
+            v-on="on"
+          >
+            <template v-slot:item="data">
+              <v-list-item-avatar>
+                <img :src="data.item.img" />
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title v-html="data.item.name"></v-list-item-title>
+              </v-list-item-content>
             </template>
-            <span
-              >Organism name and the Taxonomy ID according to the NCBI Taxonomy Database. Only most
-              common taxa will be shown. If the Organism is not available here, type them here in
-              the format of ORGANISM NAME(TAXONOMY ID)</span
-            >
-          </v-tooltip>
+          </v-autocomplete>
           <v-text-field
             label="Organism"
-            :disabled="organismSelection == 'dropdown'"
+            v-if="organismSelection == 'textfield'"
             v-model="from.organismName"
           ></v-text-field>
+
           <div
             style="color: red"
             v-if="$v.from.organismName.$dirty && !$v.from.organismName.required"
@@ -248,7 +340,7 @@
                         >Maximum
                         <a
                           class="mx-2"
-                          href="https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs&DOC_TYPE=FAQ"
+                          href="https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs&DOC_TYPE=FAQ#expect"
                           target="_blank"
                           >E-value</a
                         >
@@ -273,7 +365,7 @@
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
                       <v-subheader class="pa-0" v-bind="attrs" v-on="on"
-                        >Maximum target sequences for BLAST:</v-subheader
+                        >Maximum target Sequences for BLAST:</v-subheader
                       >
                     </template>
                     <span
@@ -315,91 +407,9 @@
         </v-col>
       </v-row>
       <v-row align="left" justify="space-around">
-        <v-col cols="6">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                :disabled="from.submissionMode === 'upload'"
-                size="72"
-                color="green darken-2"
-                class="icon icon-species icon-human pa-4"
-                v-on:click="loadExampleData('Homo sapiens(9606)')"
-                v-bind="attrs"
-                v-on="on"
-              >
-              </v-icon>
-            </template>
-            <span>Homo sapiens</span>
-          </v-tooltip>
-
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                :disabled="from.submissionMode === 'upload'"
-                size="72"
-                color="green darken-2"
-                class="icon icon-species icon-fly pa-4"
-                v-on:click="loadExampleData('Drosophila melanogaster(7227)')"
-                v-bind="attrs"
-                v-on="on"
-              >
-              </v-icon>
-            </template>
-            <span>Drosophila melanogaster</span>
-          </v-tooltip>
-
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                :disabled="from.submissionMode === 'upload'"
-                size="72"
-                color="green darken-2"
-                class="icon icon-species icon-ecoli pa-4"
-                v-on:click="loadExampleData('Escherichia coli(562)')"
-                v-bind="attrs"
-                v-on="on"
-              ></v-icon>
-            </template>
-            <span>Escherichia coli</span>
-          </v-tooltip>
-
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                :disabled="from.submissionMode === 'upload'"
-                size="72"
-                color="green darken-2"
-                class="icon icon-species icon-brassica pa-4"
-                v-on:click="loadExampleData('Arabidopsis thaliana(3702)')"
-                v-bind="attrs"
-                v-on="on"
-              >
-              </v-icon>
-            </template>
-            <span>Arabidopsis thaliana</span>
-          </v-tooltip>
-        </v-col>
         <v-spacer />
       </v-row>
-      <v-row>
-        <v-col cols="s6" offset-s1>
-          <v-container fluid class="d-flex align-center pl-0">
-            <p class="mb-0 mr-2">Example Search By:</p>
-            <label class="d-flex align-center">
-              sequence
-              <v-switch
-                true-value="true"
-                false-value="false"
-                class="ml-2"
-                v-model="from.exampleMethod"
-                @change="clearAccessionSequenceAndOrganism"
-              >
-              </v-switch>
-              <span class="d-inline lever">accessions</span>
-            </label>
-          </v-container>
-        </v-col>
-      </v-row>
+
       <v-row>
         <v-col cols="10"></v-col>
         <v-col cols="2">
@@ -472,6 +482,8 @@ import $ from "jquery";
 import analysis from "@/api/analysis";
 import { maxLength, required, requiredIf, email, helpers } from "vuelidate/lib/validators";
 import router from "@/router";
+import PubmedApi from "pubmed-api";
+import lodash from "lodash";
 
 const organism = helpers.regex("organism", /\(\d*\)$/g);
 
@@ -482,7 +494,7 @@ export default {
       this.clearAccessionSequenceAndOrganism();
       this.from.exampleName = _exampleName;
       let url = "";
-      if (this.from.exampleMethod == "true") {
+      if (this.from.searchMethod == "s") {
         if (this.from.accessionType === "protein") {
           this.from.ncbiAccessionInput = this.exampleProteinDataValues[this.from.exampleName];
         } else {
@@ -529,7 +541,7 @@ export default {
           requestInfo.sequence = this.uploadFileContent;
           requestInfo.organismName = this.from.organismName;
         } else {
-          if (this.from.exampleMethod == "true") {
+          if (this.from.searchMethod == "a") {
             requestInfo.accession = this.from.ncbiAccessionInput;
           } else {
             requestInfo.sequence = this.from.sequence;
@@ -617,6 +629,84 @@ export default {
     },
     accesionLookupClose() {
       this.showAccessionLookup = false;
+    },
+    searchAccessionLookup() {},
+    accessionSearch() {
+      console.log("Search Accessions");
+      if (this.geneName.length > 0) {
+        this.getESearch(this.geneName);
+      }
+    },
+    async getESearch(query) {
+      this.searchResult.idList = [];
+      this.searchResult.resultSummary = [];
+      const options = {
+        retStart: "1",
+        retMax: "1000"
+      };
+      try {
+        let that = this;
+        const results = await this.pubMedApi.eSearch.search(that.selectedDatabase, query, options);
+        var result = JSON.parse(results);
+        if (
+          result.esearchresult &&
+          result.esearchresult.idlist &&
+          result.esearchresult.idlist.length > 0
+        ) {
+          for (let index = 0; index < result.esearchresult.idlist.length; index++) {
+            that.searchResult.idList.push({
+              index: index,
+              id: result.esearchresult.idlist[index]
+            });
+          }
+        }
+        let pageIds = await that.getCurretPageIds();
+
+        that.downloadSummaryResult = await that.getESearchSummary(pageIds);
+        if (that.downloadSummaryResult && that.downloadSummaryResult.result) {
+          Object.values(that.downloadSummaryResult.result).forEach(val => {
+            that.searchResult.resultSummary.push(val);
+            that.AccesionLookup.items.push({ text: val.accessionversion, icon: "mdi-flag" });
+            that.AccesionLookup;
+          });
+
+          console.log(that.searchResult.resultSummary);
+
+          //this.downloadPageFile(that.downloadSummaryResult);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    getESearchSummary: async function(queryids) {
+      let that = this;
+      try {
+        const results = await this.pubMedApi.eSummary.search(that.selectedDatabase, queryids);
+        let resultSummary = JSON.parse(results);
+        console.log(resultSummary);
+        return resultSummary;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    getCurretPageIds() {
+      let minIndex = 1;
+      let maxIndex = 100;
+      let selecteditems = lodash.filter(this.searchResult.idList, function(e) {
+        return e.index >= minIndex && e.index <= maxIndex;
+      });
+
+      let idArray = lodash.map(selecteditems, function(e) {
+        return e.id;
+      });
+      return idArray.toString();
+    },
+    onAccessionSelect(val) {
+      if (val == "nucleotide") {
+        this.errors.showInvalidAccession = false;
+      } else {
+        this.errors.showInvalidAccession = true;
+      }
     }
   },
   watch: {
@@ -652,6 +742,7 @@ export default {
     }
   },
   mounted() {
+    this.pubMedApi = new PubmedApi();
     analysis.getOrganismList().then(response => {
       Object.entries(response.data).forEach(element => {
         this.organismList.push({
@@ -663,19 +754,19 @@ export default {
   },
   data() {
     return {
+      pubMedApi: null,
+      selectedDatabase: "protein",
       showAccessionLookup: false,
       AccesionLookup: {
         selectedItem: 1,
-        items: [
-          { text: "NP_001119584.1", icon: "mdi-flag" },
-          { text: "NP_524859.2", icon: "mdi-flag" }
-        ]
+        items: []
       },
       organismSelection: "dropdown",
       isLoading: false,
       fullPage: true,
       toggleAdvanceparameters: false,
       organismList: [],
+      geneName: null,
       num_iterations: [
         { text: "0", value: 0 },
         { text: "1", value: 1 },
@@ -690,7 +781,7 @@ export default {
         exampleName: "",
         accessionType: "protein",
         ncbiAccessionInput: "",
-        exampleMethod: "false",
+        searchMethod: "a",
         sequence: "",
         organismName: "",
         maxEvalue: 3,
@@ -706,6 +797,7 @@ export default {
         session: ""
       },
       errors: {
+        showInvalidAccession: true,
         invalidAccession: false,
         invalidAccessionMsg: ""
       },
@@ -721,6 +813,10 @@ export default {
         "Drosophila melanogaster(7227)": "NM_080120.3",
         "Homo sapiens(9606)": "NM_001126112.2",
         "Arabidopsis thaliana(3702)": "NM_111887.3"
+      },
+      searchResult: {
+        idList: [],
+        resultSummary: []
       }
     };
   },
@@ -731,6 +827,17 @@ export default {
         (this.$v.from.sequence.$invalid == true ||
           (this.$v.from.ncbiAccessionInput.$invalid == true && this.$v.from.email.$invalid == true))
       );
+    },
+    valdioateAccession: function() {
+      if (
+        this.from.searchMethod == "a" &&
+        this.from.accessionType == "nucleotide" &&
+        this.from.ncbiAccessionInput != ""
+      ) {
+        return true;
+      } else {
+        return false;
+      }
     }
   },
   validations: {
@@ -749,7 +856,11 @@ export default {
         required: function ncbiAccessionRequired(val) {
           if (this.from.submissionMode === "upload") return true;
 
-          if (this.from.exampleMethod == "true" && val == "") {
+          if (
+            this.from.searchMethod == "a" &&
+            this.from.accessionType == "nucleotide" &&
+            val == ""
+          ) {
             return false;
           } else {
             return true;
@@ -760,7 +871,7 @@ export default {
         required: function sequenceRequired(val) {
           if (this.from.submissionMode === "upload") return true;
 
-          if (this.from.exampleMethod == "false" && val == "") {
+          if (this.from.searchMethod == "s" && val == "") {
             return false;
           } else {
             return true;
