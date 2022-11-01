@@ -164,7 +164,7 @@
                 v-on="on"
                 :append-outer-icon="'mdi-store-search-outline'"
               ></v-text-field>
-              <v-dialog v-model="showAccessionLookup" persistent max-width="450">
+              <v-dialog v-model="showAccessionLookup" persistent max-width="1200">
                 <v-card>
                   <v-card-title class="text-h5">
                     NCBI or Uniprot Accession(s) Lookup
@@ -182,14 +182,14 @@
                     </v-row>
                     <v-row>
                       <v-col>
-                        <v-list dense style="height:200px; overflow-y:auto">
+                        <v-list dense style="height:400px; overflow-y:auto">
                           <v-list-item-group v-model="AccesionLookup.selectedItem" color="primary">
                             <v-list-item v-for="(item, i) in AccesionLookup.items" :key="i">
                               <v-list-item-icon>
                                 <v-icon v-text="item.icon"></v-icon>
                               </v-list-item-icon>
                               <v-list-item-content>
-                                <v-list-item-title v-text="item.text"></v-list-item-title>
+                                <v-list-item-title>{{item.text}} -    {{item.title}}</v-list-item-title>
                               </v-list-item-content>
                             </v-list-item>
                           </v-list-item-group>
@@ -666,7 +666,7 @@ export default {
         if (that.downloadSummaryResult && that.downloadSummaryResult.result) {
           Object.values(that.downloadSummaryResult.result).forEach(val => {
             that.searchResult.resultSummary.push(val);
-            that.AccesionLookup.items.push({ text: val.accessionversion, icon: "mdi-flag" });
+            that.AccesionLookup.items.push({ text: val.accessionversion, title: val.title, icon: "mdi-flag" });
             that.AccesionLookup;
           });
 
