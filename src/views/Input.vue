@@ -24,7 +24,6 @@
       <v-row>
         <v-col cols="s6" offset-s1>
           <v-container fluid class="d-flex align-center pl-0">
-            {{ from.searchMethod }}
             <p class="mb-0 mr-2">Search By:</p>
             <label class="d-flex align-center">
               Sequence
@@ -178,18 +177,25 @@
                           :append-outer-icon="'mdi-store-search-outline'"
                           @click:append-outer="accessionSearch"
                         ></v-text-field>
+                        <pre>{{AccesionLookup.selectedItem}}</pre>
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col>
+                        
                         <v-list dense style="height:400px; overflow-y:auto">
                           <v-list-item-group v-model="AccesionLookup.selectedItem" color="primary">
                             <v-list-item v-for="(item, i) in AccesionLookup.items" :key="i">
+                              <v-list-item-action>
+                                <v-checkbox v-model="item.selected" true-value="true" false-value="false"></v-checkbox>
+                              </v-list-item-action>
                               <v-list-item-icon>
                                 <v-icon v-text="item.icon"></v-icon>
                               </v-list-item-icon>
                               <v-list-item-content>
-                                <v-list-item-title>{{item.text}} -    {{item.title}}</v-list-item-title>
+                                <v-list-item-title
+                                  >{{ item.text }} - {{ item.title }}</v-list-item-title
+                                >
                               </v-list-item-content>
                             </v-list-item>
                           </v-list-item-group>
@@ -620,10 +626,11 @@ export default {
       this.showAccessionLookup = true;
     },
     accesionLookupApply() {
-      if (this.AccesionLookup.selectedItem >= 0) {
-        this.from.ncbiAccessionInput = this.AccesionLookup.items[
-          this.AccesionLookup.selectedItem
-        ].text;
+      var selectedAccessions = lodash.filter(this.AccesionLookup.items,{'selected': 'true'});
+      console.log(selectedAccessions);
+      var accessionsArray = lodash.map(selectedAccessions,'text');
+      if(accessionsArray != null && accessionsArray.length > 0) {
+        this.from.ncbiAccessionInput = accessionsArray.toString();
       }
       this.showAccessionLookup = false;
     },
@@ -666,7 +673,12 @@ export default {
         if (that.downloadSummaryResult && that.downloadSummaryResult.result) {
           Object.values(that.downloadSummaryResult.result).forEach(val => {
             that.searchResult.resultSummary.push(val);
-            that.AccesionLookup.items.push({ text: val.accessionversion, title: val.title, icon: "mdi-flag" });
+            that.AccesionLookup.items.push({
+              text: val.accessionversion,
+              title: val.title,
+              icon: "mdi-flag",
+              selected:'false'
+            });
             that.AccesionLookup;
           });
 
