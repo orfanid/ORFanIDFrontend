@@ -116,8 +116,8 @@
               :headers="genesCategorization.headers"
               :items="genesCategorization.desserts"
               :search="genesCategorization.search"
-              hide-default-footer
-              class="elevation-1"
+              :hide-default-footer="true"
+              class="elevation-1 querytable"
             >
               <template v-slot:item.sessionId="{ item }">
                 <v-dialog v-model="item.showDialog" v-if="item.orfanLevel !='Strict ORFan'" width="1200" height="1200">
@@ -145,7 +145,11 @@
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
+              
               </template>
+              <template #footer.prepend>
+    <v-spacer/>
+  </template>
             </v-data-table>
           </v-card>
         </v-card>

@@ -7,17 +7,14 @@
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
                 v-model="from.email"
-                label="E-mail - (Optional)"
+                label="Nickname - (Optional)"
                 required
                 v-bind="attrs"
                 v-on="on"
               ></v-text-field>
             </template>
-            <span>Optional. Email will be useful to find your dataset quickly</span>
+            <span>Optional. Nickname will be useful to find your dataset quickly</span>
           </v-tooltip>
-          <label style="color: red" v-if="$v.from.email.$dirty && !$v.from.email.email"
-            >Invalid email address</label
-          >
         </v-col>
         <v-col cols="8"></v-col>
       </v-row>
@@ -336,7 +333,7 @@
             <v-expansion-panel class="pa-0">
               <v-expansion-panel-header class="pa-0">
                 <v-spacer />
-                <v-col cols="2"> Advanced parameters: </v-col>
+                <v-col cols="2"> Advanced Parameters: </v-col>
               </v-expansion-panel-header>
               <v-expansion-panel-content class="pa-0">
                 <v-card flat color="transparent" class="pa-0">
@@ -523,11 +520,11 @@ export default {
       this.from.organismName = "";
     },
     analysData() {
+      debugger
       this.$v.$touch();
       if (
         this.$v.from.sequence.$invalid == false &&
-        this.$v.from.ncbiAccessionInput.$invalid == false &&
-        this.$v.from.email.$invalid == false
+        this.$v.from.ncbiAccessionInput.$invalid == false
       ) {
         console.log(this.from);
 
@@ -889,9 +886,6 @@ export default {
             return true;
           }
         }
-      },
-      email: {
-        email
       }
     }
   }
