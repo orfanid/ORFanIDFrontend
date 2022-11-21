@@ -174,7 +174,6 @@
                           :append-outer-icon="'mdi-store-search-outline'"
                           @click:append-outer="accessionSearch"
                         ></v-text-field>
-                        <pre>{{AccesionLookup.selectedItem}}</pre>
                       </v-col>
                     </v-row>
                     <v-row>

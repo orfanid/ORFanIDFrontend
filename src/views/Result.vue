@@ -176,6 +176,10 @@
       </v-col>
       <v-col cols="1"> </v-col>
     </v-row>
+    <loading :active.sync="isLoading" 
+        :can-cancel="true" 
+        :on-cancel="onCancel"
+        :is-full-page="fullPage"></loading>
   </v-container>
 </template>
 <script>
@@ -184,13 +188,16 @@ import BarChart from "../components/BarChart";
 import TreeChart from "../components/TreeChart";
 import { required, email } from "vuelidate/lib/validators";
 import VueProgressBar from 'vue-progressbar'
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
   name: "Result",
   components: {
     BarChart,
     TreeChart,
-    VueProgressBar
+    VueProgressBar,
+    Loading
   },
   data() {
     return {
@@ -298,6 +305,7 @@ export default {
         return { key: key, value: response.data[key] };
       });
     });
+    this.isLoading = true;
     this.$Progress.start()
     analysisAPI
       .getAnalysis({ sessionId: this.$route.params.analysisId })
@@ -332,6 +340,8 @@ export default {
           });
         });
       });
+
+      this.isLoading = false;
 
     analysisAPI
       .getSummaryChart({ sessionId: this.$route.params.analysisId })
@@ -414,5 +424,9 @@ td {
 }
 .border-bottom {
   border-bottom: 1px solid gray !important;
+}
+
+.v-application--is-ltr .v-data-footer__pagination {
+  margin-left: auto;
 }
 </style>
