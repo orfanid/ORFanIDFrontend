@@ -22,18 +22,10 @@
         <v-col cols="s6" offset-s1>
           <v-container fluid class="d-flex align-center pl-0">
             <p class="mb-0 mr-2">Search By:</p>
-            <label class="d-flex align-center">
-              Sequence
-              <v-switch
-                true-value="a"
-                false-value="s"
-                class="ml-2"
-                v-model="from.searchMethod"
-                @change="onSequenceAccessionSwitch"
-              >
-              </v-switch>
-              <span class="d-inline lever">Accessions</span>
-            </label>
+            <v-radio-group v-model="from.searchMethod" row @change="onSearchBy">
+              <v-radio label="Sequence" value="s"></v-radio>
+              <v-radio label="Accessions" value="a"></v-radio>
+            </v-radio-group>
           </v-container>
         </v-col>
         <v-col cols="s6">
@@ -178,12 +170,15 @@
                     </v-row>
                     <v-row>
                       <v-col>
-                        
                         <v-list dense style="height:400px; overflow-y:auto">
                           <v-list-item-group v-model="AccesionLookup.selectedItem" color="primary">
                             <v-list-item v-for="(item, i) in AccesionLookup.items" :key="i">
                               <v-list-item-action>
-                                <v-checkbox v-model="item.selected" true-value="true" false-value="false"></v-checkbox>
+                                <v-checkbox
+                                  v-model="item.selected"
+                                  true-value="true"
+                                  false-value="false"
+                                ></v-checkbox>
                               </v-list-item-action>
                               <v-list-item-icon>
                                 <v-icon v-text="item.icon"></v-icon>
@@ -493,10 +488,12 @@ export default {
   name: "Home",
   methods: {
     loadExampleData(_exampleName) {
+      debugger;
       this.clearAccessionSequenceAndOrganism();
       this.from.exampleName = _exampleName;
       let url = "";
-      if (this.from.searchMethod == "s") {
+      debugger
+      if (this.from.searchMethod == "a") {
         if (this.from.accessionType === "protein") {
           this.from.ncbiAccessionInput = this.exampleProteinDataValues[this.from.exampleName];
         } else {
@@ -519,7 +516,7 @@ export default {
       this.from.organismName = "";
     },
     analysData() {
-      debugger
+      debugger;
       this.$v.$touch();
       if (
         this.$v.from.sequence.$invalid == false &&
@@ -622,10 +619,10 @@ export default {
       this.showAccessionLookup = true;
     },
     accesionLookupApply() {
-      var selectedAccessions = lodash.filter(this.AccesionLookup.items,{'selected': 'true'});
+      var selectedAccessions = lodash.filter(this.AccesionLookup.items, { selected: "true" });
       console.log(selectedAccessions);
-      var accessionsArray = lodash.map(selectedAccessions,'text');
-      if(accessionsArray != null && accessionsArray.length > 0) {
+      var accessionsArray = lodash.map(selectedAccessions, "text");
+      if (accessionsArray != null && accessionsArray.length > 0) {
         this.from.ncbiAccessionInput = accessionsArray.toString();
       }
       this.showAccessionLookup = false;
@@ -673,7 +670,7 @@ export default {
               text: val.accessionversion,
               title: val.title,
               icon: "mdi-flag",
-              selected:'false'
+              selected: "false"
             });
             that.AccesionLookup;
           });
@@ -714,6 +711,15 @@ export default {
         this.errors.showInvalidAccession = false;
       } else {
         this.errors.showInvalidAccession = true;
+      }
+    },
+    onSearchBy() {
+      if(this.from.searchMethod == 'a') {
+        this.from.sequence = "";
+
+      }else if(this.from.searchMethod == 's') {
+        this.from.ncbiAccessionInput = "";
+
       }
     }
   },

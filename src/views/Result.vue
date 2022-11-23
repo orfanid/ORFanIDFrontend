@@ -176,10 +176,6 @@
       </v-col>
       <v-col cols="1"> </v-col>
     </v-row>
-    <loading :active.sync="isLoading" 
-        :can-cancel="true" 
-        :on-cancel="onCancel"
-        :is-full-page="fullPage"></loading>
   </v-container>
 </template>
 <script>
@@ -188,16 +184,13 @@ import BarChart from "../components/BarChart";
 import TreeChart from "../components/TreeChart";
 import { required, email } from "vuelidate/lib/validators";
 import VueProgressBar from 'vue-progressbar'
-import Loading from 'vue-loading-overlay';
-import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
   name: "Result",
   components: {
     BarChart,
     TreeChart,
-    VueProgressBar,
-    Loading
+    VueProgressBar
   },
   data() {
     return {
