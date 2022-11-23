@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import VueProgressBar from 'vue-progressbar'
 import Header from '../src/components/Header'
 import Footer from '../src/components/Footer'
 import M from 'materialize-css'
@@ -36,3 +35,7 @@ export default {
   }),
 };
 </script>
+
+<style>
+
+</style>

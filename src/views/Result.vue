@@ -421,5 +421,6 @@ td {
 
 .v-application--is-ltr .v-data-footer__pagination {
   margin-left: auto;
+  
 }
 </style>
