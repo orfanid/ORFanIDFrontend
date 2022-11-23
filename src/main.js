@@ -10,7 +10,7 @@ import VueProgressBar from 'vue-progressbar'
 Vue.use(VueProgressBar, {
   color: 'rgb(143, 255, 199)',
   failedColor: 'red',
-  height: '4px'
+  height: '12px'
 })
 Vue.component('v-chart', ECharts)
 

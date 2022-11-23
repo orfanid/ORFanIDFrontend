@@ -161,7 +161,7 @@
                     <v-row>
                       <v-col>
                         <v-text-field
-                          label="Gene name"
+                          label="Protein / Gene Name"
                           v-model="geneName"
                           :append-outer-icon="'mdi-store-search-outline'"
                           @click:append-outer="accessionSearch"
