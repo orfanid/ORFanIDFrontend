@@ -488,11 +488,9 @@ export default {
   name: "Home",
   methods: {
     loadExampleData(_exampleName) {
-      debugger;
       this.clearAccessionSequenceAndOrganism();
       this.from.exampleName = _exampleName;
       let url = "";
-      debugger
       if (this.from.searchMethod == "a") {
         if (this.from.accessionType === "protein") {
           this.from.ncbiAccessionInput = this.exampleProteinDataValues[this.from.exampleName];
@@ -516,7 +514,6 @@ export default {
       this.from.organismName = "";
     },
     analysData() {
-      debugger;
       this.$v.$touch();
       if (
         this.$v.from.sequence.$invalid == false &&
