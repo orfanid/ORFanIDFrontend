@@ -116,7 +116,8 @@
               :headers="genesCategorization.headers"
               :items="genesCategorization.desserts"
               :search="genesCategorization.search"
-              :hide-default-footer="true"
+              hide-default-footer
+              disable-pagination
               class="elevation-1 querytable"
             >
               <template v-slot:item.sessionId="{ item }">

@@ -29,109 +29,94 @@
           </v-container>
         </v-col>
         <v-col cols="s6">
-          <v-expansion-panels inset>
-            <v-expansion-panel>
-              <v-expansion-panel-header>Examples</v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <v-col cols="12">
-                  <v-tooltip bottom>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-icon
-                        :disabled="from.submissionMode === 'upload'"
-                        size="72"
-                        color="green darken-2"
-                        class="icon icon-species icon-human pa-4"
-                        v-on:click="loadExampleData('Homo sapiens(9606)')"
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                      </v-icon>
-                    </template>
-                    <span>Homo sapiens</span>
-                  </v-tooltip>
+          <v-col cols="12">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                  :disabled="from.submissionMode === 'upload'"
+                  size="72"
+                  color="green darken-2"
+                  class="icon icon-species icon-human pa-4"
+                  v-on:click="loadExampleData('Homo sapiens(9606)')"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                </v-icon>
+              </template>
+              <span>Homo sapiens</span>
+            </v-tooltip>
 
-                  <v-tooltip bottom>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-icon
-                        :disabled="from.submissionMode === 'upload'"
-                        size="72"
-                        color="green darken-2"
-                        class="icon icon-species icon-fly pa-4"
-                        v-on:click="loadExampleData('Drosophila melanogaster(7227)')"
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                      </v-icon>
-                    </template>
-                    <span>Drosophila melanogaster</span>
-                  </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                  :disabled="from.submissionMode === 'upload'"
+                  size="72"
+                  color="green darken-2"
+                  class="icon icon-species icon-fly pa-4"
+                  v-on:click="loadExampleData('Drosophila melanogaster(7227)')"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                </v-icon>
+              </template>
+              <span>Drosophila melanogaster</span>
+            </v-tooltip>
 
-                  <v-tooltip bottom>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-icon
-                        :disabled="from.submissionMode === 'upload'"
-                        size="72"
-                        color="green darken-2"
-                        class="icon icon-species icon-ecoli pa-4"
-                        v-on:click="loadExampleData('Escherichia coli(562)')"
-                        v-bind="attrs"
-                        v-on="on"
-                      ></v-icon>
-                    </template>
-                    <span>Escherichia coli</span>
-                  </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                  :disabled="from.submissionMode === 'upload'"
+                  size="72"
+                  color="green darken-2"
+                  class="icon icon-species icon-ecoli pa-4"
+                  v-on:click="loadExampleData('Escherichia coli(562)')"
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-icon>
+              </template>
+              <span>Escherichia coli</span>
+            </v-tooltip>
 
-                  <v-tooltip bottom>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-icon
-                        :disabled="from.submissionMode === 'upload'"
-                        size="72"
-                        color="green darken-2"
-                        class="icon icon-species icon-brassica pa-4"
-                        v-on:click="loadExampleData('Arabidopsis thaliana(3702)')"
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                      </v-icon>
-                    </template>
-                    <span>Arabidopsis thaliana</span>
-                  </v-tooltip>
-                </v-col>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                  :disabled="from.submissionMode === 'upload'"
+                  size="72"
+                  color="green darken-2"
+                  class="icon icon-species icon-brassica pa-4"
+                  v-on:click="loadExampleData('Arabidopsis thaliana(3702)')"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                </v-icon>
+              </template>
+              <span>Arabidopsis thaliana</span>
+            </v-tooltip>
+          </v-col>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="4" offset-s1>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+          <v-row>
+            <v-col cols="11">
               <v-file-input
-                :disabled="
-                  from.submissionMode === 'sequence' || from.submissionMode === 'accessions'
-                "
+                :disabled="from.searchMethod === 'a'"
                 v-model="from.fileAttachment"
                 @change="readFile"
                 placeholder="Upload your documents"
                 label="Upload File"
-                multiple
                 prepend-icon="mdi-cloud-upload"
-                class="upload-button"
+                class="upload-button d-inline"
+                clearable="true"
                 v-bind="attrs"
                 v-on="on"
               >
-                <template v-slot:selection="{ text }">
-                  <v-chip small label color="primary">
-                    {{ text }}
-                  </v-chip>
-                </template>
               </v-file-input>
-            </template>
-            <span
-              >Enter query sequence(s) in the text area. It strictly follows FASTA file format.
-              Multiple sequence can be separated by new line</span
-            >
-          </v-tooltip>
+            </v-col>
+            <v-col cols="1">
+              <div class="pt-15"><v-icon color="red" @click="clearUpload">mdi-close-octagon-outline</v-icon></div>
+            </v-col>
+          </v-row>
         </v-col>
         <v-col cols="2">
           <v-radio-group v-model="from.accessionType" mandatory @change="onAccessionSelect">
@@ -487,6 +472,9 @@ const organism = helpers.regex("organism", /\(\d*\)$/g);
 export default {
   name: "Home",
   methods: {
+    clearUpload() {
+      this.from.fileAttachment = ""
+    },
     loadExampleData(_exampleName) {
       this.clearAccessionSequenceAndOrganism();
       this.from.exampleName = _exampleName;
@@ -614,6 +602,12 @@ export default {
     },
     accessionLookup() {
       this.showAccessionLookup = true;
+      if (
+        this.AccesionLookup != null &&
+        this.AccesionLookup.items != null &&
+        Array.isArray(this.AccesionLookup.items)
+      ) {
+      }
     },
     accesionLookupApply() {
       var selectedAccessions = lodash.filter(this.AccesionLookup.items, { selected: "true" });
@@ -635,14 +629,26 @@ export default {
       }
     },
     async getESearch(query) {
-      this.searchResult.idList = [];
-      this.searchResult.resultSummary = [];
+      let that = this;
+      that.$Progress.start();
+      if (that.searchResult != null && Array.isArray(that.searchResult)) {
+        that.searchResult.splice(0, that.searchResult.length);
+      }
+      if (
+        that.AccesionLookup != null &&
+        that.AccesionLookup.items != null &&
+        Array.isArray(that.AccesionLookup.items)
+      ) {
+        that.AccesionLookup.items.splice(0, that.AccesionLookup.items.length);
+      }
+      that.searchResult.idList.splice(0, that.searchResult.idList.length);
+      that.searchResult.idList = [];
+      that.searchResult.resultSummary = [];
       const options = {
         retStart: "1",
         retMax: "1000"
       };
       try {
-        let that = this;
         const results = await this.pubMedApi.eSearch.search(that.selectedDatabase, query, options);
         var result = JSON.parse(results);
         if (
@@ -669,12 +675,10 @@ export default {
               icon: "mdi-flag",
               selected: "false"
             });
-            that.AccesionLookup;
           });
-
+          that.$Progress.finish();
           console.log(that.searchResult.resultSummary);
-
-          //this.downloadPageFile(that.downloadSummaryResult);
+          that.$forceUpdate();
         }
       } catch (error) {
         console.log(error);
@@ -711,12 +715,10 @@ export default {
       }
     },
     onSearchBy() {
-      if(this.from.searchMethod == 'a') {
+      if (this.from.searchMethod == "a") {
         this.from.sequence = "";
-
-      }else if(this.from.searchMethod == 's') {
+      } else if (this.from.searchMethod == "s") {
         this.from.ncbiAccessionInput = "";
-
       }
     }
   },
@@ -828,7 +830,8 @@ export default {
       searchResult: {
         idList: [],
         resultSummary: []
-      }
+      },
+      panel: [0]
     };
   },
   computed: {

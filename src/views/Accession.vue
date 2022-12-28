@@ -18,7 +18,7 @@
                     </template>
                   </v-text-field>
                 </v-card>
-                <a href="#" @click="downloadPageFile(downloadSummaryResult)">Download</a>
+                <a style="text-decoration: right;" href="#" @click="downloadPageFile(downloadSummaryResult)">Download current page result</a>
               </v-col>
               <v-spacer></v-spacer>
             </v-row>
