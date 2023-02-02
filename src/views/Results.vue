@@ -29,8 +29,8 @@
               :items-per-page="itemsPerPage"
               :search="search"
               class="elevation-1"
-              hide-default-footer
               @page-count="pageCount = $event"
+              :hide-default-footer="true"
             >
               <template v-slot:item.analysisIdNav="{ item }">
                 <div v-if="item.status != 'START_PROCESSING'">
