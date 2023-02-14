@@ -1,28 +1,28 @@
 <template>
-  <div class="container">
+  <div class="container instructions-container">
     <v-row>
       <v-spacer />
       <v-col cols="10">
-        <h4>ORFanID Operating Instructions</h4>
+        <h4 class="text-center">ORFanID Operating Instructions</h4>
         <br />
-        <h5>ORFanID Sequence Submission</h5>
+        <h5 class="">ORFanID Sequence Submission</h5>
         <p>
           Follow the instruction given below to successfully submit a sequence by yourself
         </p>
         <ol start="1">
           <li>
-            <div>
-              First visit the OrFanGenes website (<a href="http://orfangenes.com"
-                >http://orfangenes.com/</a
-              >)
+            <div class="d-flex">
+              <div class="step-title">First visit the OrFanGenes website</div> 
+               <span class="ml-2">
+                (<a href="http://orfangenes.com">http://orfangenes.com/</a>)
+               </span>
             </div>
           </li>
           <li>
             <div>
-              Click on Get Started button on the home page
+              <div class="step-title">Click on Get Started button on the home page</div>
               <img
                 src="../../public/assets/images/documentation/image_1.png"
-                style="height:400px;"
               />
               <p>
                 Perform OrFan analysis by providing either a DNA or protein sequence and the
@@ -31,39 +31,39 @@
             </div>
           </li>
           <li>
-            <div>DNA or Protein sequences can be added in three different ways:</div>
-            <div style="padding-left: 70px;">
+            <div class="step-title">DNA or Protein sequences can be added in three different ways:</div>
+            <div>
               <ol start="1" type="A">
-                <li>Search by Accession (Recommended method)</li>
+                <li class="step-subtitle">Search by Accession (Recommended method)</li>
               </ol>
             </div>
-            <p>
+            <p style="padding-left: 24px;">
               DNA/ Protein sequences can be submitted easily by doing a search of their NCBI
               standard Accession (eg: AAC37594.1 for Human BRCA1 Gene). You can provide multiple
               accessions for the search to retrieve multiple sequences in FASTA format. The search
               engine is able to analyze multiple sequences simultaneously.
             </p>
-            <div style="padding-left: 70px;">
-              <ol start="2" type="B">
-                <li>Search by Accession (Recommended method)</li>
+            <div>
+              <ol start="2" type="A">
+                <li class="step-subtitle">Search by Accession (Recommended method)</li>
               </ol>
             </div>
-            <div style="padding-left: 100px;">
+            <div style="padding-left: 16px;">
               <ol start="1" type="a">
-                <li>FASTA File Upload</li>
+                <li class="step-supersubtitle">FASTA File Upload</li>
               </ol>
             </div>
-            <p>
+            <p style="padding-left: 24px;">
               The sequences themselves can be uploaded in FASTA format. Only files in the FASTA
               format can be uploaded. Each sequence in the file should be separated by a new line
               character("\n") as is standard for FASTA files
             </p>
-            <div style="padding-left: 100px;">
+            <div style="padding-left: 16px;">
               <ol start="2" type="a">
-                <li>Direct Input.</li>
+                <li class="step-supersubtitle">Direct Input</li>
               </ol>
             </div>
-            <p>
+            <p style="padding-left: 24px;">
               Users can also submit their own nucleotide/protein sequence as long as the standard
               FASTA file format is followed. As provided in the NCBI BLAST help, an example sequence
               in FASTA format is:
@@ -80,23 +80,23 @@
               Sequence. Please DO NOT input more than 5,000 characters as your query will not be
               processed
             </p>
-            <img src="../../public/assets/images/documentation/Image_2.png" style="height:400px;" />
+            <img src="../../public/assets/images/documentation/Image_2.png"/>
             <p>
               Example sequences are provided to demonstrate the process. When a graphical icon is
               clicked, the appropriate data will be automatically loaded into the forms depending
               upon the selected search by option (Sequence or Accession).
             </p>
-            <img src="../../public/assets/images/documentation/Image_3.png" style="height:400px;" />
+            <img src="../../public/assets/images/documentation/Image_3.png"/>
           </li>
           <li>
-            <div>
+            <div class="step-title">
               The Organism Name of the input gene must be specified. The organism’s name can be
               added in two different ways:
             </div>
-            <div style="padding-left: 70px;">
-              <ol start="1" type="I">
+            <div>
+              <ol start="1" type="A">
                 <li>
-                  <div>
+                  <div class="step-subtitle">
                     From the given dropdown list. You can start typing the organism’s name so that
                     the auto-completion will help you select the organism quickly by showing the
                     Scientific name, NCBI Taxonomy ID, and an image. If the organism of interest is
@@ -104,49 +104,46 @@
                     full scientific name and the taxonomy ID which has to be added within
                     parentheses
                   </div>
-                  <div>Example Organism names are provided in the image below.</div>
+                  <div class="mt-3">Example Organism names are provided in the image below.</div>
                   <img
                     src="../../public/assets/images/documentation/Image_4.png"
-                    style="height:400px;"
                   />
                 </li>
                 <li>
-                  <div>
+                  <div class="step-subtitle">
                     Typing the organism name with the correct format (Full scientific name and the
                     taxonomy ID which has to be added within parentheses)
                   </div>
                   <br />
                   <img
                     src="../../public/assets/images/documentation/Image_5.png"
-                    style="height:400px;"
                   />
                 </li>
                 <li>
-                  <div>
+                  <div class="step-subtitle">
                     The search can be fine-tuned using optional parameters by clicking on the
                     "Advance Parameter" link. The following parameters can be adjusted according to
                     the user preference:
                   </div>
-                  <div style="padding-left: 100px;">
-                    <ol start="2" type="1">
+                  <div>
+                    <ol start="1" type="1" style="padding-left: 16px;">
                       <li>Maximum eValue for BLAST(e-10)</li>
                       <li>Maximum number of target sequences for BLAST results</li>
                       <li>Identity</li>
                     </ol>
                   </div>
-                  <p>
+                  <p class="mt-3">
                     An example is provided below. In each case, the slider should be moved to set
                     the appropriate value.
                   </p>
                   <img
                     src="../../public/assets/images/documentation/Image_6.png"
-                    style="height:400px;"
                   />
                 </li>
               </ol>
             </div>
           </li>
-          <li>
+          <li class="step-title">
             <div>
               <p>
                 When either the gene sequence, an accession number, and the organism has been
@@ -154,35 +151,32 @@
               </p>
               <img
                 src="../../public/assets/images/documentation/Image_7.png"
-                style="height:400px;"
               />
             </div>
           </li>
-          <li>
+          <li class="step-title">
             <div>
               If you would like to double-check or modify–your search request, simply click on the
               "CANCEL" button to cancel the ORFanID search.
             </div>
           </li>
-          <li>
+          <li class="step-title">
             <div>
               <p>Otherwise, click on "SUBMIT" to start the ORFanID search.</p>
               <img
                 src="../../public/assets/images/documentation/Image_8.png"
-                style="height:400px;"
               />
             </div>
           </li>
-          <li>
+          <li class="step-title">
             <div>
               Click the "OK" button to continue the search
               <img
                 src="../../public/assets/images/documentation/Image_9.png"
-                style="height:400px;"
               />
             </div>
           </li>
-          <li>
+          <li class="step-title">
             <div>
               Upon clicking the "OK" button, you will be redirected to this status page. ORFanID
               will process the input sequence and depending on the query, as well as the workload of
@@ -190,7 +184,6 @@
             </div>
             <img
               src="../../public/assets/images/documentation/Image_10.png"
-              style="height:400px;"
             />
           </li>
         </ol>
@@ -198,29 +191,28 @@
       <v-spacer />
     </v-row>
     <v-row>
+      <v-spacer />
       <v-col cols="10">
-        <h4>Interpreting Results</h4>
+        <h4 class="text-center">Interpreting Results</h4>
         <br />
         <ol>
-          <li>
+          <li class="step-title">
             <div>
               To view the results of the ORFanID search, click on the Results menu and then click on
               the "Bar Graph" button available at the end of each record.
             </div>
             <img
               src="../../public/assets/images/documentation/Image_11.png"
-              style="height:400px;"
             />
           </li>
-          <li>
+          <li class="step-title">
             <p>The relevant search result will be displayed as in the below image.</p>
             <img
               src="../../public/assets/images/documentation/Image_12.png"
-              style="height:400px;"
             />
 
             <div style="padding-left: 60px;">
-              <ol start="2" type="I">
+              <ol start="1" type="I">
                 <li>
                   <i
                     >The example shown above contains three genes. One of the sequences is Genus
@@ -243,7 +235,6 @@
               <br />
               <img
                 src="../../public/assets/images/documentation/Image_13.png"
-                style="height:400px;"
               />
               <br />
               <img
@@ -252,23 +243,24 @@
               />
             </div>
           </li>
-          <li>
+          <li class="step-title">
             <div>
               <p>The Results can be downloaded to a text file using the Blast Results button</p>
               <img
                 src="../../public/assets/images/documentation/Image_15.png"
-                style="height:400px;"
               />
             </div>
           </li>
         </ol>
       </v-col>
+      <v-spacer />
     </v-row>
     <v-row>
+      <v-spacer />
       <v-col cols="10">
-        <h4>The ORFanBase Database</h4>
+        <h4 class="text-center">The ORFanBase Database</h4>
         <ol start="1" type="1">
-          <li>
+          <li class="step-title">
             <div>
               <p>
                 Genes that have been categorized from the analysis and submitted to the “ORFanbase”
@@ -276,14 +268,13 @@
               </p>
               <img
                 src="../../public/assets/images/documentation/Image_17.png"
-                style="height:400px;"
               />
               <p>
                 The orphan gene information obtained can now be used for your research purposes.
               </p>
             </div>
           </li>
-          <li>
+          <li class="step-title">
             <div>
               The relevant accession number of an organism can be searched after clicking the
               Accession menu item and then interesting the organism name as the search key word. The
@@ -291,15 +282,15 @@
               taxonomy ID which has to be added within parentheses)
             </div>
           </li>
-          <li>
+          <li class="step-title">
             <p>The searched results can be also be downloaded</p>
             <img
                 src="../../public/assets/images/documentation/Image_18.png"
-                style="height:400px;"
               />
           </li>
         </ol>
       </v-col>
+      <v-spacer />
     </v-row>
     <v-row>
       <v-col cols="10">
