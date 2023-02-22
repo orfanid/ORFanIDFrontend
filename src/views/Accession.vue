@@ -98,9 +98,12 @@ export default {
   },
   methods: {
     SearchResult: async function(query) {
+      
       this.getESearch(query);
+
     },
     getESearch: async function(query) {
+      this.$Progress.start();
       this.searchResult.idList = [];
       this.searchResult.resultSummary = [];
       const options = {
@@ -110,6 +113,7 @@ export default {
       try {
         let that = this;
         const results = await this.pubMedApi.eSearch.search(that.selectedDatabase, query, options);
+        this.$Progress.finish();
         var result = JSON.parse(results);
         if (
           result.esearchresult &&
@@ -196,6 +200,8 @@ export default {
         }
       });
       csvDownload(acceessionList);
+
+      //csvDownload({data:acceessionList,filename:'AccessionResult'});
     }
   },
   filters: {

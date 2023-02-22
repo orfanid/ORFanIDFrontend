@@ -339,7 +339,8 @@
                   <v-slider
                     max="10"
                     min="1"
-                    thumb-label
+                    :thumb-size="36"
+                    thumb-label="always"
                     v-model="from.maxEvalue"
                     ticks
                     color="teal"
@@ -361,7 +362,8 @@
                     max="1000"
                     min="100"
                     v-model="from.maxTargetSequence"
-                    thumb-label
+                    :thumb-size="36"
+                    thumb-label="always"
                     ticks
                     color="teal"
                   ></v-slider>
@@ -378,7 +380,8 @@
                     max="100"
                     min="40"
                     v-model="from.identity"
-                    thumb-label
+                    :thumb-size="36"
+                    thumb-label="always"
                     ticks
                     color="teal"
                   ></v-slider>
