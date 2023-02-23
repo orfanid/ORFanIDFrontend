@@ -96,6 +96,7 @@ export default {
   },
   mounted() {
     const that = this;
+    this.$Progress.start()
     analysisAPI.orfanBaseGenes().then((response) => {
       console.log(response);
       response.data.forEach((element) => {
@@ -112,6 +113,7 @@ export default {
           analysisIdNav: element.analysisId,
         });
       });
+      that.$Progress.finish()
     });
   },
   methods: {

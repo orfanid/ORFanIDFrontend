@@ -18,7 +18,10 @@
                     </template>
                   </v-text-field>
                 </v-card>
-                <a style="text-decoration: right;" href="#" @click="downloadPageFile(downloadSummaryResult)">Download current page result</a>
+                <v-icon>mdi-cloud-download</v-icon>
+                <a style="text-decoration: right;" href="#" @click="downloadPageFile(downloadSummaryResult)">
+                  Download current page result
+                </a>
               </v-col>
               <v-spacer></v-spacer>
             </v-row>
