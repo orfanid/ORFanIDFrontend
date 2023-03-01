@@ -114,7 +114,7 @@
               </v-file-input>
             </v-col>
             <v-col cols="1">
-              <div class="pt-15"><v-icon color="red" @click="clearUpload">mdi-close-octagon-outline</v-icon></div>
+              <div class="pt-15"><v-icon v-if="from.fileAttachment" color="red" @click="clearUpload">mdi-close-octagon-outline</v-icon></div>
             </v-col>
           </v-row>
         </v-col>
@@ -184,7 +184,7 @@
                     <v-btn color="green darken-1" text @click="accesionLookupClose">
                       Close
                     </v-btn>
-                    <v-btn color="green darken-1" text @click="accesionLookupApply">
+                    <v-btn :disabled="!showAccessionLookupApplyBtn" color="green darken-1" text @click="accesionLookupApply">
                       Apply
                     </v-btn>
                   </v-card-actions>
@@ -274,7 +274,7 @@
           >
             <template v-slot:item="data">
               <v-list-item-avatar>
-                <img :src="data.item.img" />
+                <img :src="data.item.img" onerror="javascript:this.src='https://dummyimage.com/60x40/c7abc7/1721a6.png&text=Organism'" />
               </v-list-item-avatar>
               <v-list-item-content>
                 <v-list-item-title v-html="data.item.name"></v-list-item-title>
@@ -755,6 +755,15 @@ export default {
         }
       },
       deep: true
+    },
+    "AccesionLookup.items" : {
+      handler: function(after, before) {
+        var selectedAccessions = lodash.filter(this.AccesionLookup.items, { selected: "true" });
+        if(selectedAccessions != null && selectedAccessions.length > 0) {
+          this.showAccessionLookupApplyBtn = true
+        }
+      },
+      deep: true
     }
   },
   mounted() {
@@ -834,7 +843,8 @@ export default {
         idList: [],
         resultSummary: []
       },
-      panel: [0]
+      panel: [0],
+      showAccessionLookupApplyBtn: false
     };
   },
   computed: {
