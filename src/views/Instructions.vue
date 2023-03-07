@@ -68,12 +68,10 @@
               FASTA file format is followed. As provided in the NCBI BLAST help, an example sequence
               in FASTA format is:
             </p>
-            <p>
-              <code>
+            <code>
                 >P01013 GENE X PROTEIN (OVALBUMIN-RELATED)
                 QIKDLLVSSSTDLDTTLVLVNAIYFKGMWKTAFNAEDTREMPFHVTKQESKPVQMMCMNNSFNVATLPAEKMKILELPFASGDLSMLVLLPDEVSDLERIEKTINFEKLTEWTNPNTMEKRRVKVYLPQMKIEEKYNLTSVLMALGMTDLFIPSANLTGISSAESLKISQAVHGAFMELSEDGIEMAGSTGVIEDIKHSPESEQFRADHPFLFLIKHNPTNTIVYFGRYWSP
               </code>
-            </p>
             <p>In this case the organism name must be included.</p>
             <p>
               NOTE: The search engine will take UP TO 5,000 characters for a query on the Gene
@@ -293,7 +291,7 @@
       <v-spacer />
     </v-row>
     <v-row>
-      <v-col cols="10">
+      <v-col cols="12">
         If you have any questions regarding the instructions for using the ORFanID to search and find ORFan Genes of your interest, or regarding the analysis of your data input, please email us at: info@orfangenes.com.
       </v-col>
     </v-row>

@@ -1,6 +1,12 @@
 html{
-    width: 100vw;
+    /* width: 100vw; */
 }
+html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
 body{
     line-height: 1.5;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -168,3 +174,34 @@ x-vue-echarts.barchart >div{
 x-vue-echarts.barchart canvas{
     width: 100% !important;
 }
+/* Instructions page styles START */
+.instructions-container h5{
+    font-weight: 700;
+}
+.instructions-container ::marker{
+    font-weight: 700;
+}
+.instructions-container .step-title{
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+.instructions-container .step-subtitle{
+    font-weight: 700;
+    text-align: justify;
+}
+.instructions-container .step-supersubtitle{
+    font-weight: 700;
+}
+.instructions-container img{
+    width: 100%;
+    margin: 15px 0px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.instructions-container code{
+    word-wrap: break-word !important;
+    text-align: left;
+}
+.instructions-container p{
+    text-align: justify;
+}
+/* Instructions page styles END */

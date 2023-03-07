@@ -7,8 +7,7 @@
             <v-row no-gutters>
               <v-spacer></v-spacer>
               <v-col cols="6" md="6">
-                <v-card outlined>
-                  <v-text-field label="Enter search terms" color="primary" v-model="search.query">
+                <v-text-field label="Enter search terms" color="primary" v-model="search.query">
                     <template #append>
                       <v-btn depressed tile color="primary" @click="SearchResult(search.query)">
                         <v-icon>
@@ -17,7 +16,6 @@
                       </v-btn>
                     </template>
                   </v-text-field>
-                </v-card>
                 <a style="text-decoration: right;" href="#" @click="downloadPageFile(downloadSummaryResult)">Download current page result</a>
               </v-col>
               <v-spacer></v-spacer>
