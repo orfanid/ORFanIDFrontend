@@ -29,6 +29,27 @@
       <span>Instructions</span>
       <!-- <v-icon>mdi-map-marker</v-icon> -->
     </v-btn>
+
+    <v-menu offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+          color="white"
+            v-bind="attrs"
+            v-on="on"
+            to="/experiment-diamond"
+          >
+          Expirement
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item
+            v-for="(item, index) in items"
+            :key="index"
+          >
+            <v-list-item-title >{{ item.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
   </v-app-bar>
 </template>
 <script>
@@ -36,7 +57,10 @@ export default {
   name: "Header",
   data() {
     return {
-      value: null
+      value: null,
+      items: [
+      { title: 'DIAMOND BLASTX' }
+    ],
     };
   },
   methods: {
