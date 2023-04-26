@@ -7,21 +7,21 @@
             <v-row no-gutters>
               <v-spacer></v-spacer>
               <v-col cols="6" md="6">
-                <v-card outlined>
-                  <v-text-field label="Enter search terms" color="primary" v-model="search.query">
+                  <v-text-field label="Enter search terms" v-model="search.query">
                     <template #append>
-                      <v-btn depressed tile color="primary" @click="SearchResult(search.query)">
+                      <v-btn depressed @click="SearchResult(search.query)">
                         <v-icon>
                           search
                         </v-icon>
                       </v-btn>
                     </template>
                   </v-text-field>
-                </v-card>
-                <v-icon>mdi-cloud-download</v-icon>
+                <v-icon large>mdi-cloud-download</v-icon>
                 <a style="text-decoration: right;" href="#" @click="downloadPageFile(downloadSummaryResult)">
-                  Download current page result
+                  Download current page results
                 </a>
+                <br/>
+                <span>Multiple pages should be downloaded separately.</span>
               </v-col>
               <v-spacer></v-spacer>
             </v-row>
@@ -31,7 +31,7 @@
           </v-container>
         </v-container>
       </v-row>
-      <v-row>
+      <v-row v-if="searchResult.resultSummary != null && searchResult.resultSummary.length > 0">
         <v-col cols="3"> </v-col>
         <v-col cols="9">
           <v-pagination

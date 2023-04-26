@@ -318,7 +318,9 @@
                 <v-card flat color="transparent" class="pa-0">
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                      <v-subheader class="pa-0" v-bind="attrs" v-on="on"
+                      <br/>
+                      <br/>
+                      <v-subheader class="pa-6" v-bind="attrs" v-on="on"
                         >Maximum
                         <a
                           class="mx-2"
@@ -347,7 +349,8 @@
                   ></v-slider>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                      <v-subheader class="pa-0" v-bind="attrs" v-on="on"
+                      <br/>
+                      <v-subheader class="pa-6" v-bind="attrs" v-on="on"
                         >Maximum target Sequences for BLAST:</v-subheader
                       >
                     </template>
@@ -369,7 +372,8 @@
                   ></v-slider>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                      <v-subheader class="pa-0" v-bind="attrs" v-on="on">Identity:</v-subheader>
+                      <br/>
+                      <v-subheader class="pa-6" v-bind="attrs" v-on="on">Identity:</v-subheader>
                     </template>
                     <span
                       >Percentage value(%) of how much subject and query sequences are
