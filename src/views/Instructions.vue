@@ -11,9 +11,9 @@
         </p>
         <ol start="1">
           <li>
-            <div class="d-flex">
+            <div class="d-flex web-link">
               <div class="step-title">Visit the OrFanGenes website</div> 
-               <span class="ml-2">
+               <span class="">
                 (<a href="http://orfangenes.com">http://orfangenes.com/</a>)
                </span>
             </div>
@@ -60,12 +60,10 @@
             <p style="padding-left: 24px;">
               Users can also submit their own nucleotide/protein sequence as long as the standard FASTA file format is followed. As provided in the NCBI BLAST help, an example sequence in FASTA format is:
             </p>
-            <p>
-              <code>
+            <code>
                 >P01013 GENE X PROTEIN (OVALBUMIN-RELATED)
                 QIKDLLVSSSTDLDTTLVLVNAIYFKGMWKTAFNAEDTREMPFHVTKQESKPVQMMCMNNSFNVATLPAEKMKILELPFASGDLSMLVLLPDEVSDLERIEKTINFEKLTEWTNPNTMEKRRVKVYLPQMKIEEKYNLTSVLMALGMTDLFIPSANLTGISSAESLKISQAVHGAFMELSEDGIEMAGSTGVIEDIKHSPESEQFRADHPFLFLIKHNPTNTIVYFGRYWSP
               </code>
-            </p>
             <p>In this case the organism name must be included.</p>
             <p>
               Note that the search engine will take up to 5,000 characters for a query on the gene sequence. Please DO NOT input more than 5,000 characters, as your query will not be processed.
