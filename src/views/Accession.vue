@@ -7,7 +7,7 @@
             <v-row no-gutters>
               <v-spacer></v-spacer>
               <v-col cols="6" md="6">
-                  <v-text-field label="Enter search terms" v-model="search.query">
+                  <v-text-field label="Enter search terms" v-model="search.query" @keypress.enter="SearchResult(search.query)">
                     <template #append>
                       <v-btn depressed @click="SearchResult(search.query)">
                         <v-icon>
@@ -17,9 +17,9 @@
                     </template>
                   </v-text-field>
                 <v-icon large>mdi-cloud-download</v-icon>
-                <a style="text-decoration: right;" href="#" @click="downloadPageFile(downloadSummaryResult)">
+                <v-btn link style="text-decoration: right;" href="#" @click="downloadPageFile(downloadSummaryResult)" :disabled="searchResult.resultSummary.length == 0">
                   Download current page results
-                </a>
+                </v-btn>
                 <br/>
                 <span>Multiple pages should be downloaded separately.</span>
               </v-col>
@@ -181,6 +181,7 @@ export default {
       }
     },
     async pageChanged() {
+      this.$Progress.start();
       let that = this;
       that.searchResult.resultSummary = [];
       let pageIds = await that.getCurretPageIds();
@@ -191,8 +192,7 @@ export default {
           that.searchResult.resultSummary.push(val);
         });
       }
-
-      //this.downloadPageFile(summaryResult);
+      this.$Progress.finish();
     },
     downloadPageFile(summaryResult) {
       let acceessionList = lodash.map(summaryResult.result, function(i) {

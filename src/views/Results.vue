@@ -30,6 +30,7 @@
               :search="search"
               class="elevation-1"
               @page-count="pageCount = $event"
+              @pagination="paginationChange"
               :hide-default-footer="true"
             >
               <template v-slot:item.analysisIdNav="{ item }">
@@ -207,6 +208,10 @@ export default {
         that.$Progress.finish()
       });
     },
+    paginationChange() {
+      this.$Progress.start();
+      this.$Progress.finish();
+    }
   },
 };
 </script>
