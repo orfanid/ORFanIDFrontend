@@ -148,7 +148,7 @@
             <v-card width="100%">
             <v-row>
               <v-spacer />
-              <v-col cols="3">
+              <v-col cols="12" md="3">
                 <div class="col s12 m4">
                 <div class="icon-block">
                   <h2 class="text-center brown-text" >
@@ -171,7 +171,7 @@
                 </div>
                 </div>
               </v-col>
-              <v-col cols="3">
+              <v-col cols="12" md="3">
                 <div class="col s12 m4">
                   <div class="icon-block">
                     <h2 class="text-center brown-text">
@@ -184,7 +184,7 @@
                   </div>
                 </div>
               </v-col>
-              <v-col cols="3">
+              <v-col cols="12" md="3">
                 <div class="col s12 m4">
                   <div class="icon-block">
                     <h2 class="text-center brown-text">
