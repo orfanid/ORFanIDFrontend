@@ -65,7 +65,7 @@
                   v-on="on"
                   to="/experiment-diamond"
                 >
-                Expirement
+                Experiment
                 </v-btn>
               </template>
               <v-list>
