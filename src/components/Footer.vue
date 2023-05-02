@@ -19,13 +19,13 @@
           <v-row>
             <v-col>
               <v-row>
-                <v-col cols="8">
-                  <div class="container text-left" style="color:white;">
-                    Copyright &nbsp;© Gunasekera 2018 - 2022
+                <v-col cols="12" md="8">
+                  <div class="pa-md-3 text-center text-md-left" style="color:white;">
+                    Copyright &nbsp;© Gunasekera 2018 - 2023
                   </div>
                 </v-col>
-                <v-col cols="4" class="align-center d-flex justify-end">
-                  <p class="text-lg-right mb-0" style="color:white;">
+                <v-col cols="12" md="4" class="">
+                  <p class="pa-md-3 text-center text-md-right mb-0" style="color:white;">
                     <a
                       class="grey-text text-lg-right footer-link"
                       href="mailto:sureshhewabi@gmail.com?cc=vinodh@thegunasekeras.org,richgun01@gmail.com&Subject=ORFanID%20Online%20Issues"

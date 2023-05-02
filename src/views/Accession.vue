@@ -6,7 +6,7 @@
           <v-container>
             <v-row no-gutters>
               <v-spacer></v-spacer>
-              <v-col cols="6" md="6">
+              <v-col cols="12" md="6">
                 <v-text-field label="Enter search terms" color="primary" v-model="search.query">
                     <template #append>
                       <v-btn depressed tile color="primary" @click="SearchResult(search.query)">
@@ -16,7 +16,10 @@
                       </v-btn>
                     </template>
                   </v-text-field>
-                <a style="text-decoration: right;" href="#" @click="downloadPageFile(downloadSummaryResult)">Download current page result</a>
+                <v-icon>mdi-cloud-download</v-icon>
+                <a style="text-decoration: right;" href="#" @click="downloadPageFile(downloadSummaryResult)">
+                  Download current page result
+                </a>
               </v-col>
               <v-spacer></v-spacer>
             </v-row>
@@ -96,9 +99,12 @@ export default {
   },
   methods: {
     SearchResult: async function(query) {
+      
       this.getESearch(query);
+
     },
     getESearch: async function(query) {
+      this.$Progress.start();
       this.searchResult.idList = [];
       this.searchResult.resultSummary = [];
       const options = {
@@ -108,6 +114,7 @@ export default {
       try {
         let that = this;
         const results = await this.pubMedApi.eSearch.search(that.selectedDatabase, query, options);
+        this.$Progress.finish();
         var result = JSON.parse(results);
         if (
           result.esearchresult &&
@@ -194,6 +201,8 @@ export default {
         }
       });
       csvDownload(acceessionList);
+
+      //csvDownload({data:acceessionList,filename:'AccessionResult'});
     }
   },
   filters: {

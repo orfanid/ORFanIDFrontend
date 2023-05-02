@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container results-container">
     <div class="section">
       <div id="savedResultView" class="row">
         <div class="col s10 offset-s1 center-align">
@@ -18,6 +18,7 @@
                 label="Enter Search Term Here"
                 single-line
                 hide-details
+                class="pa-0 ma-0"
               ></v-text-field>
             </v-card-title>
             <v-data-table

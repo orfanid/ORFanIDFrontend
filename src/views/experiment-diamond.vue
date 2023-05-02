@@ -213,11 +213,7 @@
           <div>
             <h7>Program Selection</h7>
             <v-radio-group mandatory v-model="from.program">
-              <v-radio
-                label="PSI-BLAST (Position-Specific Iterated BLAST)"
-                value="PSI-BLAST"
-              ></v-radio>
-              <v-radio label="BLAST" value="BLAST"></v-radio>
+              <v-radio label="DIAMOND BLASTX" value="BLAST"></v-radio>
             </v-radio-group>
           </div>
         </v-col>
@@ -306,7 +302,7 @@
           </div>
         </v-col>
       </v-row>
-      <v-row>
+      <!-- <v-row>
         <v-col cols="s12" class="d-flex align-center">
           <v-expansion-panels flat class="pa-0">
             <v-expansion-panel class="pa-0">
@@ -390,7 +386,7 @@
             </v-expansion-panel>
           </v-expansion-panels>
         </v-col>
-      </v-row>
+      </v-row> -->
       <v-row align="left" justify="space-around">
         <v-spacer />
       </v-row>
@@ -419,10 +415,10 @@
       </v-row>
       <v-row>
         <v-spacer />
-        <v-col cols="4" md="2">
+        <v-col cols="2" offset-10>
           <v-btn
             @click="analysConformation"
-            :disabled="disableSubmit"
+            :disabled="true"
             style="color: white"
             color="teal"
             >Submit
@@ -454,7 +450,7 @@
           <v-btn color="primary" text @click="isLoading = false">
             Cancel
           </v-btn>
-          <v-btn color="primary" text @click="analysData">
+          <v-btn color="primary" text @click="analysData" :disabled="true">
             <span>Submit</span>
           </v-btn>
         </v-card-actions>

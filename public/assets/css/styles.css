@@ -85,6 +85,8 @@ header{
     display:flex !important;
     align-items: center;
     width: 100%;
+    background-color: unset !important;
+    box-shadow: none !important;
 }
 header .v-toolbar__title{
     width: 100%;
@@ -165,13 +167,13 @@ h1{
 .upload-button .v-icon::before{
     color: #ffffff !important;
 }
-x-vue-echarts.barchart{
+.chart[data-v-22e0623b]{
     width: 100% !important;
 }
-x-vue-echarts.barchart >div{
+.chart[data-v-22e0623b] >div{
     width: 100% !important;
 }
-x-vue-echarts.barchart canvas{
+.chart[data-v-22e0623b] canvas{
     width: 100% !important;
 }
 /* Instructions page styles START */
@@ -184,6 +186,18 @@ x-vue-echarts.barchart canvas{
 .instructions-container .step-title{
     font-weight: 700;
     margin-bottom: 10px;
+}
+.instructions-container .web-link {
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+.instructions-container .web-link .step-title {
+    margin-right: 8px;
+}
+@media only screen and (max-width : 520px) {
+    .instructions-container .web-link .step-title {
+        margin-bottom: 0px;
+    }
 }
 .instructions-container .step-subtitle{
     font-weight: 700;
@@ -205,3 +219,43 @@ x-vue-echarts.barchart canvas{
     text-align: justify;
 }
 /* Instructions page styles END */
+
+.v-app-bar.v-app-bar--fixed {
+    z-index: 7 !important;
+}
+.v-navigation-drawer .v-navigation-drawer__content {
+    background-color: #009688;
+}
+.v-navigation-drawer .v-list-item{ 
+    min-height: 18px;
+    line-height: 18px;
+    border-bottom: 1px solid #e0e0e0;
+}
+.v-navigation-drawer .v-list-item .v-list-item__action {
+    display: none;
+}
+.v-navigation-drawer .v-list-item__content {
+    color: #fff;
+}
+.v-toolbar__title.general-title {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    font-weight: 600;
+}
+.v-toolbar__items {
+    width: 100%;
+}
+@media only screen and (max-width : 992px) {
+    .v-toolbar__content {
+        padding: 0px !important;
+    }
+}
+.results-container .v-data-table__mobile-table-row {
+    margin-bottom: 10px;
+}
+@media only screen and (max-width : 600px) {
+    .results-container .mdi-chart-bar {
+        padding: 20px 0px;
+    }
+}
