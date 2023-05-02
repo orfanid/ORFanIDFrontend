@@ -30,8 +30,8 @@
         </v-container>
       </v-row>
       <v-row>
-        <v-col cols="3"> </v-col>
-        <v-col cols="9">
+        <v-col  cols="12" md="3"></v-col>
+        <v-col  cols="12" md="9">
           <v-pagination
             :length="paginationConfig.noOfPages"
             :total-visible="7"

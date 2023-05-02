@@ -2,9 +2,9 @@
   <v-container>
     <v-row class="text-center">
       <v-col cols="12">
-        <v-card class="ma-6 pa-6 ps-16" max-width="1600" min-height="400">
+        <v-card class="pa-3 ma-md-6 pa-md-6 ps-md-16" max-width="1600" min-height="400">
           <v-row>
-            <v-col cols="6">
+            <v-col cols="12" md="6">
               <v-card-title class="justify-center"
                 >Analysis Parameters</v-card-title
               >
@@ -85,7 +85,7 @@
                 </table>
               </div>
             </v-col>
-            <v-col cols="6">
+            <v-col cols="12" md="6">
               <v-card-title class="justify-center"
                 >ORFan gene summary</v-card-title
               >
@@ -97,7 +97,7 @@
     </v-row>
     <v-row class="text-center">
       <v-col>
-        <v-card class="ma-6" max-width="1600" min-height="100">
+        <v-card class="ma-md-6" max-width="1600" min-height="100">
           <v-card-title class="justify-center"
             >ORFan Genes Categorization</v-card-title
           >

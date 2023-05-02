@@ -182,7 +182,7 @@
               src="../../public/assets/images/documentation/Image_12.png"
             />
 
-            <div style="padding-left: 60px;">
+            <div class="interpreting-results-sublist">
               <ol start="1" type="I">
                 <li>
                   <i
@@ -258,7 +258,7 @@ The organism name should be typed in the correct format, which includes the full
       <v-spacer />
     </v-row>
     <v-row>
-      <v-col cols="10">
+      <v-col cols="12" md="10">
         If you have any questions about using the ORFanID to search for ORFan genes of your interest or regarding the analysis of your data input, please email us at info@orfangenes.com.
       </v-col>
     </v-row>

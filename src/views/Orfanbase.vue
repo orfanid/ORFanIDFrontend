@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container orfanbase-wrapper">
     <div class="section">
       <div id="savedResultView" class="row">
         <div class="col s10 offset-s1 center-align">
@@ -38,7 +38,12 @@
               </template>
             </v-data-table>
             <v-row>
-              <v-col cols="1">
+              <v-col cols="12" class="mt-3"
+                ><v-pagination v-model="page" :length="pageCount"></v-pagination
+              ></v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12" class="items-dropdown">
                 <v-combobox
                   :value="itemsPerPage"
                   :items="[5, 10, 15, 20, 25, 30]"
@@ -47,9 +52,6 @@
                   @input="itemsPerPage = parseInt($event, 5)"
                 ></v-combobox>
               </v-col>
-              <v-col cols="11"
-                ><v-pagination v-model="page" :length="pageCount"></v-pagination
-              ></v-col>
             </v-row>
           </div>
         </div>

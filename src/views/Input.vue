@@ -1,8 +1,8 @@
 <template>
-  <v-container>
+  <v-container class="query-container">
     <v-form id="input_form">
       <v-row>
-        <v-col cols="4">
+        <v-col cols="12" md="4">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
@@ -16,7 +16,6 @@
             <span>Optional. Nickname will be useful to find your dataset quickly</span>
           </v-tooltip>
         </v-col>
-        <v-col cols="8"></v-col>
       </v-row>
       <v-row>
         <v-col cols="s6" offset-s1>
@@ -96,7 +95,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="4" offset-s1>
+        <v-col cols="12" md="4" offset-s1>
           <v-row>
             <v-col cols="11">
               <v-file-input
@@ -118,13 +117,13 @@
             </v-col>
           </v-row>
         </v-col>
-        <v-col cols="2">
+        <v-col cols="12" md="2">
           <v-radio-group v-model="from.accessionType" mandatory @change="onAccessionSelect">
             <v-radio label="Protein" value="protein"></v-radio>
             <v-radio label="Gene" value="nucleotide"></v-radio>
           </v-radio-group>
         </v-col>
-        <v-col cols="6">
+        <v-col cols="12" md="6">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
@@ -312,7 +311,7 @@
             <v-expansion-panel class="pa-0">
               <v-expansion-panel-header class="pa-0">
                 <v-spacer />
-                <v-col cols="2"> Advanced Parameters: </v-col>
+                <v-col cols="6" md="2"> Advanced Parameters: </v-col>
               </v-expansion-panel-header>
               <v-expansion-panel-content class="pa-0">
                 <v-card flat color="transparent" class="pa-0">
@@ -419,7 +418,7 @@
       </v-row>
       <v-row>
         <v-spacer />
-        <v-col cols="4" md="2">
+        <v-col cols="6" md="2">
           <v-btn
             @click="analysConformation"
             :disabled="disableSubmit"

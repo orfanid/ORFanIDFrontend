@@ -218,6 +218,9 @@ h1{
 .instructions-container p{
     text-align: justify;
 }
+.instructions-container .interpreting-results-sublist {
+    padding-left: 60px;
+}
 /* Instructions page styles END */
 
 .v-app-bar.v-app-bar--fixed {
@@ -246,14 +249,41 @@ h1{
 .v-toolbar__items {
     width: 100%;
 }
+.orfanbase-wrapper .v-select__selections{
+    padding-top: 5px;
+}
+.orfanbase-wrapper .items-dropdown {
+    display: grid;
+    justify-items: center;
+}
 @media only screen and (max-width : 992px) {
     .v-toolbar__content {
         padding: 0px !important;
+    }
+    .v-application ol {
+        padding-left: 0px !important;
+    }
+    .v-application ol ol{
+        padding-left: 10px !important;
+    }
+    .instructions-container .interpreting-results-sublist {
+        padding-left: 10px;
+    }
+    .query-container .v-expansion-panel-content__wrap {
+        padding: 0px;
     }
 }
 .results-container .v-data-table__mobile-table-row {
     margin-bottom: 10px;
 }
+.results-container .v-select__selections {
+    padding-top: 5px;
+}
+.results-container .items-dropdown {
+    display: grid;
+    justify-items: center;
+}
+
 @media only screen and (max-width : 600px) {
     .results-container .mdi-chart-bar {
         padding: 20px 0px;
