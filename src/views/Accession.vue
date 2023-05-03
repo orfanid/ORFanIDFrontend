@@ -6,67 +6,32 @@
           <v-container>
             <v-row no-gutters>
               <v-spacer></v-spacer>
-              <v-col cols="6" md="6">
-                <v-text-field
-                  label="Enter search terms"
-                  v-model="search.query"
-                  @keypress.enter="SearchResult(search.query)"
-                >
-                  <template #append>
-                    <v-btn depressed @click="SearchResult(search.query)">
-                      <v-icon>
-                        search
-                      </v-icon>
-                    </v-btn>
-                  </template>
-                </v-text-field>
-                <v-icon large>mdi-cloud-download</v-icon>
-                <v-btn
-                  link
-                  style="text-decoration: right;"
-                  href="#"
-                  @click="downloadPageFile(downloadSummaryResult)"
-                  :disabled="searchResult.resultSummary.length == 0"
-                >
-                  Download current page results
-                </v-btn>
-                <br />
-                <span>Multiple pages should be downloaded separately.</span>
+              <v-col cols="12" md="6">
+                <v-text-field label="Enter search terms" color="primary" v-model="search.query">
+                    <template #append>
+                      <v-btn depressed tile color="primary" @click="SearchResult(search.query)">
+                        <v-icon>
+                          search
+                        </v-icon>
+                      </v-btn>
+                    </template>
+                  </v-text-field>
+                <v-icon>mdi-cloud-download</v-icon>
+                <a style="text-decoration: right;" href="#" @click="downloadPageFile(downloadSummaryResult)">
+                  Download current page result
+                </a>
               </v-col>
               <v-spacer></v-spacer>
             </v-row>
             <v-row class="mt-0">
               <v-col md="6" class="d-flex align-items-end p-0 pl-3"> </v-col>
             </v-row>
-            <v-row>
-              <v-spacer />
-              <v-col cols="6">
-                <h6>This page provides a search utility to find multiple accession numbers associated
-                with a species name.</h6>
-                <br />
-                To use this utility, follow these steps:
-                <br />
-                <ol>
-                  <li>Enter a species name in the search field provided. The search field is the text box
-                located on the page where you can enter your query.</li>
-                  <li>Click on the magnifying glass
-                icon to initiate the search.</li>
-                  <li>The results will display a list of accession numbers
-                affiliated with the species name that you entered.</li>
-                <li>You can download the accession
-                list as a CSV file, which can be used as input to ORFanID to identify novel genes or
-                proteins in the genome of the species you searched for.</li>
-                </ol>
-                   
-              </v-col>
-              <v-spacer />
-            </v-row>
           </v-container>
         </v-container>
       </v-row>
-      <v-row v-if="searchResult.resultSummary != null && searchResult.resultSummary.length > 0">
-        <v-col cols="3"> </v-col>
-        <v-col cols="9">
+      <v-row>
+        <v-col  cols="12" md="3"></v-col>
+        <v-col  cols="12" md="9">
           <v-pagination
             :length="paginationConfig.noOfPages"
             :total-visible="7"
@@ -126,7 +91,7 @@ export default {
         currentPage: 1
       },
       pubMedApi: null,
-      downloadSummaryResult: []
+      downloadSummaryResult:[]
     };
   },
   async mounted() {
@@ -134,7 +99,9 @@ export default {
   },
   methods: {
     SearchResult: async function(query) {
+      
       this.getESearch(query);
+
     },
     getESearch: async function(query) {
       this.$Progress.start();
@@ -212,7 +179,6 @@ export default {
       }
     },
     async pageChanged() {
-      this.$Progress.start();
       let that = this;
       that.searchResult.resultSummary = [];
       let pageIds = await that.getCurretPageIds();
@@ -223,7 +189,8 @@ export default {
           that.searchResult.resultSummary.push(val);
         });
       }
-      this.$Progress.finish();
+
+      //this.downloadPageFile(summaryResult);
     },
     downloadPageFile(summaryResult) {
       let acceessionList = lodash.map(summaryResult.result, function(i) {

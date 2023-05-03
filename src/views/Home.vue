@@ -148,7 +148,7 @@
             <v-card width="100%">
             <v-row>
               <v-spacer />
-              <v-col cols="3">
+              <v-col cols="12" md="3">
                 <div class="col s12 m4">
                 <div class="icon-block">
                   <h2 class="text-center brown-text" >
@@ -171,7 +171,7 @@
                 </div>
                 </div>
               </v-col>
-              <v-col cols="3">
+              <v-col cols="12" md="3">
                 <div class="col s12 m4">
                   <div class="icon-block">
                     <h2 class="text-center brown-text">
@@ -184,7 +184,7 @@
                   </div>
                 </div>
               </v-col>
-              <v-col cols="3">
+              <v-col cols="12" md="3">
                 <div class="col s12 m4">
                   <div class="icon-block">
                     <h2 class="text-center brown-text">
@@ -263,7 +263,7 @@
               <v-col cols="12" class="pl-0 pr-0">
                 <div class="d-flex container inner-content">
                 <div class=" text-left float-left" style="color:white;">
-                  Copyright &nbsp;© Gunasekera 2018 - 2022
+                  Copyright &nbsp;© Gunasekera 2018 - 2023
                 </div>
                 </div>
               </v-col>

@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container results-container">
     <div class="section">
       <div id="savedResultView" class="row">
         <div class="col s10 offset-s1 center-align">
@@ -18,6 +18,7 @@
                 label="Enter Search Term Here"
                 single-line
                 hide-details
+                class="pa-0 ma-0"
               ></v-text-field>
             </v-card-title>
             <v-data-table
@@ -30,7 +31,6 @@
               :search="search"
               class="elevation-1"
               @page-count="pageCount = $event"
-              @pagination="paginationChange"
               :hide-default-footer="true"
             >
               <template v-slot:item.analysisIdNav="{ item }">
@@ -93,7 +93,12 @@
               </template>
             </v-data-table>
             <v-row>
-              <!-- <v-col cols="1">
+              <v-col cols="12" class="mt-3">
+                <v-pagination v-model="page" :length="pageCount"></v-pagination>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12" class="items-dropdown">
                 <v-combobox
                   :value="itemsPerPage"
                   :items="[5, 10, 15, 20, 25, 30]"
@@ -101,9 +106,6 @@
                   type="number"
                   @input="itemsPerPage = parseInt($event, 5)"
                 ></v-combobox>
-              </v-col> -->
-              <v-col cols="12">
-                <v-pagination v-model="page" :length="pageCount"></v-pagination>
               </v-col>
             </v-row>
           </div>
@@ -208,10 +210,6 @@ export default {
         that.$Progress.finish()
       });
     },
-    paginationChange() {
-      this.$Progress.start();
-      this.$Progress.finish();
-    }
   },
 };
 </script>

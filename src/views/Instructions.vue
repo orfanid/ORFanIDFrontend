@@ -11,9 +11,9 @@
         </p>
         <ol start="1">
           <li>
-            <div class="d-flex">
+            <div class="d-flex web-link">
               <div class="step-title">Visit the OrFanGenes website</div> 
-               <span class="ml-2">
+               <span class="">
                 (<a href="http://orfangenes.com">http://orfangenes.com/</a>)
                </span>
             </div>
@@ -60,12 +60,10 @@
             <p style="padding-left: 24px;">
               Users can also submit their own nucleotide/protein sequence as long as the standard FASTA file format is followed. As provided in the NCBI BLAST help, an example sequence in FASTA format is:
             </p>
-            <p>
-              <code>
+            <code>
                 >P01013 GENE X PROTEIN (OVALBUMIN-RELATED)
                 QIKDLLVSSSTDLDTTLVLVNAIYFKGMWKTAFNAEDTREMPFHVTKQESKPVQMMCMNNSFNVATLPAEKMKILELPFASGDLSMLVLLPDEVSDLERIEKTINFEKLTEWTNPNTMEKRRVKVYLPQMKIEEKYNLTSVLMALGMTDLFIPSANLTGISSAESLKISQAVHGAFMELSEDGIEMAGSTGVIEDIKHSPESEQFRADHPFLFLIKHNPTNTIVYFGRYWSP
               </code>
-            </p>
             <p>In this case the organism name must be included.</p>
             <p>
               Note that the search engine will take up to 5,000 characters for a query on the gene sequence. Please DO NOT input more than 5,000 characters, as your query will not be processed.
@@ -184,7 +182,7 @@
               src="../../public/assets/images/documentation/Image_12.png"
             />
 
-            <div style="padding-left: 60px;">
+            <div class="interpreting-results-sublist">
               <ol start="1" type="I">
                 <li>
                   <i
@@ -260,7 +258,7 @@ The organism name should be typed in the correct format, which includes the full
       <v-spacer />
     </v-row>
     <v-row>
-      <v-col cols="10">
+      <v-col cols="12" md="10">
         If you have any questions about using the ORFanID to search for ORFan genes of your interest or regarding the analysis of your data input, please email us at info@orfangenes.com.
       </v-col>
     </v-row>

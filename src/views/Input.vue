@@ -1,8 +1,8 @@
 <template>
-  <v-container>
+  <v-container class="query-container">
     <v-form id="input_form">
       <v-row>
-        <v-col cols="4">
+        <v-col cols="12" md="4">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
@@ -16,7 +16,6 @@
             <span>Optional. Nickname will be useful to find your dataset quickly</span>
           </v-tooltip>
         </v-col>
-        <v-col cols="8"></v-col>
       </v-row>
       <v-row>
         <v-col cols="s6" offset-s1>
@@ -30,8 +29,6 @@
         </v-col>
         <v-col cols="s6">
           <v-col cols="12">
-
-            <h6><label>Examples</label></h6>
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-icon
@@ -98,15 +95,15 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="4" offset-s1>
+        <v-col cols="12" md="4" offset-s1>
           <v-row>
             <v-col cols="11">
-              <h7>Upload your documents</h7>
               <v-file-input
                 :disabled="from.searchMethod === 'a'"
                 v-model="from.fileAttachment"
                 @change="readFile"
-                :placeholder="placeHolderText"
+                placeholder="Upload your documents"
+                label="Upload File"
                 prepend-icon="mdi-cloud-upload"
                 class="upload-button d-inline"
                 clearable="true"
@@ -120,13 +117,13 @@
             </v-col>
           </v-row>
         </v-col>
-        <v-col cols="2">
+        <v-col cols="12" md="2">
           <v-radio-group v-model="from.accessionType" mandatory @change="onAccessionSelect">
             <v-radio label="Protein" value="protein"></v-radio>
             <v-radio label="Gene" value="nucleotide"></v-radio>
           </v-radio-group>
         </v-col>
-        <v-col cols="6">
+        <v-col cols="12" md="6">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
@@ -314,15 +311,13 @@
             <v-expansion-panel class="pa-0">
               <v-expansion-panel-header class="pa-0">
                 <v-spacer />
-                <v-col cols="2"> Advanced Parameters: </v-col>
+                <v-col cols="6" md="2"> Advanced Parameters: </v-col>
               </v-expansion-panel-header>
               <v-expansion-panel-content class="pa-0">
                 <v-card flat color="transparent" class="pa-0">
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                      <br/>
-                      <br/>
-                      <v-subheader class="pa-6" v-bind="attrs" v-on="on"
+                      <v-subheader class="pa-0" v-bind="attrs" v-on="on"
                         >Maximum
                         <a
                           class="mx-2"
@@ -351,8 +346,7 @@
                   ></v-slider>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                      <br/>
-                      <v-subheader class="pa-6" v-bind="attrs" v-on="on"
+                      <v-subheader class="pa-0" v-bind="attrs" v-on="on"
                         >Maximum target Sequences for BLAST:</v-subheader
                       >
                     </template>
@@ -374,8 +368,7 @@
                   ></v-slider>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                      <br/>
-                      <v-subheader class="pa-6" v-bind="attrs" v-on="on">Identity:</v-subheader>
+                      <v-subheader class="pa-0" v-bind="attrs" v-on="on">Identity:</v-subheader>
                     </template>
                     <span
                       >Percentage value(%) of how much subject and query sequences are
@@ -404,11 +397,28 @@
       <v-row>
         <v-col cols="10"></v-col>
         <v-col cols="2">
+          <!-- <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+          <v-text-field
+            v-model="from.email"
+            label="E-mail"
+            required
+            v-bind="attrs"
+            v-on="on"
+          ></v-text-field>
+            </template>
+            <span>Optional. Email will be useful to find your dataset quickly</span>
+          </v-tooltip>
+          <label
+            style="color: red"
+            v-if="$v.from.email.$dirty && !$v.from.email.email"
+            >Invalid email address</label
+          > -->
         </v-col>
       </v-row>
       <v-row>
         <v-spacer />
-        <v-col cols="2" offset-10>
+        <v-col cols="6" md="2">
           <v-btn
             @click="analysConformation"
             :disabled="disableSubmit"
@@ -466,7 +476,6 @@ export default {
   methods: {
     clearUpload() {
       this.from.fileAttachment = ""
-      this.placeHolderText = "Upload your documents"
     },
     loadExampleData(_exampleName) {
       this.clearAccessionSequenceAndOrganism();
@@ -595,10 +604,12 @@ export default {
     },
     accessionLookup() {
       this.showAccessionLookup = true;
-      if (this.AccesionLookup != null && this.AccesionLookup.items != null && this.AccesionLookup.items.length > 0) {
-        this.AccesionLookup.items.splice(0, this.AccesionLookup.items.length);
+      if (
+        this.AccesionLookup != null &&
+        this.AccesionLookup.items != null &&
+        Array.isArray(this.AccesionLookup.items)
+      ) {
       }
-      this.geneName = "";
     },
     accesionLookupApply() {
       var selectedAccessions = lodash.filter(this.AccesionLookup.items, { selected: "true" });
@@ -749,8 +760,6 @@ export default {
         var selectedAccessions = lodash.filter(this.AccesionLookup.items, { selected: "true" });
         if(selectedAccessions != null && selectedAccessions.length > 0) {
           this.showAccessionLookupApplyBtn = true
-        }else {
-          this.showAccessionLookupApplyBtn = false
         }
       },
       deep: true
@@ -834,8 +843,7 @@ export default {
         resultSummary: []
       },
       panel: [0],
-      showAccessionLookupApplyBtn: false,
-      placeHolderText: 'Upload your documents'
+      showAccessionLookupApplyBtn: false
     };
   },
   computed: {
