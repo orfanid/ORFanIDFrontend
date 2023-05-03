@@ -29,6 +29,7 @@
         </v-col>
         <v-col cols="s6">
           <v-col cols="12">
+            <h6>Examples</h6>
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-icon
