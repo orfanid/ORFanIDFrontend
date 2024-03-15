@@ -218,6 +218,7 @@
                 value="PSI-BLAST"
               ></v-radio>
               <v-radio label="BLAST" value="BLAST"></v-radio>
+              <v-radio label="DIAMOND" value="DIAMOND" disabled></v-radio>
             </v-radio-group>
           </div>
         </v-col>
