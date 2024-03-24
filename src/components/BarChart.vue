@@ -1,6 +1,5 @@
 <template>
   <v-chart class="chart barchart" :option="chartData" />
-  <!-- <pre>{{chartData}}</pre> -->
 </template>
 
 <script>
@@ -38,6 +37,10 @@ export default {
   },
   data() {
     return {}
+  },
+  mounted() {
+    console.log("dataChart", this.chartData);
+    console.log("dataChart",JSON.stringify(this.chartData));
   },
 };
 </script>

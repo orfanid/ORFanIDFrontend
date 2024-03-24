@@ -5,91 +5,86 @@
         <v-card class="pa-3 ma-md-6 pa-md-6 ps-md-16" max-width="1600" min-height="400">
           <v-row>
             <v-col cols="12" md="6">
-              <v-card-title class="justify-center"
-                >Analysis Parameters</v-card-title
-              >
+              <v-card-title class="justify-center">Analysis Parameters</v-card-title>
               <div>
-                <table
-                  id="orfanGenesSummary"
-                  class="table text-left"
-                  cellspacing="0"
-                >
-                  <tbody>
-                    <tr class="border-bottom">
-                      <th>Organism:</th>
-                      <td>
-                        <!-- <img
-                          :src="analysisParameters.organismImg"
-                          width="40"
-                          height="40"
-                          style="border-radius: 50%;"
-                        />
-                        <br /> -->
-                        <span id="parameters_organism" wfd-id="31">{{
-                          analysisParameters.organism
+                <div id="orfanGenesSummary" class="text-left">
+                  <div class="border-bottom">
+                    <v-row>
+                      <v-col cols="4" >
+                        <div class="info-item"><strong>Organism:</strong></div>
+                      </v-col>
+                      <v-col>
+                        <span id="parameters_organism">{{ analysisParameters.organism }}</span>
+                      </v-col>
+                    </v-row>
+                  </div>
+                  <div class="border-bottom">
+                    <v-row>
+                      <v-col cols="4">
+                        <div class="info-item"><strong>Analysis ID:</strong></div>
+                      </v-col>
+                      <v-col>
+                        <span>{{ analysisParameters.analysisId }}</span>
+                      </v-col>
+                    </v-row>
+                  </div>
+                  <div>
+                    <v-row>
+                      <v-col cols="4">
+                        <div class="info-item"><strong>Sequence Type:</strong></div>
+                      </v-col>
+                      <v-col>
+                        <span id="parameters_sequence_type">{{
+                          analysisParameters.sequenceType
                         }}</span>
-                      </td>
-                    </tr>
-                    <tr class="border-bottom">
-                      <th>Analysis ID:</th>
-                      <td>
-                        <span wfd-id="30">{{
-                          analysisParameters.analysisId
-                        }}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Sequence Type:</th>
-                      <td>
-                        <div class="chip" wfd-id="28">
-                          <span id="parameters_sequence_type" wfd-id="29">{{
-                            analysisParameters.sequenceType
-                          }}</span>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Evalue(e-10):</th>
-                      <td>
-                        <span id="parameters_evalue" wfd-id="27">{{
-                          analysisParameters.evalue
-                        }}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Maximum Target Sequences:</th>
-                      <td>
-                        <span id="parameters_max_tar_seq" wfd-id="26">{{
+                      </v-col>
+                    </v-row>
+                  </div>
+                  <div>
+                    <v-row>
+                      <v-col cols="4">
+                        <div class="info-item"><strong>Evalue(e-10):</strong></div>
+                      </v-col>
+                      <v-col>
+                        <span id="parameters_evalue">{{ analysisParameters.evalue }}</span>
+                      </v-col>
+                    </v-row>
+                  </div>
+                  <div>
+                    <v-row>
+                      <v-col cols="4"
+                        ><div class="info-item">
+                          <strong>Maximum Target Sequences:</strong>
+                        </div></v-col
+                      >
+                      <v-col
+                        ><span id="parameters_max_tar_seq">{{
                           analysisParameters.maximumTargetSequences
-                        }}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Identity:</th>
-                      <td>
-                        <div id="myProgress" wfd-id="23">
-                          <v-progress-linear
-                            v-model="analysisParameters.identity"
-                            height="25"
-                          >
-                            <strong
-                              >{{
-                                Math.ceil(analysisParameters.identity)
-                              }}%</strong
-                            >
+                        }}</span></v-col
+                      >
+                    </v-row>
+                  </div>
+                  <div>
+                    <v-row>
+                      <v-col cols="4"
+                        ><div class="info-item"><strong>Identity:</strong></div></v-col
+                      >
+                      <v-col
+                        ><div id="myProgress">
+                          <v-progress-linear v-model="analysisParameters.identity" height="25">
+                            <strong>{{ Math.ceil(analysisParameters.identity) }}%</strong>
                           </v-progress-linear>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                        </div></v-col
+                      >
+                    </v-row>
+                  </div>
+                </div>
               </div>
             </v-col>
             <v-col cols="12" md="6">
-              <v-card-title class="justify-center"
-                >ORFan gene summary</v-card-title
-              >
-              <BarChart :chartData="chartSummary" />
+              <v-card-title class="justify-center">ORFan gene summary</v-card-title>
+              <!-- <BarChart :chartData="chartSummary" /> -->
+              <GeneSummary :dataChart="chartSummary" />
             </v-col>
           </v-row>
         </v-card>
@@ -98,9 +93,7 @@
     <v-row class="text-center">
       <v-col>
         <v-card class="ma-md-6" max-width="1600" min-height="100">
-          <v-card-title class="justify-center"
-            >ORFan Genes Categorization</v-card-title
-          >
+          <v-card-title class="justify-center">ORFan Genes Categorization</v-card-title>
           <v-card>
             <v-card-title>
               <v-spacer></v-spacer>
@@ -121,7 +114,12 @@
               class="elevation-1 querytable"
             >
               <template v-slot:item.sessionId="{ item }">
-                <v-dialog v-model="item.showDialog" v-if="item.orfanLevel !='Strict ORFan'" width="1200" height="1200">
+                <v-dialog
+                  v-model="item.showDialog"
+                  v-if="item.orfanLevel != 'Strict ORFan'"
+                  width="1200"
+                  height="1200"
+                >
                   <template v-slot:activator="{ on, attrs }">
                     <v-icon
                       v-on="on"
@@ -136,21 +134,16 @@
                     <v-divider></v-divider>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn
-                        color="primary"
-                        text
-                        @click="item.showDialog = false"
-                      >
+                      <v-btn color="primary" text @click="item.showDialog = false">
                         Close
                       </v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
-              
               </template>
               <template #footer.prepend>
-    <v-spacer/>
-  </template>
+                <v-spacer />
+              </template>
             </v-data-table>
           </v-card>
         </v-card>
@@ -158,12 +151,7 @@
     </v-row>
     <v-row class="text-right">
       <v-col cols="11">
-        <v-btn
-          class="mx-2"
-          small
-          color="teal"
-          @click="downloadBlast(analysisId)"
-        >
+        <v-btn class="mx-2" small color="teal" @click="downloadBlast(analysisId)">
           <v-icon color="white">
             mdi-download
           </v-icon>
@@ -173,8 +161,7 @@
       <v-col cols="1"> </v-col>
     </v-row>
     <v-row class="text-right">
-      <v-col cols="11">
-      </v-col>
+      <v-col cols="11"> </v-col>
       <v-col cols="1"> </v-col>
     </v-row>
   </v-container>
@@ -183,15 +170,17 @@
 import analysisAPI from "../api/analysis";
 import BarChart from "../components/BarChart";
 import TreeChart from "../components/TreeChart";
+import GeneSummary from "../components/GeneSummary";
 import { required, email } from "vuelidate/lib/validators";
-import VueProgressBar from 'vue-progressbar'
+import VueProgressBar from "vue-progressbar";
 
 export default {
   name: "Result",
   components: {
     BarChart,
     TreeChart,
-    VueProgressBar
+    VueProgressBar,
+    GeneSummary
   },
   data() {
     return {
@@ -206,7 +195,7 @@ export default {
         maximumTargetSequences: "",
         identity: "",
         analysisId: "",
-        organismImg: "",
+        organismImg: ""
       },
       chartSummary: {
         xAxis: {
@@ -214,18 +203,18 @@ export default {
           data: [],
           axisLabel: {
             interval: 0,
-            rotate: -60,
-          },
+            rotate: -60
+          }
         },
         yAxis: {
-          type: "value",
+          type: "value"
         },
         series: [
           {
             data: [],
-            type: "bar",
-          },
-        ],
+            type: "bar"
+          }
+        ]
       },
       genesCategorization: {
         search: "",
@@ -233,14 +222,14 @@ export default {
           { text: "Gene", align: "start", sortable: false, value: "geneId" },
           { text: "Description", value: "description", sortable: false },
           { text: "ORFan Gene Level", value: "orfanLevel", sortable: false },
-          { text: "Homology Evidence", value: "sessionId", sortable: false },
+          { text: "Homology Evidence", value: "sessionId", sortable: false }
         ],
-        desserts: [],
+        desserts: []
       },
       blastResult: {
         tooltip: {
           trigger: "item",
-          triggerOn: "mousemove",
+          triggerOn: "mousemove"
         },
         series: [
           {
@@ -261,8 +250,8 @@ export default {
                 position: "left",
                 verticalAlign: "middle",
                 align: "right",
-                fontSize: 12,
-              },
+                fontSize: 12
+              }
             },
 
             leaves: {
@@ -270,92 +259,86 @@ export default {
                 normal: {
                   position: "right",
                   verticalAlign: "middle",
-                  align: "left",
-                },
-              },
+                  align: "left"
+                }
+              }
             },
             emphasis: {
-                    focus: 'descendant'
+              focus: "descendant"
             },
 
             expandAndCollapse: true,
             animationDuration: 550,
-            animationDurationUpdate: 750,
-          },
-        ],
+            animationDurationUpdate: 750
+          }
+        ]
       },
       analysisResult: {
         analysisId: this.$route.params.analysisId,
         email: "",
         firstName: "",
-        lastName: "",
-      },
+        lastName: ""
+      }
     };
   },
   mounted() {
     const that = this;
-    analysisAPI.getOrganismList().then((response) => {
-      that.organismList = Object.keys(response.data).map((key) => {
+    analysisAPI.getOrganismList().then(response => {
+      that.organismList = Object.keys(response.data).map(key => {
         return { key: key, value: response.data[key] };
       });
     });
     this.isLoading = true;
-    this.$Progress.start()
-    analysisAPI
-      .getAnalysis({ sessionId: this.$route.params.analysisId })
-      .then((response) => {
-        that.$Progress.finish()
-        console.log(response.data);
-        that.analysisParameters.analysisId = response.data.analysisId;
-        that.analysisParameters.organism = response.data.organism;
-        that.analysisParameters.sequenceType = response.data.sequenceType;
-        that.analysisParameters.evalue = response.data.evalue;
-        that.analysisParameters.maximumTargetSequences =
-          response.data.maximumTargetSequences;
-        that.analysisParameters.identity = response.data.identity;
-        let selectOrganism = that.organismList.filter(function(item) {
-          return item.key.includes(response.data.organism);
-        });
-        that.analysisParameters.organismImg = selectOrganism[0].value;
+    this.$Progress.start();
+    analysisAPI.getAnalysis({ sessionId: this.$route.params.analysisId }).then(response => {
+      that.$Progress.finish();
+      console.log(response.data);
+      that.analysisParameters.analysisId = response.data.analysisId;
+      that.analysisParameters.organism = response.data.organism;
+      that.analysisParameters.sequenceType = response.data.sequenceType;
+      that.analysisParameters.evalue = response.data.evalue;
+      that.analysisParameters.maximumTargetSequences = response.data.maximumTargetSequences;
+      that.analysisParameters.identity = response.data.identity;
+      let selectOrganism = that.organismList.filter(function(item) {
+        return item.key.includes(response.data.organism);
+      });
+      that.analysisParameters.organismImg = selectOrganism[0].value;
 
-        response.data.geneList.forEach((element) => {
-          that.genesCategorization.desserts.push({
-            id: element.id,
-            geneId: element.geneId,
-            sequence: element.sequence,
-            description: element.description,
-            orfanLevel: element.orfanLevel,
-            taxonomyId: element.taxonomyId,
-            gccontent: element.gccontent,
-            length: element.length,
-            startLocation: element.startLocation,
-            endLocation: element.endLocation,
-            sessionId: that.analysisId,
-          });
+      response.data.geneList.forEach(element => {
+        that.genesCategorization.desserts.push({
+          id: element.id,
+          geneId: element.geneId,
+          sequence: element.sequence,
+          description: element.description,
+          orfanLevel: element.orfanLevel,
+          taxonomyId: element.taxonomyId,
+          gccontent: element.gccontent,
+          length: element.length,
+          startLocation: element.startLocation,
+          endLocation: element.endLocation,
+          sessionId: that.analysisId
         });
       });
+    });
 
-      this.isLoading = false;
+    this.isLoading = false;
 
-    analysisAPI
-      .getSummaryChart({ sessionId: this.$route.params.analysisId })
-      .then((response) => {
-        console.log(response);
-        response.data.x.forEach((item) => {
-          that.chartSummary.xAxis.data.push(item);
-        });
-        response.data.y.forEach((item) => {
-          that.chartSummary.series[0].data.push(item);
-        });
+    analysisAPI.getSummaryChart({ sessionId: this.$route.params.analysisId }).then(response => {
+      console.log(response);
+      response.data.x.forEach(item => {
+        that.chartSummary.xAxis.data.push(item);
       });
+      response.data.y.forEach(item => {
+        that.chartSummary.series[0].data.push(item);
+      });
+    });
   },
   methods: {
     searchGene(gene) {
-      window.location.href =
-        "https://www.ncbi.nlm.nih.gov/search/all/?term=" + gene;
+      window.location.href = "https://www.ncbi.nlm.nih.gov/search/all/?term=" + gene;
     },
     downloadBlast(id) {
-      analysisAPI.downloadBlast(id).then((response) => {
+      analysisAPI.downloadBlast(id).then(response => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
@@ -369,59 +352,48 @@ export default {
       this.treeChartLoading = true;
       const that = this;
       console.log("Loadding Blast " + sessionId + " " + geneId);
-      analysisAPI
-        .getBlastSummary({ geneId: geneId, sessionId: sessionId })
-        .then((response) => {
+      analysisAPI.getBlastSummary({ geneId: geneId, sessionId: sessionId }).then(response => {
         this.treeChartLoading = false;
-          response.data.tree.children.forEach((item) => {
-            that.blastResult.series[0].data.push(item);
-          });
+        response.data.tree.children.forEach(item => {
+          that.blastResult.series[0].data.push(item);
         });
+      });
     },
     saveAnalysis() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
         const that = this;
-        analysisAPI.saveAnalysis(this.analysisResult).then((response) => {
+        analysisAPI.saveAnalysis(this.analysisResult).then(response => {
           that.saveResultDialog = false;
           console.log(response);
         });
       }
     },
-    closeTreeChartDialog() {
-      
-    }
+    closeTreeChartDialog() {}
   },
   validations: {
     analysisResult: {
       firstName: {
-        required,
+        required
       },
       lastName: {
-        required,
+        required
       },
       email: {
         required,
-        email,
-      },
-    },
-  },
+        email
+      }
+    }
+  }
 };
 </script>
 
 <style>
-table {
-  border-spacing: 2px;
-}
-td {
-  padding: 10px;
-}
-.border-bottom {
-  border-bottom: 1px solid gray !important;
+.info-item {
+  padding-right: 10px; /* Adjust as needed */
 }
 
 .v-application--is-ltr .v-data-footer__pagination {
   margin-left: auto;
-  
 }
 </style>
