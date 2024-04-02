@@ -117,9 +117,8 @@
                 <v-dialog
                   v-model="item.showDialog"
                   v-if="item.orfanLevel != 'Strict ORFan'"
-                  width="1200"
-                  height="1200"
-                >
+                  transition="dialog-bottom-transition"
+                  fullscreen>
                   <template v-slot:activator="{ on, attrs }">
                     <v-icon
                       v-on="on"
@@ -130,14 +129,19 @@
                     >
                   </template>
                   <v-card>
-                    <TreeChart :chartData="blastResult" :loading="treeChartLoading" />
-                    <v-divider></v-divider>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
+                    <v-card-title class="fixed-size" style="background-color: #009688 ">
                       <v-btn color="primary" text @click="item.showDialog = false">
-                        Close
+                        <v-icon>mdi-close</v-icon>
                       </v-btn>
-                    </v-card-actions>
+                      <span class="gray-block-title">Title - TBD</span>
+                    </v-card-title>
+                    <v-card-text>
+                      <v-row>
+                        <v-col>
+                          <TreeChart :chartData="blastResult" :loading="treeChartLoading" />
+                        </v-col>
+                      </v-row>
+                    </v-card-text>
                   </v-card>
                 </v-dialog>
               </template>
@@ -395,5 +399,9 @@ export default {
 
 .v-application--is-ltr .v-data-footer__pagination {
   margin-left: auto;
+}
+
+.gray-background {
+  background-color: #CCCCCC;
 }
 </style>
