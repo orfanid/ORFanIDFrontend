@@ -42,8 +42,6 @@ export default {
     };
   },
   mounted() {
-    this.treeData = this.chartData;
-   
     this.initChat();
   },
   methods: {
@@ -64,7 +62,7 @@ export default {
       this.duration = 750;
 
       this.treemap = d3.tree().size([height, width]);
-      this.root = d3.hierarchy(this.treeData, function(d) {
+      this.root = d3.hierarchy(this.chartData, function(d) {
         return d.children;
       });
       this.root.x0 = height / 2;

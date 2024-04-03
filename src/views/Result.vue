@@ -10,7 +10,7 @@
                 <div id="orfanGenesSummary" class="text-left">
                   <div class="border-bottom">
                     <v-row>
-                      <v-col cols="4" >
+                      <v-col cols="4">
                         <div class="info-item"><strong>Organism:</strong></div>
                       </v-col>
                       <v-col>
@@ -118,12 +118,13 @@
                   v-model="item.showDialog"
                   v-if="item.orfanLevel != 'Strict ORFan'"
                   transition="dialog-bottom-transition"
-                  fullscreen>
+                  fullscreen
+                >
                   <template v-slot:activator="{ on, attrs }">
                     <v-icon
                       v-on="on"
                       v-bind="attrs"
-                      @click="loadBlastData(item.sessionId, item.geneId)"
+                      @click="loadBlastDataV2(item.sessionId, item.geneId)"
                       large
                       >mdi-chart-bar</v-icon
                     >
@@ -137,8 +138,11 @@
                     </v-card-title>
                     <v-card-text>
                       <v-row>
-                        <v-col>
-                          <TreeChart :chartData="blastResult" :loading="treeChartLoading" />
+                        <v-col v-if="treeChartLoading == false">
+                          <TreeChart :chartData="treeData" :loading="treeChartLoading" />
+                        </v-col >
+                        <v-col v-if="treeChartLoading == true">
+                          Loading...
                         </v-col>
                       </v-row>
                     </v-card-text>
@@ -282,7 +286,8 @@ export default {
         email: "",
         firstName: "",
         lastName: ""
-      }
+      },
+      treeData: {}
     };
   },
   mounted() {
@@ -360,8 +365,25 @@ export default {
         this.treeChartLoading = false;
         response.data.tree.children.forEach(item => {
           that.blastResult.series[0].data.push(item);
+          console.log("loadBlastData", item);
         });
       });
+    },
+    loadBlastDataV2(sessionId, geneId) {
+      this.treeChartLoading = true;
+      console.log("Loadding Blast " + sessionId + " " + geneId);
+      analysisAPI.getBlastSummary({ geneId: geneId, sessionId: sessionId }).then(response => {
+        this.treeChartLoading = false;
+        this.treeData = this.extractNames(response.data.tree);
+        console.log("extractedData", this.treeData);
+      });
+    },
+    extractNames(node) {
+      const result = { name: node.name }; 
+      if (node.children) {
+        result.children = node.children.map(child => this.extractNames(child));
+      }
+      return result;
     },
     saveAnalysis() {
       this.$v.$touch();
@@ -402,6 +424,6 @@ export default {
 }
 
 .gray-background {
-  background-color: #CCCCCC;
+  background-color: #cccccc;
 }
 </style>
