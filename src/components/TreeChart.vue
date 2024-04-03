@@ -1,6 +1,8 @@
 <template>
-  <div>
-    <div class="svgcontainer"></div>
+  <div class="chart-container">
+    <div class="svg-wrapper">
+      <svg class="svgcontainer"></svg>
+    </div>
   </div>
 </template>
 
@@ -50,22 +52,23 @@ export default {
       var width = 960 - margin.left - margin.right;
       var height = 500 - margin.top - margin.bottom;
 
+      const dimensions = this.calculateTreeDimensions(this.chartData);
+
       this.svg = d3
         .select(".svgcontainer")
-        .append("svg")
-        .attr("width", width + margin.right + margin.left)
-        .attr("height", height + margin.top + margin.bottom)
+        .attr("width", dimensions.width + margin.right + margin.left)
+        .attr("height", dimensions.height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       this.i = 0;
       this.duration = 750;
 
-      this.treemap = d3.tree().size([height, width]);
+      this.treemap = d3.tree().size([dimensions.height, dimensions.width]);
       this.root = d3.hierarchy(this.chartData, function(d) {
         return d.children;
       });
-      this.root.x0 = height / 2;
+      this.root.x0 = dimensions.height / 2;
       this.root.y0 = 0;
       console.log("root ", this.root);
 
@@ -194,7 +197,39 @@ export default {
         }
         update(d);
       }
+    },
+    calculateTreeDimensions(data) {
+    // Traverse the tree to determine depth and breadth
+    // This is a simplified example, you may need to adapt it based on your data structure
+    const depth = this.getMaxDepth(data);
+    const breadth = this.getMaxBreadth(data);
+
+    // Calculate width and height based on depth and breadth
+    const width = depth * 180; // Adjust this value based on your node size
+    const height = breadth * 100; // Adjust this value based on your node size
+
+    return { width, height };
+  },
+
+  getMaxDepth(node) {
+    // Function to calculate maximum depth of the tree
+    // You may need to adapt this function based on your data structure
+    if (!node.children || node.children.length === 0) {
+      return 1;
+    } else {
+      return 1 + Math.max(...node.children.map(child => this.getMaxDepth(child)));
     }
+  },
+
+  getMaxBreadth(node) {
+    // Function to calculate maximum breadth of the tree
+    // You may need to adapt this function based on your data structure
+    if (!node.children || node.children.length === 0) {
+      return 1;
+    } else {
+      return node.children.length + Math.max(...node.children.map(child => this.getMaxBreadth(child)));
+    }
+  }
   }
 };
 </script>
@@ -226,5 +261,23 @@ export default {
   fill: none;
   stroke: #ccc;
   stroke-width: 2px;
+}
+
+.chart-container {
+  width: 100vw - 10px; /* Full width of viewport */
+  height: 100vh - 10px; /* Full height of viewport */
+  overflow: auto;
+  position: relative;
+}
+
+.svg-wrapper {
+  width: fit-content;
+  height: fit-content;
+  margin-right: 20px; /* Adjust for margin */
+  margin-bottom: 20px; /* Adjust for margin */
+}
+
+.svgcontainer {
+  /* SVG styles */
 }
 </style>
