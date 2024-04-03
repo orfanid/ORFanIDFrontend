@@ -42,7 +42,8 @@ export default {
     };
   },
   mounted() {
-    console.log("chartData ", this.chartData);
+    this.treeData = this.chartData;
+   
     this.initChat();
   },
   methods: {
