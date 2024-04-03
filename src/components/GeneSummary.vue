@@ -16,14 +16,29 @@ export default {
   data() {
     return {
       chartData: {
-        xAxis: { type: "category", data: [], axisLabel: { interval: 0, rotate: -60 } },
+        xAxis: {
+          type: "category",
+          data: [],
+          axisLabel: {
+            interval: 0,
+            rotate: -70,
+            align: "justify",
+            formatter: function(value) {
+              return value.split(" ").join("\n");
+            },
+            fontSize: 8
+          }
+        },
         yAxis: {
           type: "value",
+          min: 0, 
+          interval: 1,
           axisLabel: {
-            formatter: function(value, index) {
-              return Math.round(value);
-            }
-          }
+            pformatter: '{value}'
+          },
+          axisLine: {
+            show: true
+          },
         },
         series: [{ data: [], type: "bar" }]
       }

@@ -134,7 +134,7 @@
                       <v-btn color="primary" text @click="item.showDialog = false">
                         <v-icon>mdi-close</v-icon>
                       </v-btn>
-                      <span class="gray-block-title">Title - TBD</span>
+                      <span class="gray-block-title">{{ item.description }}</span>
                     </v-card-title>
                     <v-card-text>
                       <v-row>
