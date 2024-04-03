@@ -38,7 +38,8 @@ export default {
       },
       treemap: null,
       root: null,
-      svg: null, i: 0,
+      svg: null,
+      i: 0,
       duration: 750,
       nodeExit: null
     };
@@ -199,37 +200,32 @@ export default {
       }
     },
     calculateTreeDimensions(data) {
-    // Traverse the tree to determine depth and breadth
-    // This is a simplified example, you may need to adapt it based on your data structure
-    const depth = this.getMaxDepth(data);
-    const breadth = this.getMaxBreadth(data);
+      const depth = this.getMaxDepth(data);
+      const breadth = this.getMaxBreadth(data);
 
-    // Calculate width and height based on depth and breadth
-    const width = depth * 180; // Adjust this value based on your node size
-    const height = breadth * 100; // Adjust this value based on your node size
+      const width = depth * 180;
+      const height = breadth * 100;
 
-    return { width, height };
-  },
+      return { width, height };
+    },
 
-  getMaxDepth(node) {
-    // Function to calculate maximum depth of the tree
-    // You may need to adapt this function based on your data structure
-    if (!node.children || node.children.length === 0) {
-      return 1;
-    } else {
-      return 1 + Math.max(...node.children.map(child => this.getMaxDepth(child)));
+    getMaxDepth(node) {
+      if (!node.children || node.children.length === 0) {
+        return 1;
+      } else {
+        return 1 + Math.max(...node.children.map(child => this.getMaxDepth(child)));
+      }
+    },
+
+    getMaxBreadth(node) {
+      if (!node.children || node.children.length === 0) {
+        return 1;
+      } else {
+        return (
+          node.children.length + Math.max(...node.children.map(child => this.getMaxBreadth(child)))
+        );
+      }
     }
-  },
-
-  getMaxBreadth(node) {
-    // Function to calculate maximum breadth of the tree
-    // You may need to adapt this function based on your data structure
-    if (!node.children || node.children.length === 0) {
-      return 1;
-    } else {
-      return node.children.length + Math.max(...node.children.map(child => this.getMaxBreadth(child)));
-    }
-  }
   }
 };
 </script>
