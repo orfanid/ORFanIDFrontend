@@ -1,6 +1,6 @@
 <template>
   <v-app-bar app color="teal">
-    <v-navigation-drawer v-model="sidebar" app class="hidden-md-and-up">
+    <v-navigation-drawer v-model="sidebar" app class="hidden-md-and-up" :fixed="true" v-if="$vuetify.breakpoint.smAndDown">
       <v-list>
         <v-list-item
           v-for="item in menuItems"
@@ -34,27 +34,22 @@
           <v-spacer></v-spacer>
           <v-btn value="results" text color="white" to="/input">
             <span>New Query</span>
-            <!-- <v-icon>mdi-mdiFileChart</v-icon> -->
           </v-btn>
 
           <v-btn value="results" text color="white" to="/results">
             <span>Results</span>
-            <!-- <v-icon>mdi-mdiFileChart</v-icon> -->
           </v-btn>
 
           <v-btn value="nearby" text color="white" to="/orfanBase">
             <span>ORFanBase</span>
-            <!-- <v-icon>mdi-map-marker</v-icon> -->
           </v-btn>
 
           <v-btn value="nearby" text color="white" to="/accession">
             <span>Accessions</span>
-            <!-- <v-icon>mdi-map-marker</v-icon> -->
           </v-btn>
 
           <v-btn value="nearby" text color="white" @click="navInstruction">
             <span>Instructions</span>
-            <!-- <v-icon>mdi-map-marker</v-icon> -->
           </v-btn>
 
           <v-menu offset-y>
