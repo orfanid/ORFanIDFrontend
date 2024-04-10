@@ -107,14 +107,16 @@
                 label="Upload File"
                 prepend-icon="mdi-cloud-upload"
                 class="upload-button d-inline"
-                clearable="true"
                 v-bind="attrs"
-                v-on="on"
               >
               </v-file-input>
             </v-col>
             <v-col cols="1">
-              <div class="pt-15"><v-icon v-if="from.fileAttachment" color="red" @click="clearUpload">mdi-close-octagon-outline</v-icon></div>
+              <div class="pt-15">
+                <v-icon v-if="from.fileAttachment" color="red" @click="clearUpload"
+                  >mdi-close-octagon-outline</v-icon
+                >
+              </div>
             </v-col>
           </v-row>
         </v-col>
@@ -184,7 +186,12 @@
                     <v-btn color="green darken-1" text @click="accesionLookupClose">
                       Close
                     </v-btn>
-                    <v-btn :disabled="!showAccessionLookupApplyBtn" color="green darken-1" text @click="accesionLookupApply">
+                    <v-btn
+                      :disabled="!showAccessionLookupApplyBtn"
+                      color="green darken-1"
+                      text
+                      @click="accesionLookupApply"
+                    >
                       Apply
                     </v-btn>
                   </v-card-actions>
@@ -211,7 +218,7 @@
       <v-row v-if="this.from.accessionType === 'protein'">
         <v-col cols="6">
           <div>
-            <h7>Program Selection</h7>
+            <h6>Program Selection</h6>
             <v-radio-group mandatory v-model="from.program">
               <v-radio
                 label="PSI-BLAST (Position-Specific Iterated BLAST)"
@@ -271,11 +278,13 @@
             item-text="name"
             item-value="name"
             v-bind="attrs"
-            v-on="on"
           >
             <template v-slot:item="data">
               <v-list-item-avatar>
-                <img :src="data.item.img" onerror="javascript:this.src='https://dummyimage.com/60x40/c7abc7/1721a6.png&text=Organism'" />
+                <img
+                  :src="data.item.img"
+                  onerror="javascript:this.src='https://dummyimage.com/60x40/c7abc7/1721a6.png&text=Organism'"
+                />
               </v-list-item-avatar>
               <v-list-item-content>
                 <v-list-item-title v-html="data.item.name"></v-list-item-title>
@@ -283,11 +292,12 @@
             </template>
           </v-autocomplete>
           <v-text-field
-            label="Organism"
             v-if="organismSelection == 'textfield'"
+            label="Organism"
             v-model="from.organismName"
+            @change="handleOrganismChange"
           ></v-text-field>
-
+          <label style="color: red" v-if="!organismValid">{{ organismInValidMsg }}</label>
           <div
             style="color: red"
             v-if="$v.from.organismName.$dirty && !$v.from.organismName.required"
@@ -392,7 +402,7 @@
           </v-expansion-panels>
         </v-col>
       </v-row>
-      <v-row align="left" justify="space-around">
+      <v-row justify="space-around">
         <v-spacer />
       </v-row>
 
@@ -477,7 +487,7 @@ export default {
   name: "Home",
   methods: {
     clearUpload() {
-      this.from.fileAttachment = ""
+      this.from.fileAttachment = "";
     },
     loadExampleData(_exampleName) {
       this.clearAccessionSequenceAndOrganism();
@@ -596,13 +606,6 @@ export default {
         this.uploadFileContent = reader.result;
         this.from.sequence = reader.result;
       };
-    },
-    organismValid() {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve(false);
-        }, 500);
-      });
     },
     accessionLookup() {
       this.showAccessionLookup = true;
@@ -724,6 +727,21 @@ export default {
       } else if (this.from.searchMethod == "s") {
         this.from.ncbiAccessionInput = "";
       }
+    },
+    handleOrganismChange(text) {
+      let that = this;
+      var pattern = /[\w\s]+\(\d{4}\)$/g;
+      var match = pattern.test(text);
+      if (match) {
+        this.from.organismName = text;
+        this.organismValid = true;
+      } else {
+        this.from.organismName = text;
+        this.organismValid = false;
+        setTimeout(function() {
+          that.organismValid = true;
+        }, 10000);
+      }
     }
   },
   watch: {
@@ -757,11 +775,11 @@ export default {
       },
       deep: true
     },
-    "AccesionLookup.items" : {
+    "AccesionLookup.items": {
       handler: function(after, before) {
         var selectedAccessions = lodash.filter(this.AccesionLookup.items, { selected: "true" });
-        if(selectedAccessions != null && selectedAccessions.length > 0) {
-          this.showAccessionLookupApplyBtn = true
+        if (selectedAccessions != null && selectedAccessions.length > 0) {
+          this.showAccessionLookupApplyBtn = true;
         }
       },
       deep: true
@@ -845,7 +863,10 @@ export default {
         resultSummary: []
       },
       panel: [0],
-      showAccessionLookupApplyBtn: false
+      showAccessionLookupApplyBtn: false,
+      attrs: {},
+      organismValid : true,
+      organismInValidMsg: "Please ensure organism names follow this format: Homo sapiens (9606)"
     };
   },
   computed: {
@@ -909,6 +930,27 @@ export default {
     }
   }
 };
+
+export function customMask(value) {
+  const placeholders = {
+    "#": "\\d",
+    A: "[A-Za-z]",
+    N: "[A-Za-z0-9]",
+    X: ".",
+    "?": "?"
+  };
+
+  const regexArray = [];
+  for (const char of inputString) {
+    if (char in placeholders) {
+      regexArray.push(new RegExp(placeholders[char]));
+    } else {
+      regexArray.push(new RegExp(`\\${char}`)); // Escaping special characters
+    }
+  }
+
+  return regexArray;
+}
 </script>
 <style scoped>
 .v-fade {
