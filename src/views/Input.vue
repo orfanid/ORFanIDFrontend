@@ -736,7 +736,7 @@ export default {
         this.from.organismName = text;
         this.organismValid = true;
       } else {
-        this.from.organismName = text;
+        this.from.organismName = "";
         this.organismValid = false;
         setTimeout(function() {
           that.organismValid = true;
