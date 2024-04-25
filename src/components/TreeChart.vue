@@ -1,15 +1,19 @@
 <template>
   <div class="chart-container">
+    <div class="button-container">
+      <button @click="zoomIn">Zoom In<v-icon size="48">mdi-magnify-plus</v-icon></button>
+      <button @click="zoomOut">Zoom Out<v-icon size="48">mdi-magnify-minus</v-icon></button>
+    </div>
     <div class="svg-wrapper">
       <svg class="svgcontainer"></svg>
     </div>
-  </div>
-</template>
+    </div>
+  </template>
 
-<script>
-import * as d3 from "d3";
-export default {
-  props: {
+  <script>
+  import * as d3 from "d3";
+  export default {
+    props: {
     chartData: {
       type: Object,
       required: true
@@ -41,7 +45,13 @@ export default {
       svg: null,
       i: 0,
       duration: 750,
-      nodeExit: null
+      nodeExit: null,
+      zoom: d3
+        .zoom()
+        .scaleExtent([1, 7])
+        .on("zoom", event => {
+          this.svg.attr("transform", event.transform);
+        })
     };
   },
   mounted() {
@@ -54,11 +64,18 @@ export default {
       var height = 500 - margin.top - margin.bottom;
 
       const dimensions = this.calculateTreeDimensions(this.chartData);
+      //This config help to calculate the width and height of the tree and display it with full width
+      // this.svg = d3
+      //   .select(".svgcontainer")
+      //   .attr("width", dimensions.width + margin.right + margin.left)
+      //   .attr("height", dimensions.height + margin.top + margin.bottom)
+      //   .append("g")
+      //   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       this.svg = d3
         .select(".svgcontainer")
-        .attr("width", dimensions.width + margin.right + margin.left)
-        .attr("height", dimensions.height + margin.top + margin.bottom)
+        .attr("width", window.innerWidth)
+        .attr("height", window.innerHeight)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -225,6 +242,18 @@ export default {
           node.children.length + Math.max(...node.children.map(child => this.getMaxBreadth(child)))
         );
       }
+    },
+    zoomIn() {
+      this.svg
+        .transition()
+        .duration(750)
+        .call(this.zoom.scaleBy, 2);
+    },
+    zoomOut() {
+      this.svg
+        .transition()
+        .duration(750)
+        .call(this.zoom.scaleBy, 0.5);
     }
   }
 };
