@@ -5,7 +5,7 @@ import Result from "../views/Result";
 import Instructions from "../views/Instructions.vue";
 import Home from "../views/Home";
 import OrfanBase from "../views/Orfanbase";
-import Input from "../views/Input";
+import Input from "../views/Inputv2";
 import Accession from "../views/Accession.vue";
 import experimentdiamond from "../views/experiment-diamond.vue"
 
