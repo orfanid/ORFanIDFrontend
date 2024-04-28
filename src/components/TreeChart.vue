@@ -1,10 +1,15 @@
 <template>
   <div class="chart-container">
-    <div class="button-container">
-      <button @click="zoomIn">Zoom In<v-icon size="48">mdi-magnify-plus</v-icon></button>
-      <button @click="zoomOut">Zoom Out<v-icon size="48">mdi-magnify-minus</v-icon></button>
-    </div>
-    <div class="svg-wrapper">
+    <v-toolbar style="position: fixed; top: 0; right: 0;">
+      <v-btn icon @click="zoomIn">
+      <v-icon>mdi-magnify-plus</v-icon>
+      </v-btn>
+
+      <v-btn icon @click="zoomOut">
+      <v-icon>mdi-magnify-minus</v-icon>
+      </v-btn>
+    </v-toolbar>
+    <div class="svg-wrapper" style="overflow: auto;">
       <svg class="svgcontainer"></svg>
     </div>
     </div>
@@ -48,7 +53,7 @@
       nodeExit: null,
       zoom: d3
         .zoom()
-        .scaleExtent([1, 7])
+        .scaleExtent([0.6, 7])
         .on("zoom", event => {
           this.svg.attr("transform", event.transform);
         })
@@ -56,6 +61,13 @@
   },
   mounted() {
     this.initChat();
+
+    // Add event listeners for mouse events
+    this.svg
+      .on("mousedown", this.onMouseDown)
+      .on("mousemove", this.onMouseMove)
+      .on("mouseup", this.onMouseUp);
+
   },
   methods: {
     initChat() {
@@ -244,16 +256,62 @@
       }
     },
     zoomIn() {
+      const svgContainer = this.svg.node();
+      const containerWidth = svgContainer.clientWidth;
+      const containerHeight = svgContainer.clientHeight;
+      const currentTransform = d3.zoomTransform(svgContainer);
+
+      const newScale = currentTransform.k * 2;
+      const newX = containerWidth / 2 - (containerWidth / 2 - currentTransform.x) * 2;
+      const newY = containerHeight / 2 - (containerHeight / 2 - currentTransform.y) * 2;
+
       this.svg
         .transition()
         .duration(750)
-        .call(this.zoom.scaleBy, 2);
+        .call(this.zoom.transform, d3.zoomIdentity.translate(newX, newY).scale(newScale));
     },
+
     zoomOut() {
+      const svgContainer = this.svg.node();
+      const containerWidth = svgContainer.clientWidth;
+      const containerHeight = svgContainer.clientHeight;
+      const currentTransform = d3.zoomTransform(svgContainer);
+
+      const newScale = currentTransform.k * 0.5;
+      const newX = containerWidth / 2 - (containerWidth / 2 - currentTransform.x) * 0.5;
+      const newY = containerHeight / 2 - (containerHeight / 2 - currentTransform.y) * 0.5;
+
       this.svg
         .transition()
         .duration(750)
-        .call(this.zoom.scaleBy, 0.5);
+        .call(this.zoom.transform, d3.zoomIdentity.translate(newX, newY).scale(newScale));
+    },
+    onMouseDown(event) {
+      // Store the initial mouse position
+      this.initialMousePos = { x: event.clientX, y: event.clientY };
+      // Store the initial transform of the SVG
+      this.initialTransform = d3.zoomTransform(this.svg.node());
+    },
+
+    onMouseMove(event) {
+      // Check if the mouse button is pressed
+      if (event.buttons === 1) {
+        // Calculate the distance moved by the mouse
+        const dx = event.clientX - this.initialMousePos.x;
+        const dy = event.clientY - this.initialMousePos.y;
+
+        // Calculate the new transform based on the initial transform and the mouse movement
+        const newTransform = this.initialTransform.translate(dx, dy);
+
+        // Apply the new transform to the SVG
+        this.svg.attr("transform", newTransform);
+      }
+    },
+
+    onMouseUp() {
+      // Clear the initial mouse position and transform
+      this.initialMousePos = null;
+      this.initialTransform = null;
     }
   }
 };
@@ -293,6 +351,8 @@
   height: 100vh - 10px; /* Full height of viewport */
   overflow: auto;
   position: relative;
+  cursor: move; /* Add this line to set the mouse cursor to move icon */
+
 }
 
 .svg-wrapper {
