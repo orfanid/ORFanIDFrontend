@@ -120,15 +120,21 @@
                       <v-col>
                         <v-list dense style="height:400px; overflow-y:auto">
                           <v-list-item-group color="primary">
-                            <v-list-item>
+                            <v-list-item v-for="(item, i) in (accessionSearchResult && accessionSearchResult.accessionList ) ? accessionSearchResult.accessionList : []" :key="i">
                               <v-list-item-action>
-                                <v-checkbox true-value="true" false-value="false"></v-checkbox>
+                                <v-checkbox
+                                  v-model="item.selected"
+                                  true-value="true"
+                                  false-value="false"
+                                ></v-checkbox>
                               </v-list-item-action>
                               <v-list-item-icon>
-                                <v-icon></v-icon>
+                                <v-icon v-text="item.icon"></v-icon>
                               </v-list-item-icon>
                               <v-list-item-content>
-                                <v-list-item-title>------------</v-list-item-title>
+                                <v-list-item-title
+                                  >{{ item.text }} - {{ item.title }}</v-list-item-title
+                                >
                               </v-list-item-content>
                             </v-list-item>
                           </v-list-item-group>
@@ -141,7 +147,7 @@
                     <v-btn color="green darken-1" text @click="accesionLookupCloseHandler">
                       Close
                     </v-btn>
-                    <v-btn color="green darken-1" text>
+                    <v-btn color="green darken-1" text @click="applySelectedAccesion">
                       Apply
                     </v-btn>
                   </v-card-actions>
@@ -397,6 +403,7 @@
 import { required, requiredIf } from "vuelidate/lib/validators";
 import analysis from "@/api/analysis";
 import { getAccessionESearch } from "@/api/accessionSearch";
+import lodash from "lodash";
 export default {
   name: "Home",
   data() {
@@ -424,9 +431,7 @@ export default {
       accessionSearchResult: {
         idList: [],
         resultSummary: [],
-        AccesionLookup: {
-          items: []
-        }
+        accessionList: [],
       },
       examples: [
         { name: "Homo sapiens", icon: "human", taxonomyName: "Homo sapiens(9606)" },
@@ -592,6 +597,18 @@ export default {
         .finally(() => {
           this.$Progress.finish();
         });
+    },
+    applySelectedAccesion() {
+      console.log("Apply Selected Accession");
+
+      debugger
+      var selectedAccessions = lodash.filter(this.accessionSearchResult.accessionList, { selected: "true" });
+      console.log("Selected Accessions ", selectedAccessions);
+      var accessionsArray = lodash.map(selectedAccessions, "text");
+      if (accessionsArray != null && accessionsArray.length > 0) {
+        this.NCBIAccession = accessionsArray.toString();
+      }
+      this.showAccessionSearchDialog = false;
     }
   },
   validations: {
