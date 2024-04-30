@@ -203,7 +203,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-textarea
-                label="Gene Sequence"
+                :label="dna_sequence == 'nucleotide' ? 'Gene Sequence' : 'Protein Sequence'"
                 v-bind="attrs"
                 v-on="on"
                 v-model="sequence"
@@ -516,11 +516,9 @@ export default {
       this.$v.$touch();
       if (!this.$v.$invalid) {
         this.showSubmissionConfirmation = true;
-        alert("Form Submitted");
       }
     },
     reformatOrganismName(input) {
-      debugger;
       const pattern = /(\b\w+\b)\s*\(\s*(\d+)\s*\)/g;
       let text = input.replace(pattern, "$1($2)");
       this.organismName = text;
@@ -529,6 +527,7 @@ export default {
       console.log("Submit Analysis Data");
       this.showSubmissionConfirmation = false;
       var requestInfo = {
+        accession: this.NCBIAccession,
         accessionType: this.dna_sequence,
         identity: this.identity,
         maxEvalue: this.maxEvalue,
@@ -544,6 +543,7 @@ export default {
         .analyse(requestInfo)
         .then(response => {
           console.log(response);
+          this.$router.push("results");
         })
         .catch(error => {
           console.log(error);
@@ -600,8 +600,6 @@ export default {
     },
     applySelectedAccesion() {
       console.log("Apply Selected Accession");
-
-      debugger
       var selectedAccessions = lodash.filter(this.accessionSearchResult.accessionList, { selected: "true" });
       console.log("Selected Accessions ", selectedAccessions);
       var accessionsArray = lodash.map(selectedAccessions, "text");
