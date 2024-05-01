@@ -2,7 +2,7 @@
   <v-container class="query-container">
     <v-form @submit.prevent="submitFormConfirmation">
       <!-- Nickname -->
-      <!-- <pre>{{ $v }}</pre> -->
+      <pre>{{ $v }}</pre>
       <v-row>
         <v-col cols="12" md="4">
           <v-tooltip bottom>
@@ -217,7 +217,10 @@
           <div class="error-message" v-if="!$v.sequence.required && $v.sequence.$dirty">
             Sequence is required.
           </div>
-          <v-chip class="ma-n3 float-right" x-small>/5000</v-chip>
+          <div class="error-message" v-if="!$v.sequence.maxLength && $v.sequence.$dirty">
+            Sequence can only have a maximum of 500 characters.
+          </div>
+          <v-chip class="ma-n3 float-right" x-small>{{sequence.length}}/5000</v-chip>
         </v-col>
       </v-row>
 
@@ -400,7 +403,7 @@
 </template>
 
 <script>
-import { required, requiredIf } from "vuelidate/lib/validators";
+import { required, requiredIf, maxLength } from "vuelidate/lib/validators";
 import analysis from "@/api/analysis";
 import { getAccessionESearch } from "@/api/accessionSearch";
 import lodash from "lodash";
@@ -618,7 +621,8 @@ export default {
     sequence: {
       required: requiredIf(function(accession) {
         return this.identifier === "sequence";
-      })
+      }),
+      maxLength: maxLength(500)
     },
     organismName: {
       required: required,
