@@ -131,16 +131,18 @@
                   </template>
                   <v-card>
                     <v-card-title class="fixed-size" style="background-color: #009688 ">
-                      <v-btn color="primary" text @click="item.showDialog = false">
-                        <v-icon>mdi-close</v-icon>
-                      </v-btn>
+                      <v-spacer></v-spacer>
                       <span class="gray-block-title">{{ item.description }}</span>
+                      <v-spacer></v-spacer>
+                      <v-btn color="primary" text @click="item.showDialog = false" style="z-index:1000">
+                        <v-icon size="x-large" color="white">mdi-close-circle-outline</v-icon>
+                      </v-btn>
                     </v-card-title>
                     <v-card-text>
                       <v-row>
                         <v-col v-if="treeChartLoading == false">
                           <TreeChart :chartData="treeData" :loading="treeChartLoading" />
-                        </v-col >
+                        </v-col>
                         <v-col v-if="treeChartLoading == true">
                           Loading...
                         </v-col>
@@ -379,7 +381,7 @@ export default {
       });
     },
     extractNames(node) {
-      const result = { name: node.name }; 
+      const result = { name: node.name };
       if (node.children) {
         result.children = node.children.map(child => this.extractNames(child));
       }
