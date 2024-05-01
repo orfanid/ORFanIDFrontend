@@ -2,7 +2,7 @@
   <v-container class="query-container">
     <v-form @submit.prevent="submitFormConfirmation">
       <!-- Nickname -->
-      <pre>{{ $v }}</pre>
+      <!-- <pre>{{ $v }}</pre> -->
       <v-row>
         <v-col cols="12" md="4">
           <v-tooltip bottom>
