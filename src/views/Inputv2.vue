@@ -215,7 +215,7 @@
             >
           </v-tooltip>
           <div class="error-message" v-if="!$v.sequence.required && $v.sequence.$dirty">
-            Sequence is required.
+            Please enter Sequence.
           </div>
           <div class="error-message" v-if="!$v.sequence.maxLength && $v.sequence.$dirty">
             Sequence can only have a maximum of 500 characters.
