@@ -114,11 +114,10 @@
               class="elevation-1 querytable"
             >
               <template v-slot:item.sessionId="{ item }">
-                <v-dialog
+                <v-dialog fullscreen
                   v-model="item.showDialog"
                   v-if="item.orfanLevel != 'Strict ORFan'"
-                  transition="dialog-bottom-transition"
-                  fullscreen
+                    transition="dialog-bottom-transition"
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-icon
@@ -427,5 +426,9 @@ export default {
 
 .gray-background {
   background-color: #cccccc;
+}
+
+.v-dialog {
+  overflow: hidden !important;
 }
 </style>

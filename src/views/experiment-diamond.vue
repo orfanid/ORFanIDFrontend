@@ -1,143 +1,106 @@
 <template>
-  <v-container>
-    <v-form id="input_form">
+  <v-container class="query-container">
+    <v-form @submit.prevent="submitFormConfirmation">
+      <!-- Nickname -->
+      <!-- <pre>{{ $v }}</pre> -->
       <v-row>
-        <v-col cols="4">
+        <v-col cols="12" md="4">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
-                v-model="from.email"
                 label="Nickname - (Optional)"
                 required
+                v-model="submiterNickname"
                 v-bind="attrs"
                 v-on="on"
               ></v-text-field>
+              <!-- {{ !$v.submiterNickname.required }}
+              {{ $v.submiterNickname.$dirty }} -->
             </template>
             <span>Optional. Nickname will be useful to find your dataset quickly</span>
           </v-tooltip>
+          <div
+            class="error-message"
+            v-if="!$v.submiterNickname.required && $v.submiterNickname.$dirty"
+          >
+            Please enter a Nickname
+          </div>
         </v-col>
-        <v-col cols="8"></v-col>
       </v-row>
+
+      <!-- Search By -->
       <v-row>
         <v-col cols="s6" offset-s1>
           <v-container fluid class="d-flex align-center pl-0">
             <p class="mb-0 mr-2">Search By:</p>
-            <v-radio-group v-model="from.searchMethod" row @change="onSearchBy">
-              <v-radio label="Sequence" value="s"></v-radio>
-              <v-radio label="Accessions" value="a"></v-radio>
+            <v-radio-group row v-model="identifier" @change="identifierChanged">
+              <v-radio label="Sequence" value="sequence"></v-radio>
+              <v-radio label="Accessions" value="accession"></v-radio>
             </v-radio-group>
           </v-container>
         </v-col>
+
+        <!-- Examples -->
         <v-col cols="s6">
           <v-col cols="12">
-            <v-tooltip bottom>
+            <h6>Examples</h6>
+            <v-tooltip bottom v-for="example in examples" :key="example.label">
               <template v-slot:activator="{ on, attrs }">
                 <v-icon
-                  :disabled="from.submissionMode === 'upload'"
                   size="72"
                   color="green darken-2"
-                  class="icon icon-species icon-human pa-4"
-                  v-on:click="loadExampleData('Homo sapiens(9606)')"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                </v-icon>
-              </template>
-              <span>Homo sapiens</span>
-            </v-tooltip>
-
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon
-                  :disabled="from.submissionMode === 'upload'"
-                  size="72"
-                  color="green darken-2"
-                  class="icon icon-species icon-fly pa-4"
-                  v-on:click="loadExampleData('Drosophila melanogaster(7227)')"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                </v-icon>
-              </template>
-              <span>Drosophila melanogaster</span>
-            </v-tooltip>
-
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon
-                  :disabled="from.submissionMode === 'upload'"
-                  size="72"
-                  color="green darken-2"
-                  class="icon icon-species icon-ecoli pa-4"
-                  v-on:click="loadExampleData('Escherichia coli(562)')"
+                  :class="['icon', 'icon-species', 'pa-4', 'icon-' + example.icon]"
+                  v-on:click="loadExampleData(example.taxonomyName)"
                   v-bind="attrs"
                   v-on="on"
                 ></v-icon>
               </template>
-              <span>Escherichia coli</span>
-            </v-tooltip>
-
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon
-                  :disabled="from.submissionMode === 'upload'"
-                  size="72"
-                  color="green darken-2"
-                  class="icon icon-species icon-brassica pa-4"
-                  v-on:click="loadExampleData('Arabidopsis thaliana(3702)')"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                </v-icon>
-              </template>
-              <span>Arabidopsis thaliana</span>
+              <span>{{ example.name }}</span>
             </v-tooltip>
           </v-col>
         </v-col>
       </v-row>
+
+      <!-- Upload File -->
       <v-row>
-        <v-col cols="4" offset-s1>
+        <v-col cols="12" md="4" offset-s1>
           <v-row>
-            <v-col cols="11">
+            <v-col cols="12">
               <v-file-input
-                :disabled="from.searchMethod === 'a'"
-                v-model="from.fileAttachment"
-                @change="readFile"
                 placeholder="Upload your documents"
                 label="Upload File"
                 prepend-icon="mdi-cloud-upload"
-                class="upload-button d-inline"
-                clearable="true"
+                :disabled="identifier == 'accession'"
+                v-model="uploadedSequenceFile"
+                @change="readUploadedFile"
+                @click:clear="clearUploadedFile"
                 v-bind="attrs"
-                v-on="on"
-              >
-              </v-file-input>
-            </v-col>
-            <v-col cols="1">
-              <div class="pt-15"><v-icon v-if="from.fileAttachment" color="red" @click="clearUpload">mdi-close-octagon-outline</v-icon></div>
+              ></v-file-input>
             </v-col>
           </v-row>
         </v-col>
-        <v-col cols="2">
-          <v-radio-group v-model="from.accessionType" mandatory @change="onAccessionSelect">
+
+        <!-- Radio Group -->
+        <v-col cols="12" md="2">
+          <v-radio-group mandatory v-model="dna_sequence">
             <v-radio label="Protein" value="protein"></v-radio>
             <v-radio label="Gene" value="nucleotide"></v-radio>
           </v-radio-group>
         </v-col>
-        <v-col cols="6">
+
+        <!-- NCBI or Uniprot Accessions -->
+        <v-col cols="12" md="6" v-if="identifier == 'accession'">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
+                v-model="NCBIAccession"
                 label="NCBI or Uniprot Accession(s)"
-                v-model="from.ncbiAccessionInput"
-                @blur="validate"
-                @click:append-outer="accessionLookup"
-                :disabled="from.searchMethod == 's'"
                 v-bind="attrs"
                 v-on="on"
+                @click:append-outer="showAccessionSearchDialogHandler"
                 :append-outer-icon="'mdi-store-search-outline'"
               ></v-text-field>
-              <v-dialog v-model="showAccessionLookup" persistent max-width="1200">
+              <v-dialog persistent max-width="1200" v-model="showAccessionSearchDialog">
                 <v-card>
                   <v-card-title class="text-h5">
                     NCBI or Uniprot Accession(s) Lookup
@@ -147,17 +110,17 @@
                       <v-col>
                         <v-text-field
                           label="Protein / Gene Name"
-                          v-model="geneName"
+                          v-model="geneNameForAccessionSearch"
                           :append-outer-icon="'mdi-store-search-outline'"
-                          @click:append-outer="accessionSearch"
+                          @click:append-outer="accessionSearchHandler"
                         ></v-text-field>
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col>
                         <v-list dense style="height:400px; overflow-y:auto">
-                          <v-list-item-group v-model="AccesionLookup.selectedItem" color="primary">
-                            <v-list-item v-for="(item, i) in AccesionLookup.items" :key="i">
+                          <v-list-item-group color="primary">
+                            <v-list-item v-for="(item, i) in (accessionSearchResult && accessionSearchResult.accessionList ) ? accessionSearchResult.accessionList : []" :key="i">
                               <v-list-item-action>
                                 <v-checkbox
                                   v-model="item.selected"
@@ -181,10 +144,10 @@
                   </v-card-text>
                   <v-card-actions style="position: absolute; position:0;">
                     <v-spacer></v-spacer>
-                    <v-btn color="green darken-1" text @click="accesionLookupClose">
+                    <v-btn color="green darken-1" text @click="accesionLookupCloseHandler">
                       Close
                     </v-btn>
-                    <v-btn :disabled="!showAccessionLookupApplyBtn" color="green darken-1" text @click="accesionLookupApply">
+                    <v-btn color="green darken-1" text @click="applySelectedAccesion">
                       Apply
                     </v-btn>
                   </v-card-actions>
@@ -193,52 +156,57 @@
             </template>
             <span>NCBI/Uniprot accession. Multiple accessions should be separated by comma(s)</span>
           </v-tooltip>
-          <label
-            v-if="errors.showInvalidAccession == true && errors.invalidAccession == true"
-            style="color: red"
-            >Invalid Accession(s) - {{ errors.invalidAccessionMsg }}</label
-          >
-          <label
-            style="color: red"
-            v-if="$v.from.ncbiAccessionInput.$dirty && !$v.from.ncbiAccessionInput.required"
-            >Accession is required.</label
-          >
-          <v-chip class="ma-n3 float-right" x-small>
-            {{ from.ncbiAccessionInput.length }}/100
-          </v-chip>
-        </v-col>
-      </v-row>
-      <v-row v-if="this.from.accessionType === 'protein'">
-        <v-col cols="6">
-          <div>
-            <h7>Program Selection</h7>
-            <v-radio-group mandatory v-model="from.program">
-              <v-radio label="DIAMOND BLASTX" value="BLAST"></v-radio>
-            </v-radio-group>
+          <div class="error-message" v-if="!$v.NCBIAccession.required && $v.NCBIAccession.$dirty">
+            Please enter Accession(s)
           </div>
-        </v-col>
-        <v-col cols="6" v-if="from.program == 'PSI-BLAST'">
-          <v-select
-            label="Number of iterations"
-            :items="num_iterations"
-            item-text="text"
-            item-value="value"
-            v-model="from.num_iteration"
-          >
-          </v-select>
+
+          <!-- Invalid Accession -->
+          <v-chip class="ma-n3 float-right" x-small>/100</v-chip>
         </v-col>
       </v-row>
-      <v-row>
+
+      <!-- Program Selection -->
+      <v-row v-if="dna_sequence == 'protein'">
+        <v-col>
+          <v-row>
+            <v-col cols="6">
+              <div>
+                <h6>Program Selection</h6>
+                <v-radio-group mandatory v-model="program">
+                  <v-radio
+                    label="PSI-BLAST (Position-Specific Iterated BLAST)"
+                    value="PSI-BLAST"
+                  ></v-radio>
+                  <v-radio label="BLAST" value="BLAST"></v-radio>
+                  <v-radio label="DIAMOND" value="DIAMOND"></v-radio>
+                </v-radio-group>
+              </div>
+            </v-col>
+
+            <!-- Number of iterations -->
+            <v-col cols="6">
+              <v-select
+                label="Number of iterations"
+                :items="num_iterations"
+                item-text="text"
+                item-value="value"
+                v-model="num_iteration"
+              ></v-select>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+
+      <!-- Gene Sequence -->
+      <v-row v-if="identifier == 'sequence'">
         <v-col cols="12">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-textarea
-                label="Gene Sequence"
-                v-model="from.sequence"
-                :rules="textAreaRules"
+                :label="dna_sequence == 'nucleotide' ? 'Gene Sequence' : 'Protein Sequence'"
                 v-bind="attrs"
                 v-on="on"
-                :disabled="from.searchMethod == 'a'"
+                v-model="sequence"
               ></v-textarea>
             </template>
             <span
@@ -246,31 +214,38 @@
               Multiple sequence can be separated by new line</span
             >
           </v-tooltip>
-          <v-chip class="ma-n3 float-right" x-small> {{ from.sequence.length }}/5000 </v-chip>
-          <div style="color: red" v-if="$v.from.sequence.$dirty && !$v.from.sequence.required">
-            Sequence is required.
+          <div class="error-message" v-if="!$v.sequence.required && $v.sequence.$dirty">
+            Please enter Sequence.
           </div>
+          <div class="error-message" v-if="!$v.sequence.maxLength && $v.sequence.$dirty">
+            Sequence can only have a maximum of 500 characters.
+          </div>
+          <v-chip class="ma-n3 float-right" x-small>{{sequence.length}}/5000</v-chip>
         </v-col>
       </v-row>
+
+      <!-- Organism -->
       <v-row>
         <v-col cols="12">
-          <v-radio-group v-model="organismSelection" mandatory>
+          <v-radio-group mandatory v-model="organismInputType">
             <v-radio label="Select Organism Name from list" value="dropdown"></v-radio>
             <v-radio label="Enter Organism Name" value="textfield"></v-radio>
           </v-radio-group>
           <v-autocomplete
-            v-if="organismSelection == 'dropdown'"
-            v-model="from.organismName"
+            v-if="organismInputType == 'dropdown'"
+            v-model="organismName"
             :items="organismList"
             label="Organism"
             item-text="name"
             item-value="name"
             v-bind="attrs"
-            v-on="on"
           >
             <template v-slot:item="data">
               <v-list-item-avatar>
-                <img :src="data.item.img" onerror="javascript:this.src='https://dummyimage.com/60x40/c7abc7/1721a6.png&text=Organism'" />
+                <img
+                  :src="data.item.img"
+                  onerror="javascript:this.src='https://dummyimage.com/60x40/c7abc7/1721a6.png&text=Organism'"
+                />
               </v-list-item-avatar>
               <v-list-item-content>
                 <v-list-item-title v-html="data.item.name"></v-list-item-title>
@@ -279,36 +254,33 @@
           </v-autocomplete>
           <v-text-field
             label="Organism"
-            v-if="organismSelection == 'textfield'"
-            v-model="from.organismName"
+            v-model="organismName"
+            v-else
+            @blur="reformatOrganismName(organismName)"
           ></v-text-field>
-
-          <div
-            style="color: red"
-            v-if="$v.from.organismName.$dirty && !$v.from.organismName.required"
-          >
-            Organism is required.
+          <label style="color: red"></label>
+          <div class="error-message" v-if="!$v.organismName.required && $v.organismName.$dirty">
+            Please enter Organism Name
           </div>
-          <div style="color: red" v-if="$v.from.organismName.$dirty && !$v.from.organismName.alpha">
+          <div
+            class="error-message"
+            v-if="!$v.organismName.nameFormat && $v.organismName.$dirty && $v.organismName.$model"
+          >
             The format entered for the organism name is incorrect. Please enter the Organism Name as
             follows: "organism name (tax id)"
           </div>
-          <div
-            style="color: orange"
-            v-if="$v.from.organismName.$dirty && !$v.from.organismName.validOrganism"
-          >
-            This species name is not found in the ncbi lineage database. Taxonomic results will be
-            limited. Do you still want to proceed.
-          </div>
+          <!-- <pre>{{ $v }}</pre> -->
         </v-col>
       </v-row>
-      <!-- <v-row>
+
+      <!-- Advanced Parameters -->
+      <v-row>
         <v-col cols="s12" class="d-flex align-center">
           <v-expansion-panels flat class="pa-0">
             <v-expansion-panel class="pa-0">
               <v-expansion-panel-header class="pa-0">
                 <v-spacer />
-                <v-col cols="2"> Advanced Parameters: </v-col>
+                <v-col cols="6" md="2">Advanced Parameters:</v-col>
               </v-expansion-panel-header>
               <v-expansion-panel-content class="pa-0">
                 <v-card flat color="transparent" class="pa-0">
@@ -337,7 +309,7 @@
                     min="1"
                     :thumb-size="36"
                     thumb-label="always"
-                    v-model="from.maxEvalue"
+                    v-model="maxEvalue"
                     ticks
                     color="teal"
                   ></v-slider>
@@ -357,7 +329,7 @@
                   <v-slider
                     max="1000"
                     min="100"
-                    v-model="from.maxTargetSequence"
+                    v-model="maxTargetSequence"
                     :thumb-size="36"
                     thumb-label="always"
                     ticks
@@ -375,7 +347,7 @@
                   <v-slider
                     max="100"
                     min="40"
-                    v-model="from.identity"
+                    v-model="identity"
                     :thumb-size="36"
                     thumb-label="always"
                     ticks
@@ -386,50 +358,27 @@
             </v-expansion-panel>
           </v-expansion-panels>
         </v-col>
-      </v-row> -->
-      <v-row align="left" justify="space-around">
+      </v-row>
+
+      <v-row justify="space-around">
         <v-spacer />
       </v-row>
 
+      <!-- Submit Button -->
       <v-row>
         <v-col cols="10"></v-col>
         <v-col cols="2">
-          <!-- <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-          <v-text-field
-            v-model="from.email"
-            label="E-mail"
-            required
-            v-bind="attrs"
-            v-on="on"
-          ></v-text-field>
-            </template>
-            <span>Optional. Email will be useful to find your dataset quickly</span>
-          </v-tooltip>
-          <label
-            style="color: red"
-            v-if="$v.from.email.$dirty && !$v.from.email.email"
-            >Invalid email address</label
-          > -->
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-spacer />
-        <v-col cols="2" offset-10>
-          <v-btn
-            @click="analysConformation"
-            :disabled="true"
-            style="color: white"
-            color="teal"
-            >Submit
-            <v-icon text color="white" right dark class="mdiChevronDoubleRight">
-              mdi-send
-            </v-icon>
-          </v-btn>
+          <v-btn style="color: white" color="teal" type="submit"
+            >Submit<v-icon text color="white" right dark class="mdiChevronDoubleRight"
+              >mdi-send</v-icon
+            ></v-btn
+          >
         </v-col>
       </v-row>
     </v-form>
-    <v-dialog v-model="isLoading" width="800" height="200" overlay-color="#506c87">
+
+    <!-- ORFanID Dialog -->
+    <v-dialog width="800" height="200" overlay-color="#506c87" v-model="showSubmissionConfirmation">
       <v-card>
         <v-card-title class="text-h5 teal lighten-2">
           <span style="color: white">ORFanID</span>
@@ -437,9 +386,7 @@
 
         <v-card-text>
           <div class="pa-3">
-            <h5>
-              <center>Please Confirm Sequence Submission</center>
-            </h5>
+            <h5><center>Please Confirm Sequence Submission</center></h5>
           </div>
         </v-card-text>
 
@@ -447,347 +394,62 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="isLoading = false">
-            Cancel
-          </v-btn>
-          <v-btn color="primary" text @click="analysData" :disabled="true">
-            <span>Submit</span>
-          </v-btn>
+          <v-btn color="primary" text @click="showSubmissionConfirmation = false">Cancel</v-btn>
+          <v-btn color="primary" text @click="submitAnalysData"><span>Submit</span></v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
   </v-container>
 </template>
+
 <script>
-import $ from "jquery";
+import { required, requiredIf, maxLength } from "vuelidate/lib/validators";
 import analysis from "@/api/analysis";
-import { maxLength, required, requiredIf, email, helpers } from "vuelidate/lib/validators";
-import router from "@/router";
-import PubmedApi from "pubmed-api";
+import { getAccessionESearch } from "@/api/accessionSearch";
 import lodash from "lodash";
-
-const organism = helpers.regex("organism", /\(\d*\)$/g);
-
 export default {
   name: "Home",
-  methods: {
-    clearUpload() {
-      this.from.fileAttachment = ""
-    },
-    loadExampleData(_exampleName) {
-      this.clearAccessionSequenceAndOrganism();
-      this.from.exampleName = _exampleName;
-      let url = "";
-      if (this.from.searchMethod == "a") {
-        if (this.from.accessionType === "protein") {
-          this.from.ncbiAccessionInput = this.exampleProteinDataValues[this.from.exampleName];
-        } else {
-          this.from.ncbiAccessionInput = this.exampleNucliotideDataValues[this.from.exampleName];
-        }
-        this.from.sequence = "";
-      } else {
-        url = `/data/example-${this.from.accessionType}-${this.from.exampleName}.fasta`;
-        let that = this;
-        $.get(url, data => {
-          that.from.sequence = this.remove_linebreaks(data);
-        });
-        this.from.ncbiAccessionInput = "";
-      }
-      this.from.organismName = this.from.exampleName;
-    },
-    clearAccessionSequenceAndOrganism() {
-      this.from.ncbiAccessionInput = "";
-      this.from.sequence = "";
-      this.from.organismName = "";
-    },
-    analysData() {
-      this.$v.$touch();
-      if (
-        this.$v.from.sequence.$invalid == false &&
-        this.$v.from.ncbiAccessionInput.$invalid == false
-      ) {
-        console.log(this.from);
-
-        var requestInfo = {
-          accessionType: this.from.accessionType,
-          identity: this.from.identity,
-          maxEvalue: this.from.maxEvalue,
-          maxTargetSequence: this.from.maxTargetSequence,
-          organismName: this.from.organismName,
-          sequence: this.from.sequence,
-          email: this.from.email != "" ? this.from.email : null,
-          isPsiBlast: this.from.program == "PSI-BLAST" ? true : false,
-          num_iteration: parseInt(this.from.num_iteration)
-        };
-
-        if (this.from.submissionMode === "upload") {
-          requestInfo.sequence = this.uploadFileContent;
-          requestInfo.organismName = this.from.organismName;
-        } else {
-          if (this.from.searchMethod == "a") {
-            requestInfo.accession = this.from.ncbiAccessionInput;
-          } else {
-            requestInfo.sequence = this.from.sequence;
-          }
-        }
-
-        this.isLoading = true;
-        analysis
-          .analyse(requestInfo)
-          .then(response => {
-            this.analyseResult.session = response.data;
-          })
-          .catch(error => {
-            console.log(error);
-          });
-
-        this.isLoading = false;
-        setTimeout(function() {
-          router.push({ name: "results" });
-        }, 600);
-      }
-    },
-    analysConformation() {
-      this.$v.$touch();
-      if (this.disableSubmit == false) {
-        this.isLoading = true;
-      }
-    },
-    goToResultsPage() {
-      this.$router.push("results");
-    },
-    reSetData() {
-      this.isLoading = false;
-    },
-    validate() {
-      analysis
-        .validate({
-          accessions: this.from.ncbiAccessionInput,
-          accessionType: this.from.accessionType
-        })
-        .then(response => {
-          if (response.data.isValid == false) {
-            this.errors.invalidAccessionMsg = response.data.invalidAccessions.join(", ");
-            this.errors.invalidAccession = true;
-          } else {
-            this.errors.invalidAccession = false;
-          }
-        });
-    },
-    onCancel() {
-      console.log("a");
-    },
-    remove_linebreaks(str) {
-      return str.replace(/[\r]+/gm, "");
-    },
-    readFile() {
-      if (!this.from.fileAttachment) {
-        this.from.fileAttachment = "No File Chosen";
-      }
-      var reader = new FileReader();
-
-      reader.readAsText(this.from.fileAttachment[0]);
-      reader.onload = () => {
-        this.uploadFileContent = reader.result;
-        this.from.sequence = reader.result;
-      };
-    },
-    organismValid() {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve(false);
-        }, 500);
-      });
-    },
-    accessionLookup() {
-      this.showAccessionLookup = true;
-      if (
-        this.AccesionLookup != null &&
-        this.AccesionLookup.items != null &&
-        Array.isArray(this.AccesionLookup.items)
-      ) {
-      }
-    },
-    accesionLookupApply() {
-      var selectedAccessions = lodash.filter(this.AccesionLookup.items, { selected: "true" });
-      console.log(selectedAccessions);
-      var accessionsArray = lodash.map(selectedAccessions, "text");
-      if (accessionsArray != null && accessionsArray.length > 0) {
-        this.from.ncbiAccessionInput = accessionsArray.toString();
-      }
-      this.showAccessionLookup = false;
-    },
-    accesionLookupClose() {
-      this.showAccessionLookup = false;
-    },
-    searchAccessionLookup() {},
-    accessionSearch() {
-      console.log("Search Accessions");
-      if (this.geneName.length > 0) {
-        this.getESearch(this.geneName);
-      }
-    },
-    async getESearch(query) {
-      let that = this;
-      that.$Progress.start();
-      if (that.searchResult != null && Array.isArray(that.searchResult)) {
-        that.searchResult.splice(0, that.searchResult.length);
-      }
-      if (
-        that.AccesionLookup != null &&
-        that.AccesionLookup.items != null &&
-        Array.isArray(that.AccesionLookup.items)
-      ) {
-        that.AccesionLookup.items.splice(0, that.AccesionLookup.items.length);
-      }
-      that.searchResult.idList.splice(0, that.searchResult.idList.length);
-      that.searchResult.idList = [];
-      that.searchResult.resultSummary = [];
-      const options = {
-        retStart: "1",
-        retMax: "1000"
-      };
-      try {
-        const results = await this.pubMedApi.eSearch.search(that.selectedDatabase, query, options);
-        var result = JSON.parse(results);
-        if (
-          result.esearchresult &&
-          result.esearchresult.idlist &&
-          result.esearchresult.idlist.length > 0
-        ) {
-          for (let index = 0; index < result.esearchresult.idlist.length; index++) {
-            that.searchResult.idList.push({
-              index: index,
-              id: result.esearchresult.idlist[index]
-            });
-          }
-        }
-        let pageIds = await that.getCurretPageIds();
-
-        that.downloadSummaryResult = await that.getESearchSummary(pageIds);
-        if (that.downloadSummaryResult && that.downloadSummaryResult.result) {
-          Object.values(that.downloadSummaryResult.result).forEach(val => {
-            that.searchResult.resultSummary.push(val);
-            that.AccesionLookup.items.push({
-              text: val.accessionversion,
-              title: val.title,
-              icon: "mdi-flag",
-              selected: "false"
-            });
-          });
-          that.$Progress.finish();
-          console.log(that.searchResult.resultSummary);
-          that.$forceUpdate();
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    getESearchSummary: async function(queryids) {
-      let that = this;
-      try {
-        const results = await this.pubMedApi.eSummary.search(that.selectedDatabase, queryids);
-        let resultSummary = JSON.parse(results);
-        console.log(resultSummary);
-        return resultSummary;
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    getCurretPageIds() {
-      let minIndex = 1;
-      let maxIndex = 100;
-      let selecteditems = lodash.filter(this.searchResult.idList, function(e) {
-        return e.index >= minIndex && e.index <= maxIndex;
-      });
-
-      let idArray = lodash.map(selecteditems, function(e) {
-        return e.id;
-      });
-      return idArray.toString();
-    },
-    onAccessionSelect(val) {
-      if (val == "nucleotide") {
-        this.errors.showInvalidAccession = false;
-      } else {
-        this.errors.showInvalidAccession = true;
-      }
-    },
-    onSearchBy() {
-      if (this.from.searchMethod == "a") {
-        this.from.sequence = "";
-      } else if (this.from.searchMethod == "s") {
-        this.from.ncbiAccessionInput = "";
-      }
-    }
-  },
-  watch: {
-    "from.fileAttachment": {
-      handler: function(after, before) {
-        if (after.length > 0) {
-          this.from.submissionMode = "upload";
-        } else {
-          this.from.submissionMode = "";
-        }
-      },
-      deep: true
-    },
-    "from.sequence": {
-      handler: function(after, before) {
-        if (after != "") {
-          this.from.submissionMode = "sequence";
-        } else {
-          this.from.submissionMode = "";
-        }
-      },
-      deep: true
-    },
-    "from.ncbiAccessionInput": {
-      handler: function(after, before) {
-        if (after != "") {
-          this.from.submissionMode = "accessions";
-        } else {
-          this.from.submissionMode = "";
-        }
-      },
-      deep: true
-    },
-    "AccesionLookup.items" : {
-      handler: function(after, before) {
-        var selectedAccessions = lodash.filter(this.AccesionLookup.items, { selected: "true" });
-        if(selectedAccessions != null && selectedAccessions.length > 0) {
-          this.showAccessionLookupApplyBtn = true
-        }
-      },
-      deep: true
-    }
-  },
-  mounted() {
-    this.pubMedApi = new PubmedApi();
-    analysis.getOrganismList().then(response => {
-      Object.entries(response.data).forEach(element => {
-        this.organismList.push({
-          name: element[0],
-          img: element[1]
-        });
-      });
-    });
-  },
   data() {
     return {
-      pubMedApi: null,
-      selectedDatabase: "protein",
-      showAccessionLookup: false,
-      AccesionLookup: {
-        selectedItem: 1,
-        items: []
-      },
-      organismSelection: "dropdown",
-      isLoading: false,
-      fullPage: true,
-      toggleAdvanceparameters: false,
+      dna_sequence: "protein", // protein or nucleotide
+      identifier: "accession", // sequence or accession
       organismList: [],
-      geneName: null,
+      organismInputType: "", // dropdown or textfield,
+      program: "DIAMOND", // PSI-BLAST, BLAST, DIAMOND,
+      organismSelectionType: "dropdown", // dropdown or textfield
+      attrs: {},
+      submiterNickname: "",
+      NCBIAccession: "",
+      sequence: "",
+      organismName: "",
+      showSubmissionConfirmation: false,
+      uploadedSequenceFile: null,
+      uploadedSequenceFileContent: "",
+      maxEvalue: 3,
+      maxTargetSequence: 550,
+      identity: 60,
+      num_iteration: 3,
+      showAccessionSearchDialog: false,
+      geneNameForAccessionSearch: "",
+      accessionSearchResult: {
+        idList: [],
+        resultSummary: [],
+        accessionList: [],
+      },
+      examples: [
+        { name: "Homo sapiens", icon: "human", taxonomyName: "Homo sapiens(9606)" },
+        {
+          name: "Drosophila melanogaster",
+          icon: "fly",
+          taxonomyName: "Drosophila melanogaster(7227)"
+        },
+        { name: "Escherichia coli", icon: "ecoli", taxonomyName: "Escherichia coli(562)" },
+        {
+          name: "Arabidopsis thaliana",
+          icon: "brassica",
+          taxonomyName: "Arabidopsis thaliana(3702)"
+        }
+      ],
       num_iterations: [
         { text: "0", value: 0 },
         { text: "1", value: 1 },
@@ -796,33 +458,6 @@ export default {
         { text: "4", value: 4 },
         { text: "5", value: 5 }
       ],
-      from: {
-        sequenceGroup: 1,
-        analysisId: new Date().toJSON().replace(/-/g, "/"),
-        exampleName: "",
-        accessionType: "protein",
-        ncbiAccessionInput: "",
-        searchMethod: "a",
-        sequence: "",
-        organismName: "",
-        maxEvalue: 3,
-        maxTargetSequence: 550,
-        identity: 60,
-        email: "",
-        fileAttachment: null,
-        submissionMode: "",
-        program: null,
-        num_iteration: 2
-      },
-      analyseResult: {
-        session: ""
-      },
-      errors: {
-        showInvalidAccession: true,
-        invalidAccession: false,
-        invalidAccessionMsg: ""
-      },
-      textAreaRules: [value => (value || "").length <= 5000 || "Max 5000 characters"],
       exampleProteinDataValues: {
         "Escherichia coli(562)": "NP_415100.1,YP_002791247.1,NP_414542.1",
         "Drosophila melanogaster(7227)": "NP_524859.2",
@@ -834,77 +469,174 @@ export default {
         "Drosophila melanogaster(7227)": "NM_080120.3",
         "Homo sapiens(9606)": "NM_001126112.2",
         "Arabidopsis thaliana(3702)": "NM_111887.3"
-      },
-      searchResult: {
-        idList: [],
-        resultSummary: []
-      },
-      panel: [0],
-      showAccessionLookupApplyBtn: false
+      }
     };
   },
-  computed: {
-    disableSubmit: function() {
-      return (
-        this.$v.$dirty == true &&
-        (this.$v.from.sequence.$invalid == true ||
-          (this.$v.from.ncbiAccessionInput.$invalid == true && this.$v.from.email.$invalid == true))
-      );
+  methods: {
+    getOrganismList() {
+      let that = this;
+      analysis.getOrganismList().then(response => {
+        Object.entries(response.data).forEach(element => {
+          that.organismList.push({
+            name: element[0],
+            img: element[1]
+          });
+        });
+        console.log("that.organismList", that.organismList);
+      });
     },
-    valdioateAccession: function() {
-      if (
-        this.from.searchMethod == "a" &&
-        this.from.accessionType == "nucleotide" &&
-        this.from.ncbiAccessionInput != ""
-      ) {
-        return true;
+    clearAccessionSequenceAndOrganism() {
+      this.NCBIAccession = "";
+      this.sequence = "";
+      this.organismName = "";
+      console.log("Clear NCBIAccession Sequence OrganismName");
+    },
+    remove_linebreaks(str) {
+      return str.replace(/[\r]+/gm, "");
+    },
+    identifierChanged() {
+      console.log("Radio Button Group Changed");
+      this.clearAccessionSequenceAndOrganism();
+    },
+    loadExampleData(_exampleName) {
+      if (this.identifier === "accession") {
+        if (this.dna_sequence === "protein") {
+          this.NCBIAccession = this.exampleProteinDataValues[_exampleName];
+        } else {
+          this.NCBIAccession = this.exampleNucleotideDataValues[_exampleName];
+        }
       } else {
-        return false;
+        let that = this;
+        let url = `/data/example-${this.dna_sequence}-${_exampleName}.fasta`;
+        $.get(url, data => {
+          that.sequence = that.remove_linebreaks(data);
+        });
       }
+      this.organismName = _exampleName;
+    },
+    submitFormConfirmation() {
+      console.log("Submit Form");
+      this.$v.$touch();
+      if (!this.$v.$invalid) {
+        this.showSubmissionConfirmation = true;
+      }
+    },
+    reformatOrganismName(input) {
+      const pattern = /(\b\w+\b)\s*\(\s*(\d+)\s*\)/g;
+      let text = input.replace(pattern, "$1($2)");
+      this.organismName = text;
+    },
+    submitAnalysData() {
+      console.log("Submit Analysis Data");
+      this.showSubmissionConfirmation = false;
+      var requestInfo = {
+        accession: this.NCBIAccession,
+        accessionType: this.dna_sequence,
+        identity: this.identity,
+        maxEvalue: this.maxEvalue,
+        maxTargetSequence: this.maxTargetSequence,
+        organismName: this.organismName,
+        sequence: this.sequence,
+        email: this.submiterNickname,
+        isPsiBlast: this.program == "PSI-BLAST" ? true : false,
+        num_iteration: parseInt(this.num_iteration),
+        executionType: this.program == "DIAMOND" ? "diamond" : "blast"
+      };
+      console.log("Request Info", requestInfo);
+      analysis
+        .analyse(requestInfo)
+        .then(response => {
+          console.log(response);
+          this.$router.push("results");
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    readUploadedFile(event) {
+      if (!this.uploadedSequenceFile) {
+        this.uploadedSequenceFile = "No File Chosen";
+      }
+      var reader = new FileReader();
+
+      reader.readAsText(this.uploadedSequenceFile);
+      reader.onload = () => {
+        this.uploadedSequenceFileContent = reader.result;
+        this.sequence = reader.result;
+      };
+    },
+    clearUploadedFile() {
+      if (this.uploadedSequenceFileContent == this.sequence) {
+        this.sequence = "";
+      }
+      this.uploadedSequenceFile = null;
+      this.uploadedSequenceFileContent = "";
+    },
+    showAccessionSearchDialogHandler() {
+      console.log("Accession Search Handler");
+      this.showAccessionSearchDialog = true;
+    },
+    accessionSearchHandler() {
+      console.log("Accession Search Handler");
+      if (this.geneNameForAccessionSearch.length > 0) {
+        console.log("Gene Name for Accession Search:", this.geneNameForAccessionSearch);
+        this.getAccessionSearchHandler();
+      }
+    },
+    accesionLookupCloseHandler() {
+      console.log("Accession Lookup Close Handler");
+      this.showAccessionSearchDialog = false;
+    },
+    getAccessionSearchHandler() {
+      console.log("Accession Search Handler");
+      this.$Progress.start();
+      // Start the progress bar
+      getAccessionESearch(this.accessionSearchResult, this.geneNameForAccessionSearch)
+        .then(response => {
+          console.log("Result of Accession Search", response);
+        })
+        .catch(error => {
+          console.log(error);
+        })
+        .finally(() => {
+          this.$Progress.finish();
+        });
+    },
+    applySelectedAccesion() {
+      console.log("Apply Selected Accession");
+      var selectedAccessions = lodash.filter(this.accessionSearchResult.accessionList, { selected: "true" });
+      console.log("Selected Accessions ", selectedAccessions);
+      var accessionsArray = lodash.map(selectedAccessions, "text");
+      if (accessionsArray != null && accessionsArray.length > 0) {
+        this.NCBIAccession = accessionsArray.toString();
+      }
+      this.showAccessionSearchDialog = false;
     }
   },
   validations: {
-    from: {
-      sequence: {
-        maxLength: maxLength(5000)
-      },
-      organismName: {
-        required: requiredIf(function() {
-          return this.from.submissionMode === "accessions" || this.from.submissionMode === "upload";
-        }),
-        alpha: organism,
-        validOrganism: analysis.validateOrganism
-      },
-      ncbiAccessionInput: {
-        required: function ncbiAccessionRequired(val) {
-          if (this.from.submissionMode === "upload") return true;
-
-          if (
-            this.from.searchMethod == "a" &&
-            this.from.accessionType == "nucleotide" &&
-            val == ""
-          ) {
-            return false;
-          } else {
-            return true;
-          }
-        }
-      },
-      sequence: {
-        required: function sequenceRequired(val) {
-          if (this.from.submissionMode === "upload") return true;
-
-          if (this.from.searchMethod == "s" && val == "") {
-            return false;
-          } else {
-            return true;
-          }
-        }
-      }
-    }
+    NCBIAccession: {
+      required: requiredIf(function(accession) {
+        return this.identifier === "accession";
+      })
+    },
+    sequence: {
+      required: requiredIf(function(accession) {
+        return this.identifier === "sequence";
+      }),
+      maxLength: maxLength(500)
+    },
+    organismName: {
+      required: required,
+      nameFormat: value => /^^\w+(?:\s+\w+)*\(\d+\)$/.test(value)
+    },
+    submiterNickname: { required }
+  },
+  mounted() {
+    this.getOrganismList();
   }
 };
 </script>
+
 <style scoped>
 .v-fade {
   display: inherit !important; /* override v-show display: none */
@@ -925,5 +657,20 @@ export default {
 .v-icon {
   cursor: pointer;
 }
+
+/* CSS class for error message */
+.error-message {
+  color: red; /* Red color for error message */
+  animation: fadeInRed 0.5s ease; /* Animation for fading in */
+}
+
+/* Keyframes for animation */
+@keyframes fadeInRed {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 </style>
-<!--export default class Home extends Vue {}-->
