@@ -100,48 +100,48 @@
                 @click:append-outer="showAccessionSearchDialogHandler"
                 :append-outer-icon="'mdi-store-search-outline'"
               ></v-text-field>
-              <v-dialog persistent max-width="1200" v-model="showAccessionSearchDialog">
+              <v-dialog persistent max-width="800" v-model="showAccessionSearchDialog">
                 <v-card>
                   <v-card-title class="text-h5">
                     NCBI or Uniprot Accession(s) Lookup
                   </v-card-title>
-                  <v-card-text>
+                    <v-card-text>
                     <v-row>
                       <v-col>
-                        <v-text-field
-                          label="Protein / Gene Name"
-                          v-model="geneNameForAccessionSearch"
-                          :append-outer-icon="'mdi-store-search-outline'"
-                          @click:append-outer="accessionSearchHandler"
-                        ></v-text-field>
+                      <v-text-field
+                        label="Protein / Gene Name"
+                        v-model="geneNameForAccessionSearch"
+                        :append-outer-icon="'mdi-store-search-outline'"
+                        @click:append-outer="accessionSearchHandler"
+                      ></v-text-field>
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col>
-                        <v-list dense style="height:400px; overflow-y:auto">
-                          <v-list-item-group color="primary">
-                            <v-list-item v-for="(item, i) in (accessionSearchResult && accessionSearchResult.accessionList ) ? accessionSearchResult.accessionList : []" :key="i">
-                              <v-list-item-action>
-                                <v-checkbox
-                                  v-model="item.selected"
-                                  true-value="true"
-                                  false-value="false"
-                                ></v-checkbox>
-                              </v-list-item-action>
-                              <v-list-item-icon>
-                                <v-icon v-text="item.icon"></v-icon>
-                              </v-list-item-icon>
-                              <v-list-item-content>
-                                <v-list-item-title
-                                  >{{ item.text }} - {{ item.title }}</v-list-item-title
-                                >
-                              </v-list-item-content>
-                            </v-list-item>
-                          </v-list-item-group>
-                        </v-list>
+                      <v-list dense style="height:200px; overflow-y:auto">
+                        <v-list-item-group color="primary">
+                        <v-list-item v-for="(item, i) in (accessionSearchResult && accessionSearchResult.accessionList ) ? accessionSearchResult.accessionList : []" :key="i">
+                          <v-list-item-action>
+                          <v-checkbox
+                            v-model="item.selected"
+                            true-value="true"
+                            false-value="false"
+                          ></v-checkbox>
+                          </v-list-item-action>
+                          <v-list-item-icon>
+                          <v-icon v-text="item.icon"></v-icon>
+                          </v-list-item-icon>
+                          <v-list-item-content>
+                          <v-list-item-title
+                            >{{ item.text }} - {{ item.title }}</v-list-item-title
+                          >
+                          </v-list-item-content>
+                        </v-list-item>
+                        </v-list-item-group>
+                      </v-list>
                       </v-col>
                     </v-row>
-                  </v-card-text>
+                    </v-card-text>
                   <v-card-actions style="position: absolute; position:0;">
                     <v-spacer></v-spacer>
                     <v-btn color="green darken-1" text @click="accesionLookupCloseHandler">
