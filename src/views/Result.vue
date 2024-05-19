@@ -138,7 +138,7 @@
                         <v-icon size="x-large" color="white">mdi-close-circle-outline</v-icon>
                       </v-btn>
                     </v-card-title>
-                    <v-card-text>
+                    <v-card-text style="overflow: hidden;">
                       <v-row>
                         <v-col v-if="treeChartLoading == false">
                           <TreeChart :chartData="treeData" :loading="treeChartLoading" />
