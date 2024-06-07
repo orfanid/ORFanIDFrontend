@@ -7,15 +7,15 @@
             <v-row no-gutters>
               <v-spacer></v-spacer>
               <v-col cols="12" md="6">
-                <v-text-field label="Enter search terms" color="primary" v-model="search.query">
-                    <template #append>
-                      <v-btn depressed tile color="primary" @click="SearchResult(search.query)">
-                        <v-icon>
-                          search
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                  </v-text-field>
+                <v-text-field label="Enter search terms" color="primary" v-model="search.query" @keyup.enter="SearchResult(search.query)">
+                  <template #append>
+                    <v-btn depressed tile color="primary" @click="SearchResult(search.query)">
+                      <v-icon>
+                        search
+                      </v-icon>
+                    </v-btn>
+                  </template>
+                </v-text-field>
                 <v-icon>mdi-cloud-download</v-icon>
                 <a style="text-decoration: right;" href="#" @click="downloadPageFile(downloadSummaryResult)">
                   Download current page result

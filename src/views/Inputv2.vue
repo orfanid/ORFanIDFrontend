@@ -82,10 +82,10 @@
 
         <!-- Radio Group -->
         <v-col cols="12" md="2">
-          <v-radio-group mandatory v-model="dna_sequence">
+            <v-radio-group mandatory v-model="dna_sequence" @change="resetSequence">
             <v-radio label="Protein" value="protein"></v-radio>
             <v-radio label="Gene" value="nucleotide"></v-radio>
-          </v-radio-group>
+            </v-radio-group>
         </v-col>
 
         <!-- NCBI or Uniprot Accessions -->
@@ -100,7 +100,7 @@
                 @click:append-outer="showAccessionSearchDialogHandler"
                 :append-outer-icon="'mdi-store-search-outline'"
               ></v-text-field>
-              <v-dialog persistent max-width="800" v-model="showAccessionSearchDialog">
+              <v-dialog max-width="800" v-model="showAccessionSearchDialog">
                 <v-card>
                   <v-card-title class="text-h5">
                     NCBI or Uniprot Accession(s) Lookup
@@ -178,7 +178,7 @@
                     value="PSI-BLAST"
                   ></v-radio>
                   <v-radio label="BLAST" value="BLAST"></v-radio>
-                  <v-radio label="DIAMOND" value="DIAMOND" disabled></v-radio>
+                  <v-radio label="DIAMOND" value="DIAMOND"></v-radio>
                 </v-radio-group>
               </div>
             </v-col>
@@ -539,7 +539,8 @@ export default {
         sequence: this.sequence,
         email: this.submiterNickname,
         isPsiBlast: this.program == "PSI-BLAST" ? true : false,
-        num_iteration: parseInt(this.num_iteration)
+        num_iteration: parseInt(this.num_iteration),
+        executionType: this.program == "DIAMOND" ? "diamond" : "blast"
       };
       console.log("Request Info", requestInfo);
       analysis
@@ -610,6 +611,10 @@ export default {
         this.NCBIAccession = accessionsArray.toString();
       }
       this.showAccessionSearchDialog = false;
+    },
+    resetSequence() {
+      console.log("Reset Sequence");
+      this.sequence = "";
     }
   },
   validations: {
