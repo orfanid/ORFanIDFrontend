@@ -114,7 +114,14 @@ const analysisAPI = {
         return reject(false);
       })
     })
-  }
+  },
+  orfanBaseGenesByPage(currentPage, pageSize) {
+    return axios({
+      method: 'get',
+      url: `${config.baseUrl()}/orfanbase-genes/paged?page=${currentPage}&size=${pageSize}`,
+      headers: getHeaders(),
+    });
+  },
 };
 
 export default analysisAPI;

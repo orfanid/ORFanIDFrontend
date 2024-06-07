@@ -6,51 +6,31 @@
           <div>
             <v-card-title>
               <v-spacer></v-spacer>
-              <v-text-field
-                v-model="search"
-                append-icon="mdi-magnify"
-                label="Enter Search Term Here"
-                single-line
-                hide-details
-              ></v-text-field>
+              <v-text-field v-model="search" append-icon="mdi-magnify" label="Enter Search Term Here" single-line
+                hide-details></v-text-field>
             </v-card-title>
-            <v-data-table
-              :sort-by.sync="sortBy"
-              :sort-desc.sync="sortDesc"
-              :headers="headers"
-              :items="desserts"
-              :page.sync="page"
-              :items-per-page="itemsPerPage"
-              :search="search"
-              hide-default-footer
-              class="elevation-1"
-              @page-count="pageCount = $event"
-            >
+            <v-data-table :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :headers="headers" :items="desserts"
+              :page.sync="page" :items-per-page="itemsPerPage" :search="search" hide-default-footer class="elevation-1"
+              @page-count="pageCount = $event" @pagination="fetchData">
+
               <template v-slot:item.analysisIdNav="{ item }">
-                <router-link
-                  :to="{
-                    name: 'result',
-                    params: { analysisId: item.analysisIdNav },
-                  }"
-                >
+                <router-link :to="{
+                  name: 'result',
+                  params: { analysisId: item.analysisIdNav },
+                }">
                   <v-icon large>mdi-chart-bar</v-icon>
                 </router-link>
               </template>
             </v-data-table>
             <v-row>
-              <v-col cols="12" class="mt-3"
-                ><v-pagination v-model="page" :length="pageCount"></v-pagination
-              ></v-col>
+              <v-col cols="12" class="mt-3">
+                <v-pagination v-model="page" :length="pageCount" @input="fetchData({ page, itemsPerPage })"></v-pagination>
+              </v-col>
             </v-row>
             <v-row>
               <v-col cols="12" class="items-dropdown">
-                <v-combobox
-                  :value="itemsPerPage"
-                  :items="[5, 10, 15, 20, 25, 30]"
-                  label="Items per page"
-                  type="number"
-                  @input="itemsPerPage = parseInt($event, 5)"
-                ></v-combobox>
+                <v-combobox :value="itemsPerPage" :items="[5, 10, 15, 20, 25, 30]" label="Items per page" type="number"
+                  @input="itemsPerPage = parseInt($event, 5)"></v-combobox>
               </v-col>
             </v-row>
           </div>
@@ -71,6 +51,7 @@ export default {
       page: 1,
       pageCount: 0,
       itemsPerPage: 10,
+      totalItems: 0,
       headers: [
         {
           text: "Date",
@@ -99,14 +80,21 @@ export default {
   mounted() {
     const that = this;
     this.$Progress.start()
-    analysisAPI.orfanBaseGenes().then((response) => {
+    that.pageCount = Math.ceil(that.totalItems / that.itemsPerPage);
+    console.log("Page Count", that.pageCount);
+    debugger
+    analysisAPI.orfanBaseGenesByPage(that.page, that.itemsPerPage).then((response) => {
       console.log(response);
-      response.data.forEach((element) => {
+      that.totalItems = response.data.total;
+      console.log("Total Items", that.totalItems);
+      that.pageCount = Math.ceil(that.totalItems / that.itemsPerPage);
+      console.log("Page Count", that.pageCount);
+      response.data.data.forEach((element) => {
         that.desserts.push({
           date: moment
-              .utc(element.analysisDate)
-              .local()
-              .format("YYYY-MM-DD HH:mm:ss"),
+            .utc(element.analysisDate)
+            .local()
+            .format("YYYY-MM-DD HH:mm:ss"),
           organism: element.organism,
           geneId: element.geneId,
           description: element.description,
@@ -132,6 +120,33 @@ export default {
 
       return items;
     },
+    fetchData({ page, itemsPerPage }) {
+      const that = this;
+      this.$Progress.start();
+      analysisAPI
+        .orfanBaseGenesByPage(page, itemsPerPage)
+        .then((response) => {
+          console.log(response);
+          that.totalItems = response.data.total;
+          console.log("Total Items", that.totalItems);
+          that.pageCount = Math.ceil(that.totalItems / that.itemsPerPage);
+          console.log("Page Count", that.pageCount);
+          that.desserts = response.data.data.map((element) => ({
+            date: moment
+              .utc(element.analysisDate)
+              .local()
+              .format("YYYY-MM-DD HH:mm:ss"),
+            organism: element.organism,
+            geneId: element.geneId,
+            description: element.description,
+            orfanLevel: element.orfanLevel,
+            analysisId: element.analysisId,
+            analysisIdNav: element.analysisId,
+          }));
+          that.$Progress.finish();
+        });
+    },
+
   },
 };
 </script>
