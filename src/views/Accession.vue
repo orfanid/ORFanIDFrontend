@@ -110,7 +110,7 @@ export default {
         resultSummary: []
       },
       paginationConfig: {
-        itemPerPage: 200,
+        itemPerPage: 10,
         noOfPages: null,
         currentPage: 1
       },
