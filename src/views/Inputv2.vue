@@ -33,7 +33,7 @@
         <v-col cols="s6" offset-s1>
           <v-container fluid class="d-flex align-center pl-0">
             <p class="mb-0 mr-2">Search By:</p>
-            <v-radio-group row v-model="identifier" @change="identifierChanged">
+            <v-radio-group row v-model="identifier" @change="identifierChanged" :disabled="useExampleData">
               <v-radio label="Sequence" value="sequence"></v-radio>
               <v-radio label="Accessions" value="accession"></v-radio>
             </v-radio-group>
@@ -43,20 +43,29 @@
         <!-- Examples -->
         <v-col cols="s6">
           <v-col cols="12">
-            <h6>Examples</h6>
-            <v-tooltip bottom v-for="example in examples" :key="example.label">
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon
-                  size="72"
-                  color="green darken-2"
-                  :class="['icon', 'icon-species', 'pa-4', 'icon-' + example.icon]"
-                  v-on:click="loadExampleData(example.taxonomyName)"
-                  v-bind="attrs"
-                  v-on="on"
-                ></v-icon>
-              </template>
-              <span>{{ example.name }}</span>
-            </v-tooltip>
+            <v-switch
+              v-model="useExampleData"
+              label="Use Example Data"
+              color="teal"
+              class="mb-2"
+              @change="exampleDataChanged"
+            ></v-switch>
+            <div :class="{ 'disabled-area': !useExampleData }">
+              <h6>Examples</h6>
+              <v-tooltip bottom v-for="example in examples" :key="example.label">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon
+                    size="72"
+                    color="green darken-2"
+                    :class="['icon', 'icon-species', 'pa-4', 'icon-' + example.icon]"
+                    v-on:click="loadExampleData(example.taxonomyName)"
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-icon>
+                </template>
+                <span>{{ example.name }}</span>
+              </v-tooltip>
+            </div>
           </v-col>
         </v-col>
       </v-row>
@@ -82,10 +91,10 @@
 
         <!-- Radio Group -->
         <v-col cols="12" md="2">
-            <v-radio-group mandatory v-model="dna_sequence" @change="resetSequence">
+          <v-radio-group mandatory v-model="dna_sequence" @change="resetSequence" :disabled="useExampleData">
             <v-radio label="Protein" value="protein"></v-radio>
             <v-radio label="Gene" value="nucleotide"></v-radio>
-            </v-radio-group>
+          </v-radio-group>
         </v-col>
 
         <!-- NCBI or Uniprot Accessions -->
@@ -99,49 +108,56 @@
                 v-on="on"
                 @click:append-outer="showAccessionSearchDialogHandler"
                 :append-outer-icon="'mdi-store-search-outline'"
+                :disabled="useExampleData"
               ></v-text-field>
               <v-dialog max-width="800" v-model="showAccessionSearchDialog">
                 <v-card>
                   <v-card-title class="text-h5">
                     NCBI or Uniprot Accession(s) Lookup
                   </v-card-title>
-                    <v-card-text>
+                  <v-card-text>
                     <v-row>
                       <v-col>
-                      <v-text-field
-                        label="Protein / Gene Name"
-                        v-model="geneNameForAccessionSearch"
-                        :append-outer-icon="'mdi-store-search-outline'"
-                        @click:append-outer="accessionSearchHandler"
-                      ></v-text-field>
+                        <v-text-field
+                          label="Protein / Gene Name"
+                          v-model="geneNameForAccessionSearch"
+                          :append-outer-icon="'mdi-store-search-outline'"
+                          @click:append-outer="accessionSearchHandler"
+                        ></v-text-field>
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col>
-                      <v-list dense style="height:200px; overflow-y:auto">
-                        <v-list-item-group color="primary">
-                        <v-list-item v-for="(item, i) in (accessionSearchResult && accessionSearchResult.accessionList ) ? accessionSearchResult.accessionList : []" :key="i">
-                          <v-list-item-action>
-                          <v-checkbox
-                            v-model="item.selected"
-                            true-value="true"
-                            false-value="false"
-                          ></v-checkbox>
-                          </v-list-item-action>
-                          <v-list-item-icon>
-                          <v-icon v-text="item.icon"></v-icon>
-                          </v-list-item-icon>
-                          <v-list-item-content>
-                          <v-list-item-title
-                            >{{ item.text }} - {{ item.title }}</v-list-item-title
-                          >
-                          </v-list-item-content>
-                        </v-list-item>
-                        </v-list-item-group>
-                      </v-list>
+                        <v-list dense style="height:200px; overflow-y:auto">
+                          <v-list-item-group color="primary">
+                            <v-list-item
+                              v-for="(item, i) in accessionSearchResult &&
+                              accessionSearchResult.accessionList
+                                ? accessionSearchResult.accessionList
+                                : []"
+                              :key="i"
+                            >
+                              <v-list-item-action>
+                                <v-checkbox
+                                  v-model="item.selected"
+                                  true-value="true"
+                                  false-value="false"
+                                ></v-checkbox>
+                              </v-list-item-action>
+                              <v-list-item-icon>
+                                <v-icon v-text="item.icon"></v-icon>
+                              </v-list-item-icon>
+                              <v-list-item-content>
+                                <v-list-item-title
+                                  >{{ item.text }} - {{ item.title }}</v-list-item-title
+                                >
+                              </v-list-item-content>
+                            </v-list-item>
+                          </v-list-item-group>
+                        </v-list>
                       </v-col>
                     </v-row>
-                    </v-card-text>
+                  </v-card-text>
                   <v-card-actions style="position: absolute; position:0;">
                     <v-spacer></v-spacer>
                     <v-btn color="green darken-1" text @click="accesionLookupCloseHandler">
@@ -220,7 +236,7 @@
           <div class="error-message" v-if="!$v.sequence.maxLength && $v.sequence.$dirty">
             Sequence can only have a maximum of 500 characters.
           </div>
-          <v-chip class="ma-n3 float-right" x-small>{{sequence.length}}/5000</v-chip>
+          <v-chip class="ma-n3 float-right" x-small>{{ sequence.length }}/5000</v-chip>
         </v-col>
       </v-row>
 
@@ -239,6 +255,7 @@
             item-text="name"
             item-value="name"
             v-bind="attrs"
+            :disabled="useExampleData"
           >
             <template v-slot:item="data">
               <v-list-item-avatar>
@@ -257,6 +274,7 @@
             v-model="organismName"
             v-else
             @blur="reformatOrganismName(organismName)"
+            :disabled="useExampleData"
           ></v-text-field>
           <label style="color: red"></label>
           <div class="error-message" v-if="!$v.organismName.required && $v.organismName.$dirty">
@@ -416,7 +434,8 @@ export default {
       organismList: [],
       organismInputType: "", // dropdown or textfield,
       program: "PSI-BLAST", // PSI-BLAST, BLAST, DIAMOND,
-      organismSelectionType: "dropdown", // dropdown or textfield
+      organismSelectionType: "dropdown", // dropdown or textfield,
+      useExampleData: false, // Use Example Data
       attrs: {},
       submiterNickname: "",
       NCBIAccession: "",
@@ -434,7 +453,7 @@ export default {
       accessionSearchResult: {
         idList: [],
         resultSummary: [],
-        accessionList: [],
+        accessionList: []
       },
       examples: [
         { name: "Homo sapiens", icon: "human", taxonomyName: "Homo sapiens(9606)" },
@@ -604,7 +623,9 @@ export default {
     },
     applySelectedAccesion() {
       console.log("Apply Selected Accession");
-      var selectedAccessions = lodash.filter(this.accessionSearchResult.accessionList, { selected: "true" });
+      var selectedAccessions = lodash.filter(this.accessionSearchResult.accessionList, {
+        selected: "true"
+      });
       console.log("Selected Accessions ", selectedAccessions);
       var accessionsArray = lodash.map(selectedAccessions, "text");
       if (accessionsArray != null && accessionsArray.length > 0) {
@@ -615,6 +636,15 @@ export default {
     resetSequence() {
       console.log("Reset Sequence");
       this.sequence = "";
+    },
+    exampleDataChanged() {
+      console.log("Example Data Changed");
+      if (this.useExampleData) {
+        this.identifier == "accession";
+        this.dna_sequence == "protein";
+      }else {
+      }
+      this.clearAccessionSequenceAndOrganism();
     }
   },
   validations: {
@@ -676,5 +706,10 @@ export default {
   to {
     opacity: 1;
   }
+}
+
+.disabled-area {
+  pointer-events: none; /* Prevents clicking on the area */
+  opacity: 0.5; /* Makes the area look faded out */
 }
 </style>
