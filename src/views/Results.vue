@@ -142,7 +142,7 @@ export default {
           formatter: (x) => (x ? moment(x).format(this.dateFormat) : null),
         },
         { text: "Analysis ID", value: "analysisId", sortable: false },
-        { text: "Email", value: "email", sortable: false },
+        { text: "Nickname", value: "email", sortable: false },
         { text: "Organism", value: "organism", sortable: false },
         { text: "Genes", value: "genes", sortable: false },
         { text: "Status", value: "status", sortable: false },
