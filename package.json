@@ -23,6 +23,7 @@
     "moment": "^2.29.1",
     "pubmed-api": "0.0.8",
     "vue": "^2.6.11",
+    "vue-bot-ui": "^0.2.8",
     "vue-echarts": "^6.0.0-rc.5",
     "vue-gtag": "^1.1.2",
     "vue-gtm": "^3.5.0",

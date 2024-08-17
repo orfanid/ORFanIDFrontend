@@ -122,6 +122,14 @@ const analysisAPI = {
       headers: getHeaders(),
     });
   },
+  getBotResponse(request) {
+   return axios({
+      method: 'post',
+      url: `http://45.56.72.250:9000/chat`,
+      data: request,
+      headers: getHeaders(),
+    });
+  }
 };
 
 export default analysisAPI;
