@@ -22,18 +22,18 @@
               ></v-text-field>
             </v-card-title>
             <v-data-table
-              :sort-by.sync="sortBy"
-              :sort-desc.sync="sortDesc"
+              :sort-by="sortBy"
+              :sort-desc="sortDesc"
               :headers="headers"
               :items="desserts"
-              :page.sync="page"
+              :page="page"
               :items-per-page="itemsPerPage"
               :search="search"
               class="elevation-1"
               @page-count="pageCount = $event"
               :hide-default-footer="true"
             >
-              <template v-slot:item.analysisIdNav="{ item }">
+              <!-- <template v-slot:item.analysisIdNav="{ item }">
                 <div v-if="item.status != 'START_PROCESSING'">
                   <router-link
                     :to="{
@@ -90,7 +90,7 @@
                   @click="cancelAnalyse(item.analysisId)"
                   >Cancel</v-btn
                 >
-              </template>
+              </template> -->
             </v-data-table>
             <v-row>
               <v-col cols="12" class="mt-3">
@@ -116,7 +116,7 @@
 </template>
 
 <script>
-import analysisAPI from "../api/analysis";
+import orfanApiService from "../api/orfanApiService";
 import moment from "moment";
 import _ from "lodash";
 
@@ -158,7 +158,7 @@ export default {
     this.loadData();
     this.intervalHandler = setInterval(this.loadData,30000 );
   },
-  beforeDestroy() {
+  beforeUnmount() {
     clearInterval(this.intervalHandler);
     this.intervalHandler =0;
   },
@@ -166,7 +166,7 @@ export default {
     cancelAnalyse(analysisId) {
       let that = this;
       if (analysisId != null) {
-        analysisAPI.cancelAnalyse(analysisId).then((response) => {
+        orfanApiService.cancelAnalyse(analysisId).then(() => {
           let cancelItem = _.findIndex(that.desserts, {
             analysisId: analysisId,
           });
@@ -191,7 +191,7 @@ export default {
       const that = this;
       that.$Progress.start()
       that.desserts.splice(0,that.desserts.length)
-      analysisAPI.getAll().then((response) => {
+      orfanApiService.getAll().then((response) => {
         console.log(response);
         response.data.forEach((element) => {
           that.desserts.push({

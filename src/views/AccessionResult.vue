@@ -92,7 +92,6 @@
 </template>
 
 <script>
-import PubmedApi from "pubmed-api";
 import lodash from "lodash";
 import csvDownload from "json-to-csv-export";
 
@@ -114,12 +113,12 @@ export default {
         noOfPages: null,
         currentPage: 1
       },
-      pubMedApi: null,
+      //pubMedApi: null,
       downloadSummaryResult:[]
     };
   },
   async mounted() {
-    this.pubMedApi = new PubmedApi();
+    //this.pubMedApi = new PubmedApi();
   },
   methods: {
     SearchResult: async function(query) {
@@ -127,17 +126,18 @@ export default {
       this.getESearch(query);
 
     },
-    getESearch: async function(query) {
+    getESearch: async function() {
       this.$Progress.start();
       this.searchResult.idList = [];
       this.searchResult.resultSummary = [];
-      const options = {
-        retStart: "1",
-        retMax: "1000"
-      };
+      // const options = {
+      //   retStart: "1",
+      //   retMax: "1000"
+      // };
       try {
         let that = this;
-        const results = await this.pubMedApi.eSearch.search(that.selectedDatabase, query, options);
+        let results = {};
+        //const results = await this.pubMedApi.eSearch.search(that.selectedDatabase, query, options);
         this.$Progress.finish();
         var result = JSON.parse(results);
         if (
@@ -169,10 +169,11 @@ export default {
         console.log(error);
       }
     },
-    getESearchSummary: async function(queryids) {
-      let that = this;
+    getESearchSummary: async function() {
+      //let that = this;
       try {
-        const results = await this.pubMedApi.eSummary.search(that.selectedDatabase, queryids);
+        //const results = await this.pubMedApi.eSummary.search(that.selectedDatabase, queryids);
+        let results = {};
         let resultSummary = JSON.parse(results);
         console.log(resultSummary);
         return resultSummary;

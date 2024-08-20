@@ -460,16 +460,15 @@
 </template>
 <script>
 import $ from "jquery";
-import analysis from "@/api/analysis";
-import { maxLength, required, requiredIf, email, helpers } from "vuelidate/lib/validators";
+import orfanApiService from "../api/orfanApiService";
+import { maxLength, requiredIf, helpers } from "vuelidate/lib/validators";
 import router from "@/router";
-import PubmedApi from "pubmed-api";
 import lodash from "lodash";
 
 const organism = helpers.regex("organism", /\(\d*\)$/g);
 
 export default {
-  name: "Home",
+  name: "experiment-diamond",
   methods: {
     clearUpload() {
       this.from.fileAttachment = ""
@@ -532,7 +531,7 @@ export default {
         }
 
         this.isLoading = true;
-        analysis
+        orfanApiService
           .analyse(requestInfo)
           .then(response => {
             this.analyseResult.session = response.data;
@@ -560,7 +559,7 @@ export default {
       this.isLoading = false;
     },
     validate() {
-      analysis
+      orfanApiService
         .validate({
           accessions: this.from.ncbiAccessionInput,
           accessionType: this.from.accessionType
@@ -593,7 +592,7 @@ export default {
       };
     },
     organismValid() {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         setTimeout(() => {
           resolve(false);
         }, 500);
@@ -601,12 +600,12 @@ export default {
     },
     accessionLookup() {
       this.showAccessionLookup = true;
-      if (
-        this.AccesionLookup != null &&
-        this.AccesionLookup.items != null &&
-        Array.isArray(this.AccesionLookup.items)
-      ) {
-      }
+      // if (
+      //   this.AccesionLookup != null &&
+      //   this.AccesionLookup.items != null &&
+      //   Array.isArray(this.AccesionLookup.items)
+      // ) {
+      // }
     },
     accesionLookupApply() {
       var selectedAccessions = lodash.filter(this.AccesionLookup.items, { selected: "true" });
@@ -723,7 +722,7 @@ export default {
   },
   watch: {
     "from.fileAttachment": {
-      handler: function(after, before) {
+      handler: function(after) {
         if (after.length > 0) {
           this.from.submissionMode = "upload";
         } else {
@@ -733,7 +732,7 @@ export default {
       deep: true
     },
     "from.sequence": {
-      handler: function(after, before) {
+      handler: function(after) {
         if (after != "") {
           this.from.submissionMode = "sequence";
         } else {
@@ -743,7 +742,7 @@ export default {
       deep: true
     },
     "from.ncbiAccessionInput": {
-      handler: function(after, before) {
+      handler: function(after) {
         if (after != "") {
           this.from.submissionMode = "accessions";
         } else {
@@ -753,7 +752,7 @@ export default {
       deep: true
     },
     "AccesionLookup.items" : {
-      handler: function(after, before) {
+      handler: function() {
         var selectedAccessions = lodash.filter(this.AccesionLookup.items, { selected: "true" });
         if(selectedAccessions != null && selectedAccessions.length > 0) {
           this.showAccessionLookupApplyBtn = true
@@ -763,8 +762,8 @@ export default {
     }
   },
   mounted() {
-    this.pubMedApi = new PubmedApi();
-    analysis.getOrganismList().then(response => {
+    //this.pubMedApi = new PubmedApi();
+    orfanApiService.getOrganismList().then(response => {
       Object.entries(response.data).forEach(element => {
         this.organismList.push({
           name: element[0],
@@ -873,7 +872,7 @@ export default {
           return this.from.submissionMode === "accessions" || this.from.submissionMode === "upload";
         }),
         alpha: organism,
-        validOrganism: analysis.validateOrganism
+        validOrganism: orfanApiService.validateOrganism
       },
       ncbiAccessionInput: {
         required: function ncbiAccessionRequired(val) {
@@ -890,17 +889,17 @@ export default {
           }
         }
       },
-      sequence: {
-        required: function sequenceRequired(val) {
-          if (this.from.submissionMode === "upload") return true;
+      // sequence: {
+      //   required: function sequenceRequired(val) {
+      //     if (this.from.submissionMode === "upload") return true;
 
-          if (this.from.searchMethod == "s" && val == "") {
-            return false;
-          } else {
-            return true;
-          }
-        }
-      }
+      //     if (this.from.searchMethod == "s" && val == "") {
+      //       return false;
+      //     } else {
+      //       return true;
+      //     }
+      //   }
+      // }
     }
   }
 };

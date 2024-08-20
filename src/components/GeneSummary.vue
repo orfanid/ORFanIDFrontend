@@ -4,8 +4,7 @@
 
 <script>
 import * as echarts from "echarts";
-import analysisAPI from "../api/analysis";
-import { VCalendarMonthly } from "vuetify/lib";
+import orfanApiService from "../api/orfanApiService";
 export default {
   props: {
     dataChart: {
@@ -49,29 +48,12 @@ export default {
     this.fetchChartData();
     window.addEventListener("resize", this.handleResize);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     window.removeEventListener("resize", this.handleResize);
   },
   methods: {
     renderChart() {
       const chart = echarts.init(this.$refs.barChart);
-
-      const options = {
-        title: {
-          text: "Bar Chart Example"
-        },
-        tooltip: {},
-        xAxis: {
-          data: this.chartData.categories
-        },
-        yAxis: {},
-        series: [
-          {
-            type: "bar",
-            data: this.chartData.data
-          }
-        ]
-      };
       chart.setOption(this.chartData);
     },
     handleResize() {
@@ -80,7 +62,7 @@ export default {
     },
     fetchChartData() {
       let that = this;
-      analysisAPI.getSummaryChart({ sessionId: this.$route.params.analysisId }).then(response => {
+      orfanApiService.getSummaryChart({ sessionId: this.$route.params.analysisId }).then(response => {
         response.data.x.forEach(item => {
           that.chartData.xAxis.data.push(item);
         });

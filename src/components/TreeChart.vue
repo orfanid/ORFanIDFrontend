@@ -47,9 +47,6 @@ export default {
   methods: {
     initChart() {
       const margin = { top: 20, right: 90, bottom: 20, left: 90 };
-      const width = 960 - margin.left - margin.right;
-      const height = 500 - margin.top - margin.bottom;
-
       const dimensions = this.calculateTreeDimensions(this.chartData);
 
       this.svg = d3.select(".svgcontainer")
@@ -85,7 +82,7 @@ export default {
 
       const nodeEnter = node.enter().append("g")
         .attr("class", "node")
-        .attr("transform", d => "translate(" + source.y0 + "," + source.x0 + ")")
+        .attr("transform", () => "translate(" + source.y0 + "," + source.x0 + ")")
         .on("click", this.click);
 
       nodeEnter.append("circle")
@@ -112,7 +109,7 @@ export default {
 
       const nodeExit = node.exit().transition()
         .duration(this.duration)
-        .attr("transform", d => "translate(" + source.y + "," + source.x + ")")
+        .attr("transform", () => "translate(" + source.y + "," + source.x + ")")
         .remove();
 
       nodeExit.select("circle").attr("r", 0);
@@ -126,7 +123,7 @@ export default {
 
       const linkEnter = link.enter().insert("path", "g")
         .attr("class", "link")
-        .attr("d", d => {
+        .attr("d", () => {
           const o = { x: source.x0, y: source.y0 };
           return this.diagonal(o, o);
         });
@@ -137,13 +134,13 @@ export default {
         .duration(this.duration)
         .attr("d", d => this.diagonal(d, d.parent));
 
-      const linkExit = link.exit().transition()
-        .duration(this.duration)
-        .attr("d", d => {
-          const o = { x: source.x0, y: source.y0 };
-          return this.diagonal(o, o);
-        })
-        .remove();
+      // const linkExit = link.exit().transition()
+      //   .duration(this.duration)
+      //   .attr("d", () => {
+      //     const o = { x: source.x0, y: source.y0 };
+      //     return this.diagonal(o, o);
+      //   })
+      //   .remove();
 
       nodes.forEach(d => {
         d.x0 = d.x;

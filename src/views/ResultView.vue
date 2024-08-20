@@ -113,7 +113,7 @@
               disable-pagination
               class="elevation-1 querytable"
             >
-              <template v-slot:item.sessionId="{ item }">
+              <template v-slot:item="{ item }">
                 <v-dialog
                   v-model="item.showDialog"
                   v-if="item.orfanLevel != 'Strict ORFan'"
@@ -151,7 +151,7 @@
                   </v-card>
                 </v-dialog>
               </template>
-              <template #footer.prepend>
+              <template #footer>
                 <v-spacer />
               </template>
             </v-data-table>
@@ -177,19 +177,15 @@
   </v-container>
 </template>
 <script>
-import analysisAPI from "../api/analysis";
-import BarChart from "../components/BarChart";
+import orfanApiService from "../api/orfanApiService";
 import TreeChart from "../components/TreeChart";
 import GeneSummary from "../components/GeneSummary";
 import { required, email } from "vuelidate/lib/validators";
-import VueProgressBar from "vue-progressbar";
 
 export default {
-  name: "Result",
+  name: "ResultView",
   components: {
-    BarChart,
     TreeChart,
-    VueProgressBar,
     GeneSummary
   },
   data() {
@@ -294,14 +290,14 @@ export default {
   },
   mounted() {
     const that = this;
-    analysisAPI.getOrganismList().then(response => {
+    orfanApiService.getOrganismList().then(response => {
       that.organismList = Object.keys(response.data).map(key => {
         return { key: key, value: response.data[key] };
       });
     });
     this.isLoading = true;
     this.$Progress.start();
-    analysisAPI.getAnalysis({ sessionId: this.$route.params.analysisId }).then(response => {
+    orfanApiService.getAnalysis({ sessionId: this.$route.params.analysisId }).then(response => {
       that.$Progress.finish();
       console.log(response.data);
       that.analysisParameters.analysisId = response.data.analysisId;
@@ -334,7 +330,7 @@ export default {
 
     this.isLoading = false;
 
-    analysisAPI.getSummaryChart({ sessionId: this.$route.params.analysisId }).then(response => {
+    orfanApiService.getSummaryChart({ sessionId: this.$route.params.analysisId }).then(response => {
       console.log(response);
       response.data.x.forEach(item => {
         that.chartSummary.xAxis.data.push(item);
@@ -349,7 +345,7 @@ export default {
       window.location.href = "https://www.ncbi.nlm.nih.gov/search/all/?term=" + gene;
     },
     downloadBlast(id) {
-      analysisAPI.downloadBlast(id).then(response => {
+      orfanApiService.downloadBlast(id).then(response => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
@@ -363,7 +359,7 @@ export default {
       this.treeChartLoading = true;
       const that = this;
       console.log("Loadding Blast " + sessionId + " " + geneId);
-      analysisAPI.getBlastSummary({ geneId: geneId, sessionId: sessionId }).then(response => {
+      orfanApiService.getBlastSummary({ geneId: geneId, sessionId: sessionId }).then(response => {
         this.treeChartLoading = false;
         response.data.tree.children.forEach(item => {
           that.blastResult.series[0].data.push(item);
@@ -374,7 +370,7 @@ export default {
     loadBlastDataV2(sessionId, geneId) {
       this.treeChartLoading = true;
       console.log("Loadding Blast " + sessionId + " " + geneId);
-      analysisAPI.getBlastSummary({ geneId: geneId, sessionId: sessionId }).then(response => {
+      orfanApiService.getBlastSummary({ geneId: geneId, sessionId: sessionId }).then(response => {
         this.treeChartLoading = false;
         this.treeData = this.extractNames(response.data.tree);
         console.log("extractedData", this.treeData);
@@ -391,7 +387,7 @@ export default {
       this.$v.$touch();
       if (!this.$v.$invalid) {
         const that = this;
-        analysisAPI.saveAnalysis(this.analysisResult).then(response => {
+        orfanApiService.saveAnalysis(this.analysisResult).then(response => {
           that.saveResultDialog = false;
           console.log(response);
         });

@@ -3,68 +3,49 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --skip-plugins @vue/cli-plugin-eslint",
-    "build": "vue-cli-service build --skip-plugins @vue/cli-plugin-eslint",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^6.5.1",
-    "@mdi/js": "^5.9.55",
-    "@vue/composition-api": "^1.0.0-rc.11",
-    "axios": "^0.21.1",
-    "core-js": "^3.6.5",
+    "axios": "^1.7.4",
     "d3": "^7.9.0",
-    "echarts": "^5.5.0",
-    "jquery": "^3.6.0",
-    "json-to-csv-export": "^1.1.1",
-    "lodash": "^4.17.21",
-    "material-design-icons": "^3.0.1",
-    "materialize-css": "^1.0.0-rc.2",
-    "moment": "^2.29.1",
-    "pubmed-api": "0.0.8",
-    "vue": "^2.6.11",
+    "echarts": "^5.5.1",
+    "jquery": "^3.7.1",
+    "json-to-csv-export": "^3.0.1",
+    "moment": "^2.30.1",
     "vue-bot-ui": "^0.2.8",
-    "vue-echarts": "^6.0.0-rc.5",
-    "vue-gtag": "^1.1.2",
-    "vue-gtm": "^3.5.0",
+    "vue-echarts": "^7.0.2",
     "vue-progressbar": "^0.7.5",
-    "vue-router": "^3.2.0",
-    "vue-ua": "^1.7.0",
-    "vue-youtube": "^1.4.0",
+    "vue-router": "^4.4.3",
     "vuelidate": "^0.7.7",
-    "vuetify": "^2.4.0"
+    "vuetify": "^3.7.0-beta.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
-    "@vue/cli-plugin-router": "^4.5.13",
-    "@vue/cli-service": "~4.5.0",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^6.2.2",
-    "sass": "~1.32.0",
-    "sass-loader": "^10.0.0",
-    "vue-cli-plugin-vuetify": "~2.4.1",
-    "vue-template-compiler": "^2.6.11",
-    "vuetify-loader": "^1.7.0"
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-vue": "^8.0.3"
   },
   "eslintConfig": {
-    "root": false,
+    "root": true,
     "env": {
-      "node": false
+      "node": true
     },
     "extends": [
-      "plugin:vue/essential",
+      "plugin:vue/vue3-essential",
       "eslint:recommended"
     ],
-    "parserOptions": {
-      "parser": "babel-eslint"
-    },
+    "parserOptions": {},
     "rules": {}
   },
   "browserslist": [
     "> 1%",
     "last 2 versions",
-    "not dead"
+    "not dead",
+    "not ie 11"
   ]
 }

@@ -9,11 +9,11 @@
               <v-text-field v-model="search" append-icon="mdi-magnify" label="Enter Search Term Here" single-line
                 hide-details></v-text-field>
             </v-card-title>
-            <v-data-table :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :headers="headers" :items="desserts"
-              :page.sync="page" :items-per-page="itemsPerPage" :search="search" hide-default-footer class="elevation-1"
+            <v-data-table v-model:sort-by="sortBy" v-model:sort-desc="sortDesc" :headers="headers" :items="desserts"
+              v-model:page="page" :items-per-page="itemsPerPage" :search="search" hide-default-footer class="elevation-1"
               @page-count="pageCount = $event" @pagination="fetchData">
 
-              <template v-slot:item.analysisIdNav="{ item }">
+              <template v-slot:item="{ item }">
                 <router-link :to="{
                   name: 'result',
                   params: { analysisId: item.analysisIdNav },
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import analysisAPI from "../api/analysis";
+import orfanApiService from "../api/orfanApiService";
 import moment from "moment";
 
 export default {
@@ -82,8 +82,7 @@ export default {
     this.$Progress.start()
     that.pageCount = Math.ceil(that.totalItems / that.itemsPerPage);
     console.log("Page Count", that.pageCount);
-    debugger
-    analysisAPI.orfanBaseGenesByPage(that.page, that.itemsPerPage).then((response) => {
+    orfanApiService.orfanBaseGenesByPage(that.page, that.itemsPerPage).then((response) => {
       console.log(response);
       that.totalItems = response.data.total;
       console.log("Total Items", that.totalItems);
@@ -123,7 +122,7 @@ export default {
     fetchData({ page, itemsPerPage }) {
       const that = this;
       this.$Progress.start();
-      analysisAPI
+      orfanApiService
         .orfanBaseGenesByPage(page, itemsPerPage)
         .then((response) => {
           console.log(response);

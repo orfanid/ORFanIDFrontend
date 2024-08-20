@@ -422,11 +422,12 @@
 
 <script>
 import { required, requiredIf, maxLength } from "vuelidate/lib/validators";
-import analysis from "@/api/analysis";
+import orfanApiService from "@/api/orfanApiService";
 import { getAccessionESearch } from "@/api/accessionSearch";
 import lodash from "lodash";
+import $ from "jquery";
 export default {
-  name: "Home",
+  name: "InputForm",
   data() {
     return {
       dna_sequence: "protein", // protein or nucleotide
@@ -494,7 +495,7 @@ export default {
   methods: {
     getOrganismList() {
       let that = this;
-      analysis.getOrganismList().then(response => {
+      orfanApiService.getOrganismList().then(response => {
         Object.entries(response.data).forEach(element => {
           that.organismList.push({
             name: element[0],
@@ -546,7 +547,7 @@ export default {
       this.organismName = text;
     },
     submitAnalysData() {
-      console.log("Submit Analysis Data");
+      console.log("Submit orfanApiService Data");
       this.showSubmissionConfirmation = false;
       var requestInfo = {
         accession: this.NCBIAccession,
@@ -562,7 +563,7 @@ export default {
         executionType: this.program == "DIAMOND" ? "diamond" : "blast"
       };
       console.log("Request Info", requestInfo);
-      analysis
+      orfanApiService
         .analyse(requestInfo)
         .then(response => {
           console.log(response);
@@ -572,7 +573,7 @@ export default {
           console.log(error);
         });
     },
-    readUploadedFile(event) {
+    readUploadedFile() {
       if (!this.uploadedSequenceFile) {
         this.uploadedSequenceFile = "No File Chosen";
       }
@@ -642,19 +643,18 @@ export default {
       if (this.useExampleData) {
         this.identifier == "accession";
         this.dna_sequence == "protein";
-      }else {
       }
       this.clearAccessionSequenceAndOrganism();
     }
   },
   validations: {
     NCBIAccession: {
-      required: requiredIf(function(accession) {
+      required: requiredIf(function() {
         return this.identifier === "accession";
       })
     },
     sequence: {
-      required: requiredIf(function(accession) {
+      required: requiredIf(function() {
         return this.identifier === "sequence";
       }),
       maxLength: maxLength(500)
