@@ -112,10 +112,13 @@ export default {
       botTitle: "ORFanBase AI Assistance",
       botAvatarImg: BotIcon,
       boardContentBg: '#f4f4f4',
-      msgBubbleBgBot: '#325880',
+      msgBubbleBgBot: '#009688',
       inputPlaceholder: 'Type here',
       inputDisableBg: '#fff',
-      inputDisablePlaceholder: 'Hit the buttons above to respond'
+      inputDisablePlaceholder: 'Hit the buttons above to respond',
+      textColor: '#fff',
+      msgBubbleColorBot: '#fff',
+      msgBubbleBgUser: '#018786',
     },
     botWindowVisible: false
   }),
@@ -128,5 +131,8 @@ export default {
 }
 .qkb-bubble-btn {
   background-color: #018786 !important;
+}
+.qkb-msg-bubble--user .qkb-msg-bubble-component__text {
+  background-color: #02CCCC !important;
 }
 </style>

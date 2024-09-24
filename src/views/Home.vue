@@ -1,7 +1,6 @@
 <template>
   <v-layout wrap>
     <v-app-bar color="white" hide-on-scroll>
-      <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
       <v-spacer></v-spacer>
       <v-toolbar-title w-100>
         <v-row>
@@ -37,64 +36,6 @@
             <v-btn class="center" to="input" color="teal"><span color="white">Get Started</span></v-btn>
           </div>
           <div class="row center justify mt-2">
-            <!-- <ul>
-              <li>        <v-dialog
-          transition="dialog-bottom-transition"
-          max-width="640"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-icon large color="green darken-2">mdi-video</v-icon> <a href="#" v-bind="attrs"
-              v-on="on"><span style="font-size:1.35em">Tutorial for ORFanID</span></a>
-          </template>
-          <template v-slot:default="dialog">
-            <v-card>
-                <iframe
-        width="640"
-        height="360"
-        :src="videoOneResult"
-        frameborder="0"
-        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
-      ></iframe>
-              <v-card-actions class="justify-end">
-                <v-btn
-                  text
-                  @click="dialog.value = false"
-                >Close</v-btn>
-              </v-card-actions>
-            </v-card>
-          </template>
-        </v-dialog></li>
-              <li>
-                <v-dialog
-          transition="dialog-bottom-transition"
-          max-width="640"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-icon large color="green darken-2">mdi-video</v-icon> <a href="#" v-bind="attrs"
-              v-on="on"><span style="font-size:1.35em">Navigating NCBI for ORFanID</span></a>
-          </template>
-          <template v-slot:default="dialog">
-            <v-card>
-                <iframe
-        width="640"
-        height="360"
-        :src="videoTwoResult"
-        frameborder="0"
-        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
-      ></iframe>
-              <v-card-actions class="justify-end">
-                <v-btn
-                  text
-                  @click="dialog.value = false"
-                >Close</v-btn>
-              </v-card-actions>
-            </v-card>
-          </template>
-        </v-dialog>
-              </li>
-            </ul> -->
             <ul>
               <li ><v-icon large color="green darken-2">mdi-video</v-icon> <a href="https://youtu.be/wQY0_BBsJRk" target="_blank"><span style="font-size:1.35em">Video Tutorial for ORFanID</span></a></li>
               <li><v-icon large color="green darken-2">mdi-video</v-icon><a href="https://youtu.be/B9QnPtKNA9c" target="_blank"><span style="font-size:1.35em">Navigating NCBI for ORFanID Video</span></a></li>
@@ -127,7 +68,6 @@
                 </v-col>
               </v-row>
             </v-container>
-          </v-card>
           </div>
         </v-col>
       </v-row>
@@ -215,7 +155,7 @@
                 </v-col>
               </v-row>
             </v-container>
-          </v-card>
+            </v-card>
           </div>
         </v-col>
       </v-row>
