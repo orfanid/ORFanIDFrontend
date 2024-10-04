@@ -189,10 +189,10 @@
               <div>
                 <h6>Program Selection</h6>
                 <v-radio-group mandatory v-model="program">
-                  <v-radio
+                  <!-- <v-radio
                     label="PSI-BLAST (Position-Specific Iterated BLAST)"
                     value="PSI-BLAST"
-                  ></v-radio>
+                  ></v-radio> -->
                   <v-radio label="BLAST" value="BLAST"></v-radio>
                   <v-radio label="DIAMOND" value="DIAMOND"></v-radio>
                 </v-radio-group>
