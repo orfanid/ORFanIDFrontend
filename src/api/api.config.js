@@ -1,7 +1,7 @@
 //const apiVersion = 1;
 const config = {
   baseUrl() {
-    return "http://51.81.208.211:8085";
+    return "https://orfangenes.com/orfanidbe";
   },
   axiosConfig() {
     return {

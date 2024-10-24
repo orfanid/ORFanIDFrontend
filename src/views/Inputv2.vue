@@ -200,7 +200,7 @@
             </v-col>
 
             <!-- Number of iterations -->
-            <v-col cols="6">
+            <!-- <v-col cols="6">
               <v-select
                 label="Number of iterations"
                 :items="num_iterations"
@@ -208,7 +208,7 @@
                 item-value="value"
                 v-model="num_iteration"
               ></v-select>
-            </v-col>
+            </v-col> -->
           </v-row>
         </v-col>
       </v-row>
