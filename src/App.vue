@@ -1,22 +1,14 @@
 <template>
   <v-app>
-    <Header v-if="!isHome"/>
+    <Header v-if="!isHome" />
     <v-main v-if="!isHome">
       <router-view></router-view>
     </v-main>
-    <VueBotUI
-          :messages="messageData"
-          :options="botOptions"
-          :bot-typing="botTyping"
-          :input-disable="inputDisable"
-          :is-open="botWindowVisible"
-          @msg-send="msgSend"
-          @init="botStart"
-          @destroy="botDestroy"
-        />
+    <VueBotUI :messages="messageData" :options="botOptions" :bot-typing="botTyping" :input-disable="inputDisable"
+      :is-open="botWindowVisible" @msg-send="msgSend" @init="botStart" @destroy="botDestroy" />
     <router-view v-if="isHome"></router-view>
     <vue-progress-bar></vue-progress-bar>
-    <Footer v-if="!isHome"/>
+    <Footer v-if="!isHome" />
     <vue-progress-bar></vue-progress-bar>
   </v-app>
 </template>
@@ -30,6 +22,14 @@ import analysisAPI from "../src/api/analysis";
 import BotIcon from '../src/assets/images/bot.png'
 
 export default {
+  head: {
+    link: [
+      {
+        rel: "icon",
+        href: require("./assets/logo.png")
+      },
+    ]
+  },
   name: 'App',
   components: {
     Header,
@@ -42,7 +42,7 @@ export default {
       return this.$route.name === 'home';
     },
   },
-  mounted () {
+  mounted() {
     M.AutoInit()
   },
   methods: {
@@ -54,7 +54,7 @@ export default {
       console.log(e);
       this.data = e.text;
     },
-    msgSend (value) {
+    msgSend(value) {
       this.messageData.push({
         agent: 'user',
         type: 'text',
@@ -63,7 +63,7 @@ export default {
 
       this.getBotResponse(value.text);
     },
-    botStart () {
+    botStart() {
       this.messageData = [];
       if (this.botWindowVisible === false) {
         setTimeout(() => {
@@ -78,12 +78,12 @@ export default {
         }, 1000);
       }
     },
-    botDestroy () {
+    botDestroy() {
       this.botWindowVisible = false;
     },
     getBotResponse(prompt) {
       let request = {
-        "question" : prompt
+        "question": prompt
       };
       this.botTyping = true;
       analysisAPI.getBotResponse(request).then(response => {
@@ -129,9 +129,11 @@ export default {
 .qkb-board-header {
   background-color: #018786 !important;
 }
+
 .qkb-bubble-btn {
   background-color: #018786 !important;
 }
+
 .qkb-msg-bubble--user .qkb-msg-bubble-component__text {
   background-color: #02CCCC !important;
 }
