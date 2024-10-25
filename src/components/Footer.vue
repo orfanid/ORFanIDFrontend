@@ -21,7 +21,7 @@
               <v-row>
                 <v-col cols="12" md="8">
                   <div class="pa-md-3 text-center text-md-left" style="color:white;">
-                    Copyright &nbsp;© Gunasekera 2018 - 2025
+                    Copyright &nbsp;© Gunasekera 2018 - {{ currentYear }}
                   </div>
                 </v-col>
                 <v-col cols="12" md="4" class="">
@@ -43,6 +43,11 @@
 </template>
 <script>
 export default {
-  name: "Header"
+  name: "Header",
+  data() {
+    return {
+      currentYear: new Date().getFullYear()
+    };
+  }
 };
 </script>

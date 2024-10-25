@@ -17,6 +17,13 @@ const analysisAPI = {
       headers: getHeaders(),
     });
   },
+  getByDesc(page = 0, size = 10) {
+    return axios({
+      method: 'get',
+      url: `${config.baseUrl()}/all-analysis/paged?page=${page}&size=${size}&sortByDate=desc`,
+      headers: getHeaders(),
+    });
+  },
   saveAnalysis(values) {
     console.log('saveAnalysis');
     console.log(values);

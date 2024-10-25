@@ -4,8 +4,8 @@
     <v-main v-if="!isHome">
       <router-view></router-view>
     </v-main>
-    <VueBotUI :messages="messageData" :options="botOptions" :bot-typing="botTyping" :input-disable="inputDisable"
-      :is-open="botWindowVisible" @msg-send="msgSend" @init="botStart" @destroy="botDestroy" />
+    <!-- <VueBotUI :messages="messageData" :options="botOptions" :bot-typing="botTyping" :input-disable="inputDisable"
+      :is-open="botWindowVisible" @msg-send="msgSend" @init="botStart" @destroy="botDestroy" /> -->
     <router-view v-if="isHome"></router-view>
     <vue-progress-bar></vue-progress-bar>
     <Footer v-if="!isHome" />
