@@ -94,17 +94,16 @@
             </v-data-table>
             <v-row>
               <v-col cols="12" class="mt-3">
-                <v-pagination v-model="page" :length="pageCount"></v-pagination>
+                <v-pagination v-model="page" :length="pageCountR"></v-pagination>
               </v-col>
             </v-row>
             <v-row>
               <v-col cols="12" class="items-dropdown">
                 <v-combobox
-                  :value="itemsPerPage"
+                  v-model="itemsPerPage"
                   :items="[5, 10, 15, 20, 25, 30]"
                   label="Items per page"
                   type="number"
-                  @input="itemsPerPage = parseInt($event, 5)"
                 ></v-combobox>
               </v-col>
             </v-row>
@@ -126,6 +125,7 @@ export default {
       search: "",
       page: 1,
       pageCount: 0,
+      itemsSort: 'desc',
       itemsPerPage: 10,
       headers: [
         {
@@ -160,7 +160,16 @@ export default {
   },
   beforeDestroy() {
     clearInterval(this.intervalHandler);
-    this.intervalHandler =0;
+    this.intervalHandler = 0;
+  },
+  watch: {
+    page() {
+      this.loadData();
+    },
+    itemsPerPage() {
+      this.page = 1; // Reset to the first page on itemsPerPage change
+      this.loadData();
+    },
   },
   methods: {
     cancelAnalyse(analysisId) {
@@ -174,44 +183,66 @@ export default {
         });
       }
     },
-    sortByDate(items, index, isDescending) {
-      items.sort((a, b) => {
-        if (index[0] === "date") {
-          if (isDescending) {
-            return moment(b.date) - moment(a.date);
-          } else {
-            return moment(a.date) - moment(b.date);
-          }
-        }
-      });
+    // sortByDate(items, index, isDescending) {
+    //   items.sort((a, b) => {
+    //     if (index[0] === "date") {
+    //       if (isDescending) {
+    //         return moment(b.date) - moment(a.date);
+    //       } else {
+    //         return moment(a.date) - moment(b.date);
+    //       }
+    //     }
+    //   });
 
-      return items;
-    },
+    //   return items;
+    // },
+    // loadData() {
+    //   const that = this;
+    //   that.$Progress.start()
+    //   that.desserts.splice(0,that.desserts.length)
+    //   analysisAPI.getAll().then((response) => {
+    //     console.log(response);
+    //     response.data.forEach((element) => {
+    //       that.desserts.push({
+    //         date: moment
+    //           .utc(element.analysisDate)
+    //           .local()
+    //           .format("YYYY-MM-DD HH:mm:ss"),
+    //         analysisId: element.analysisId,
+    //         email: element.email,
+    //         organism: element.organism,
+    //         genes: element.numberOfGenes,
+    //         analysisIdNav: element.analysisId,
+    //         status: element.status,
+    //       });
+    //     });
+    //     that.$Progress.finish()
+    //   });
+    // },
     loadData() {
       const that = this;
-      that.$Progress.start()
-      that.desserts.splice(0,that.desserts.length)
-      analysisAPI.getAll().then((response) => {
-        console.log(response);
-        response.data.forEach((element) => {
-          that.desserts.push({
-            date: moment
-              .utc(element.analysisDate)
-              .local()
-              .format("YYYY-MM-DD HH:mm:ss"),
-            analysisId: element.analysisId,
-            email: element.email,
-            organism: element.organism,
-            genes: element.numberOfGenes,
-            analysisIdNav: element.analysisId,
-            status: element.status,
-          });
-        });
-        that.$Progress.finish()
+      that.$Progress.start();
+      that.desserts = [];
+      analysisAPI.getByDesc(this.page - 1, this.itemsPerPage, this.itemsSort).then((response) => {
+        that.desserts = response.data.results.map(element => ({
+          date: moment.utc(element.analysisDate).local().format("YYYY-MM-DD HH:mm:ss"),
+          analysisId: element.analysisId,
+          email: element.email,
+          organism: element.organism,
+          genes: element.numberOfGenes,
+          analysisIdNav: element.analysisId,
+          status: element.status,
+        }));
+        that.pageCountR = response.data.totalPages;
+        that.$Progress.finish();
+      }).catch((error) => {
+        console.error("Error fetching data:", error);
+        that.$Progress.fail();
       });
     },
   },
 };
 </script>
+
 
 <style></style>

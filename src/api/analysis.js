@@ -17,13 +17,13 @@ const analysisAPI = {
       headers: getHeaders(),
     });
   },
-  getByDesc(page = 0, size = 10) {
+  getByDesc(page, itemsPerPage, itemsSort) {
     return axios({
       method: 'get',
-      url: `${config.baseUrl()}/all-analysis/paged?page=${page}&size=${size}&sortByDate=desc`,
+      url: `${config.baseUrl()}/all-analysis/paged?page=${page}&size=${itemsPerPage}&sortByDate=${itemsSort}`,
       headers: getHeaders(),
-    });
-  },
+    });
+  },
   saveAnalysis(values) {
     console.log('saveAnalysis');
     console.log(values);
