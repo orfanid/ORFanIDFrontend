@@ -1,17 +1,19 @@
 import PubmedApi from "pubmed-api";
 import lodash from "lodash";
 
-const proteinDatabase = "protein";
+let Database = "protein";
 
-export async function getAccessionESearch(accessionSearchResult, query) {
+export async function getAccessionESearch(accessionSearchResult, query,db) {
+    Database = db
     try {
         resetaccessionSearchResult(accessionSearchResult);
         const options = {
             retStart: "1",
-            retMax: "1000"
+            retMax: "1000",
+            db: db
         };
         const pubMedApi = new PubmedApi();
-        const results = await pubMedApi.eSearch.search(proteinDatabase, query, options);
+        const results = await pubMedApi.eSearch.search(Database, query, options);
         const result = JSON.parse(results);
         if (result.esearchresult && result.esearchresult.idlist && result.esearchresult.idlist.length > 0) {
             result.esearchresult.idlist.forEach((id, index) => {
@@ -24,17 +26,11 @@ export async function getAccessionESearch(accessionSearchResult, query) {
         const pageIds = await getCurretPageIds(accessionSearchResult);
         const summaryResult = await getESearchSummary(pageIds);
         if (summaryResult && summaryResult.result) {
-            Object.values(summaryResult.result).forEach(val => {
-                if (val.title) {
-                    accessionSearchResult.resultSummary.push(val);
-                    accessionSearchResult.accessionList.push({
-                        text: val.accessionversion,
-                        title: val.title,
-                        icon: "mdi-flag",
-                        selected: "false"
-                    });
-                }
-            });
+            if(Database === "protein") {
+                extractProteinInfo(accessionSearchResult, summaryResult);
+            } else {            
+                extractGeneInfo(accessionSearchResult, summaryResult);
+            }
         }
         return accessionSearchResult;
     } catch (error) {
@@ -42,10 +38,41 @@ export async function getAccessionESearch(accessionSearchResult, query) {
     }
 }
 
+function extractProteinInfo(accessionSearchResult, summaryResult) { 
+    Object.values(summaryResult.result).forEach(val => {
+        if (val.title) {
+            accessionSearchResult.resultSummary.push(val);
+            accessionSearchResult.accessionList.push({
+                text: val.accessionversion,
+                title: val.title,
+                icon: "mdi-flag",
+                selected: "false"
+            });
+        }
+    });
+}
+
+function extractGeneInfo(accessionSearchResult, summaryResult) {
+    Object.values(summaryResult.result).forEach(val => {
+        if (val.uid) {
+            if (val.genomicinfo && Array.isArray(val.genomicinfo)) {
+                val.genomicinfo.forEach(genomic => {
+                    accessionSearchResult.accessionList.push({
+                        text: genomic.chraccver,
+                        title: val.description || "No description available",
+                        icon: "mdi-flag",
+                        selected: "false"
+                    });
+                });
+            }
+        }
+    });
+}
+
 export async function getESearchSummary(queryids) {
     try {
         const pubMedApi = new PubmedApi();
-        const results = await pubMedApi.eSummary.search(proteinDatabase, queryids);
+        const results = await pubMedApi.eSummary.search(Database, queryids);
         return JSON.parse(results);
     } catch (error) {
         throw error;
