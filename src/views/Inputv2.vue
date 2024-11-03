@@ -91,7 +91,7 @@
 
         <!-- Radio Group -->
         <v-col cols="12" md="2">
-          <v-radio-group mandatory v-model="dna_sequence" @change="resetSequence" :disabled="useExampleData">
+          <v-radio-group mandatory v-model="dna_sequence" @change="changeAccessionType" :disabled="useExampleData">
             <v-radio label="Protein" value="protein"></v-radio>
             <v-radio label="Gene" value="nucleotide"></v-radio>
           </v-radio-group>
@@ -597,20 +597,26 @@ export default {
     },
     accessionSearchHandler() {
       console.log("Accession Search Handler");
+      let db="";
+      if (this.dna_sequence === "protein") {
+        db = "protein";
+      } else {
+        db = "gene";
+      }
       if (this.geneNameForAccessionSearch.length > 0) {
         console.log("Gene Name for Accession Search:", this.geneNameForAccessionSearch);
-        this.getAccessionSearchHandler();
+        this.getAccessionSearchHandler(db);
       }
     },
     accesionLookupCloseHandler() {
       console.log("Accession Lookup Close Handler");
       this.showAccessionSearchDialog = false;
     },
-    getAccessionSearchHandler() {
+    getAccessionSearchHandler(db) {
       console.log("Accession Search Handler");
       this.$Progress.start();
       // Start the progress bar
-      getAccessionESearch(this.accessionSearchResult, this.geneNameForAccessionSearch)
+      getAccessionESearch(this.accessionSearchResult, this.geneNameForAccessionSearch, db)
         .then(response => {
           console.log("Result of Accession Search", response);
         })
@@ -633,9 +639,14 @@ export default {
       }
       this.showAccessionSearchDialog = false;
     },
-    resetSequence() {
+    changeAccessionType() {
       console.log("Reset Sequence");
       this.sequence = "";
+      this.NCBIAccession = "";
+      this.accessionSearchResult.idList.length = 0;
+      this.accessionSearchResult.resultSummary.length = 0;
+      this.accessionSearchResult.accessionList.length = 0;
+
     },
     exampleDataChanged() {
       console.log("Example Data Changed");

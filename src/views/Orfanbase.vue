@@ -82,7 +82,6 @@ export default {
     this.$Progress.start()
     that.pageCount = Math.ceil(that.totalItems / that.itemsPerPage);
     console.log("Page Count", that.pageCount);
-    debugger
     analysisAPI.orfanBaseGenesByPage(that.page, that.itemsPerPage).then((response) => {
       console.log(response);
       that.totalItems = response.data.total;
