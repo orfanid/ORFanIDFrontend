@@ -4,11 +4,11 @@
       <v-spacer></v-spacer>
       <v-toolbar-title w-100>
         <v-row>
-              <v-spacer />
-              <v-col cols="9">
-                  <h4>ORFanID</h4>
-              </v-col>
-              <v-spacer />
+          <v-spacer />
+          <v-col cols="9">
+            <h4>ORFanID</h4>
+          </v-col>
+          <v-spacer />
         </v-row>
       </v-toolbar-title>
       <v-spacer></v-spacer>
@@ -37,8 +37,10 @@
           </div>
           <div class="row center justify mt-2">
             <ul>
-              <li ><v-icon large color="green darken-2">mdi-video</v-icon> <a href="https://youtu.be/wQY0_BBsJRk" target="_blank"><span style="font-size:1.35em">Video Tutorial for ORFanID</span></a></li>
-              <li><v-icon large color="green darken-2">mdi-video</v-icon><a href="https://youtu.be/B9QnPtKNA9c" target="_blank"><span style="font-size:1.35em">Navigating NCBI for ORFanID Video</span></a></li>
+              <li><v-icon large color="green darken-2">mdi-video</v-icon> <a href="https://youtu.be/wQY0_BBsJRk"
+                  target="_blank"><span style="font-size:1.35em">Video Tutorial for ORFanID</span></a></li>
+              <li><v-icon large color="green darken-2">mdi-video</v-icon><a href="https://youtu.be/B9QnPtKNA9c"
+                  target="_blank"><span style="font-size:1.35em">Navigating NCBI for ORFanID Video</span></a></li>
             </ul>
           </div>
         </v-layout>
@@ -49,9 +51,9 @@
             <v-container>
               <v-row>
                 <v-col cols="12">
-                  <v-card-title class="justify-center"
-                    ><h4>ORFanID</h4></v-card-title
-                  >
+                  <v-card-title class="justify-center">
+                    <h4>ORFanID</h4>
+                  </v-card-title>
                   <v-card-text class="headerPara">
                     <p>
                       ORFanID is a web-based software engine that identifies ORFan
@@ -76,10 +78,7 @@
           <v-container>
             <v-row>
               <v-col cols="12">
-                <h5
-                  class="header col s12 center h2 text-center mt-2"
-                  style="color:#ffe57f;"
-                >
+                <h5 class="header col s12 center h2 text-center mt-2" style="color:#ffe57f;">
                   Orphan genes are an unraveling mystery. We hope that ORFanID will
                   help reveal the intricacies of their origin and function.
                 </h5>
@@ -92,69 +91,74 @@
         <v-col cols="12">
           <div class="parallex-container-wrapper">
             <v-card width="100%">
-            <v-container>
-              <v-row>
-                <v-col cols="12" md="4">
-                  <div class="col s12 m4">
-                  <div class="icon-block">
-                    <h2 class="text-center brown-text" >
-                      <i class="material-icons" style="color:#795548;">flash_on</i>
-                    </h2>
-                    <h5 class="center text-center" style="">ORFan Genes</h5>
-                    <p>
-                      Orphan genes (also known as taxonomically restricted genes)
-                      are genes that do not have related ancestral genes in other
-                      species or at the specified taxonomy level. At the molecular
-                      level, ORFan genes consist of DNA sequences that have no
-                      homology with sequences found in common DNA databases such
-                      as Genbank. While the prevailing dogma has defined genes in
-                      different species as a result of gene duplication or
-                      recombination, the presence of orphan gene ubiquity in
-                      various sequenced genomes is a mystery, perhaps even a
-                      significant problem to be solved.
-                    </p>
-                    <p>&nbsp;</p>
-                  </div>
-                  </div>
-                </v-col>
-                <v-col cols="12" md="4">
-                  <div class="col s12 m4">
-                    <div class="icon-block">
-                      <h2 class="text-center brown-text">
-                        <i class="material-icons" style="color:#795548;">verified_user</i>
-                      </h2>
-                      <h5 class="center text-center" style="">Biology</h5>
-                      <p>
-                        Historically, gene function is known to be expressed through proteins. There are specific organisms that have been found with unique proteins expressed by orphan genes such as Hydra, various Mollusks, Salamander and others. It appears that the anatomy of Hydra is mediated by orphan genes that give rise to unique proteins. Similarly, the mantle of various Mollusks has been found to be expressed from orphan genes, while the regeration of salamander limbs are mediated by orphans.
-                      </p>
+              <v-container>
+                <v-row>
+                  <v-col cols="12" md="4">
+                    <div class="col s12 m4">
+                      <div class="icon-block">
+                        <h2 class="text-center brown-text">
+                          <i class="material-icons" style="color:#795548;">flash_on</i>
+                        </h2>
+                        <h5 class="center text-center" style="">ORFan Genes</h5>
+                        <p>
+                          Orphan genes (also known as taxonomically restricted genes)
+                          are genes that do not have related ancestral genes in other
+                          species or at the specified taxonomy level. At the molecular
+                          level, ORFan genes consist of DNA sequences that have no
+                          homology with sequences found in common DNA databases such
+                          as Genbank. While the prevailing dogma has defined genes in
+                          different species as a result of gene duplication or
+                          recombination, the presence of orphan gene ubiquity in
+                          various sequenced genomes is a mystery, perhaps even a
+                          significant problem to be solved.
+                        </p>
+                        <p>&nbsp;</p>
+                      </div>
                     </div>
-                  </div>
-                </v-col>
-                <v-col cols="12" md="4">
-                  <div class="col s12 m4">
-                    <div class="icon-block">
-                      <h2 class="text-center brown-text">
-                        <i class="material-icons" style="color:#795548;">settings</i>
-                      </h2>
-                      <h5 class="center text-center" style="">Discovery</h5>
-                      <p>
-                        By identifying these unique DNA sequences, ORFanID can
-                        help discover the origin, function and other significance
-                        of orphan genes. The software is able to identify genes
-                        unique to genus, family, or species etc. at differing
-                        taxonomy levels. Based on the parameters specified, some
-                        of orphans (also called Taxonomy Restricted Genes) may or
-                        may not fall under the given classification for strict
-                        ORFans. &nbsp; As such, ORFanID can help delineate the
-                        actual sequence and function of
-                        <em>de novo</em> genes discovered in species and at all
-                        levels of the taxonomy tree.
-                      </p>
+                  </v-col>
+                  <v-col cols="12" md="4">
+                    <div class="col s12 m4">
+                      <div class="icon-block">
+                        <h2 class="text-center brown-text">
+                          <i class="material-icons" style="color:#795548;">verified_user</i>
+                        </h2>
+                        <h5 class="center text-center" style="">Biology</h5>
+                        <p>
+                          Historically, gene function is known to be expressed through proteins. There are specific
+                          organisms that have been found with unique proteins expressed by orphan genes such as Hydra,
+                          various Mollusks, Salamander and others. It appears that the anatomy of Hydra is mediated by
+                          orphan genes that give rise to unique proteins. Similarly, the mantle of various Mollusks has
+                          been found to be expressed from orphan genes, while the regeration of salamander limbs are
+                          mediated by orphans.
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </v-col>
-              </v-row>
-            </v-container>
+                  </v-col>
+                  <v-col cols="12" md="4">
+                    <div class="col s12 m4">
+                      <div class="icon-block">
+                        <h2 class="text-center brown-text">
+                          <i class="material-icons" style="color:#795548;">settings</i>
+                        </h2>
+                        <h5 class="center text-center" style="">Discovery</h5>
+                        <p>
+                          By identifying these unique DNA sequences, ORFanID can
+                          help discover the origin, function and other significance
+                          of orphan genes. The software is able to identify genes
+                          unique to genus, family, or species etc. at differing
+                          taxonomy levels. Based on the parameters specified, some
+                          of orphans (also called Taxonomy Restricted Genes) may or
+                          may not fall under the given classification for strict
+                          ORFans. &nbsp; As such, ORFanID can help delineate the
+                          actual sequence and function of
+                          <em>de novo</em> genes discovered in species and at all
+                          levels of the taxonomy tree.
+                        </p>
+                      </div>
+                    </div>
+                  </v-col>
+                </v-row>
+              </v-container>
             </v-card>
           </div>
         </v-col>
@@ -173,6 +177,11 @@
             <div class="row footer-content-wrapper">
               <h5 class="grey-text text-lighten-4" style="color:white;">References</h5>
               <div class="copyrights">
+                <p class="grey-text text-lighten-4 text-justify" style="color:white;">
+                  Gunasekera, R. S., Raja, K. K. B., Hewapathirana, S., Tundrea, E., Gunasekera, V., Galbadage, T., &
+                  Nelson, P. A. (2023). ORFanID: A web-based search engine for the discovery and identification of
+                  orphan and taxonomically restricted genes. PLoS ONE, 18(10), e0291260.
+                </p>
                 <p class="grey-text text-lighten-4 text-justify" style="color:white;">
                   Altschul, S.F., Gish, W., Miller, W., Myers, E.W. &amp;
                   Lipman, D.J. (1990) "Basic local alignment search tool." J.
@@ -208,9 +217,9 @@
               <v-spacer />
               <v-col cols="12" class="pl-0 pr-0">
                 <div class="d-flex container inner-content">
-                <div class=" text-left float-left" style="color:white;">
-                  Copyright &nbsp;© Gunasekera 2018 - 2025
-                </div>
+                  <div class=" text-left float-left" style="color:white;">
+                    Copyright &nbsp;© Gunasekera 2018 - 2025
+                  </div>
                 </div>
               </v-col>
               <v-spacer />
@@ -278,13 +287,16 @@ export default {
   height: 100%;
   width: 100%;
 }
+
 .headerPara {
   width: 100%;
   margin: auto;
 }
+
 .copyrights {
   font: white !important;
 }
+
 li {
   list-style-type: none;
 }
