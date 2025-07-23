@@ -668,7 +668,7 @@ export default {
       required: requiredIf(function(accession) {
         return this.identifier === "sequence";
       }),
-      maxLength: maxLength(500)
+      maxLength: maxLength(5000)
     },
     organismName: {
       required: required,
