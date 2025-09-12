@@ -136,6 +136,13 @@ const analysisAPI = {
       data: request,
       headers: getHeaders(),
     });
+  },
+  deleteErrorBlast(id) {
+    return axios({
+      method: 'delete',
+      url: `${config.baseUrl()}/analysis/delete/${id}`,
+      headers: getHeaders(),
+    });
   }
 };
 

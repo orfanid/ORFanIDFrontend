@@ -90,8 +90,44 @@
                   @click="cancelAnalyse(item.analysisId)"
                   >Cancel</v-btn
                 >
+                
+              </template>
+              <template v-slot:item.actions="{ item }">
+                <v-btn
+                  class="ma-2"
+                  icon
+                  color="red"
+                  @click="openDeleteDialog(item.analysisId)"
+                  style="float: right;"
+                  title="Delete"
+                >
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
               </template>
             </v-data-table>
+            <!-- Delete confirmation dialog -->
+            <v-dialog v-model="deleteDialog" max-width="450">
+              <v-card>
+                <v-card-title class="headline">Confirm Delete</v-card-title>
+                <v-card-text>
+                  <div>Enter passcode to delete analysis <strong>{{ deleteTargetId }}</strong></div>
+                  <v-text-field
+                    v-model="passcode"
+                    label="Passcode"
+                    type="password"
+                    autofocus
+                  ></v-text-field>
+                  <v-alert v-if="passcodeError" type="error" dense text>
+                    {{ passcodeError }}
+                  </v-alert>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn text @click="cancelDelete">Cancel</v-btn>
+                  <v-btn color="red" text @click="confirmDelete" :disabled="!passcode">Delete</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
             <v-row>
               <v-col cols="12" class="mt-3">
                 <v-pagination v-model="page" :length="pageCountR"></v-pagination>
@@ -147,11 +183,17 @@ export default {
         { text: "Genes", value: "genes", sortable: false },
         { text: "Status", value: "status", sortable: false },
         { text: "", value: "analysisIdNav", sortable: false },
+        { text: "Actions", value: "actions", sortable: false },
       ],
       desserts: [],
       sortBy: ["date"],
       sortDesc: [true],
       intervalHandler: null,
+  // delete dialog state
+  deleteDialog: false,
+  deleteTargetId: null,
+  passcode: "",
+  passcodeError: "",
     };
   },
   mounted() {
@@ -172,6 +214,33 @@ export default {
     },
   },
   methods: {
+    // Open passcode dialog for a given analysis id
+    openDeleteDialog(analysisId) {
+      this.deleteTargetId = analysisId;
+      this.passcode = "";
+      this.passcodeError = "";
+      this.deleteDialog = true;
+    },
+
+    cancelDelete() {
+      this.deleteDialog = false;
+      this.deleteTargetId = null;
+      this.passcode = "";
+      this.passcodeError = "";
+    },
+
+    confirmDelete() {
+      // Read expected passcode from env or fallback
+      const expected = (process && process.env && process.env.VUE_APP_DELETE_PASSCODE) || "admin123";
+      if (this.passcode === expected) {
+        // Close dialog then call existing delete
+        const id = this.deleteTargetId;
+        this.cancelDelete();
+        this.deleteErrorBlast(id);
+      } else {
+        this.passcodeError = "Invalid passcode.";
+      }
+    },
     cancelAnalyse(analysisId) {
       let that = this;
       if (analysisId != null) {
@@ -183,42 +252,17 @@ export default {
         });
       }
     },
-    // sortByDate(items, index, isDescending) {
-    //   items.sort((a, b) => {
-    //     if (index[0] === "date") {
-    //       if (isDescending) {
-    //         return moment(b.date) - moment(a.date);
-    //       } else {
-    //         return moment(a.date) - moment(b.date);
-    //       }
-    //     }
-    //   });
 
-    //   return items;
-    // },
-    // loadData() {
-    //   const that = this;
-    //   that.$Progress.start()
-    //   that.desserts.splice(0,that.desserts.length)
-    //   analysisAPI.getAll().then((response) => {
-    //     console.log(response);
-    //     response.data.forEach((element) => {
-    //       that.desserts.push({
-    //         date: moment
-    //           .utc(element.analysisDate)
-    //           .local()
-    //           .format("YYYY-MM-DD HH:mm:ss"),
-    //         analysisId: element.analysisId,
-    //         email: element.email,
-    //         organism: element.organism,
-    //         genes: element.numberOfGenes,
-    //         analysisIdNav: element.analysisId,
-    //         status: element.status,
-    //       });
-    //     });
-    //     that.$Progress.finish()
-    //   });
-    // },
+    deleteErrorBlast(analysisId) {
+      if (analysisId != null) {
+        analysisAPI.deleteErrorBlast(analysisId).then((response) => {
+          let deleteItem = _.findIndex(this.desserts, {
+            analysisId: analysisId,
+          });
+          this.desserts.splice(deleteItem, 1);
+        });
+      }
+    },
     loadData() {
       const that = this;
       that.$Progress.start();

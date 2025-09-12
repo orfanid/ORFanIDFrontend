@@ -1,7 +1,7 @@
 //const apiVersion = 1;
 const config = {
   baseUrl() {
-    return "https://orfangenes.com/orfanidbe";
+    return "https://orfanid.com/orfanidbe";
   },
   axiosConfig() {
     return {
