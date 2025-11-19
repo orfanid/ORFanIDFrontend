@@ -53,45 +53,94 @@ export default {
     window.removeEventListener("resize", this.handleResize);
   },
   methods: {
-    renderChart() {
-      const chart = echarts.init(this.$refs.barChart);
+  renderChart() {
+    const chart = echarts.init(this.$refs.barChart);
 
-      const options = {
-        title: {
-          text: "Bar Chart Example"
-        },
-        tooltip: {},
-        xAxis: {
-          data: this.chartData.categories
-        },
-        yAxis: {},
-        series: [
-          {
-            type: "bar",
-            data: this.chartData.data
-          }
-        ]
-      };
-      chart.setOption(this.chartData);
-    },
+    const options = {
+      tooltip: {
+        trigger: "axis",
+        formatter: function (params) {
+          const item = params[0];
+          return `${item.axisValue}<br/>Value: <b>${item.data}</b>`;
+        }
+      },
+      xAxis: this.chartData.xAxis,
+      yAxis: this.chartData.yAxis,
+      series: this.chartData.series
+    };
+
+    chart.setOption(options);
+  },
+
+    // renderChart() {
+    //   const chart = echarts.init(this.$refs.barChart);
+
+    //   const options = {
+    //     title: {
+    //       text: "Bar Chart Example"
+    //     },
+    //     tooltip: {},
+    //     xAxis: {
+    //       data: this.chartData.categories
+    //     },
+    //     yAxis: {},
+    //     series: [
+    //       {
+    //         type: "bar",
+    //         data: this.chartData.data
+    //       }
+    //     ]
+    //   };
+    //   chart.setOption(this.chartData);
+    // },
     handleResize() {
       const chart = echarts.getInstanceByDom(this.$refs.barChart);
       chart.resize();
     },
     fetchChartData() {
-      let that = this;
-      analysisAPI.getSummaryChart({ sessionId: this.$route.params.analysisId }).then(response => {
-        response.data.x.forEach(item => {
-          that.chartData.xAxis.data.push(item);
-        });
-        response.data.y.forEach(item => {
-          that.chartData.series[0].data.push(item);
-        });
+      analysisAPI.getSummaryChart({ sessionId: this.$route.params.analysisId })
+        .then(response => {
+          const xValues = response.data.x;
+          const yValues = response.data.y;
 
-        console.log("Fetched chartSummary", JSON.stringify(this.chartData));
-        this.renderChart();
-      });
-    }
+      
+          this.chartData.xAxis.data = xValues;
+          this.chartData.series[0].data = yValues;
+
+
+          const maxValue = Math.max(...yValues);
+
+          let interval = 1; 
+          if (maxValue > 20 && maxValue <= 50) interval = 5;
+          else if (maxValue > 50 && maxValue <= 100) interval = 10;
+          else if (maxValue > 100 && maxValue <= 200) interval = 20;
+          else if (maxValue > 200) {
+          
+            interval = Math.ceil(maxValue / 10);
+          }
+
+          this.chartData.yAxis.interval = interval;
+          this.chartData.yAxis.max = Math.ceil(maxValue / interval) * interval;
+
+
+          this.renderChart();
+        });
+     }
+
+    // fetchChartData() {
+    //   let that = this;
+    //   analysisAPI.getSummaryChart({ sessionId: this.$route.params.analysisId }).then(response => {
+    //     response.data.x.forEach(item => {
+    //       that.chartData.xAxis.data.push(item);
+    //     });
+    //     response.data.y.forEach(item => {
+    //       that.chartData.series[0].data.push(item);
+    //     });
+
+    //     console.log("Fetched chartSummary", JSON.stringify(this.chartData));
+    //     this.renderChart();
+    //   });
+    // }
   }
 };
 </script>
