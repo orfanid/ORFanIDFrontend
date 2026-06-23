@@ -119,11 +119,15 @@ export default {
 
       return items;
     },
-    fetchData({ page, itemsPerPage }) {
+    fetchData({ page, itemsPerPage, sortDesc }) {
       const that = this;
       this.$Progress.start();
+      let sortDir = 'desc';
+      if (sortDesc && sortDesc.length > 0) {
+        sortDir = sortDesc[0] ? 'desc' : 'asc';
+      }
       analysisAPI
-        .orfanBaseGenesByPage(page, itemsPerPage)
+        .orfanBaseGenesByPage(page, itemsPerPage, sortDir)
         .then((response) => {
           console.log(response);
           that.totalItems = response.data.total;

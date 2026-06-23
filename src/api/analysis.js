@@ -122,10 +122,10 @@ const analysisAPI = {
       })
     })
   },
-  orfanBaseGenesByPage(currentPage, pageSize) {
+  orfanBaseGenesByPage(currentPage, pageSize, sortByDate = 'desc') {
     return axios({
       method: 'get',
-      url: `${config.baseUrl()}/orfanbase-genes/paged?page=${currentPage}&size=${pageSize}`,
+      url: `${config.baseUrl()}/orfanbase-genes/paged?page=${currentPage}&size=${pageSize}&sortByDate=${sortByDate}`,
       headers: getHeaders(),
     });
   },
