@@ -20,8 +20,8 @@
                 hide-details></v-text-field>
             </v-card-title>
             <v-data-table :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :headers="headers" :items="desserts"
-              :page.sync="page" :items-per-page="itemsPerPage" :search="search" hide-default-footer class="elevation-1"
-              @page-count="pageCount = $event" @pagination="fetchData">
+              :page.sync="page" :items-per-page="itemsPerPage" :server-items-length="totalItems" :search="search" hide-default-footer class="elevation-1"
+              @page-count="pageCount = $event" @update:sort-desc="fetchData({ page, itemsPerPage })" @pagination="fetchData">
 
               <template v-slot:item.analysisIdNav="{ item }">
                 <router-link :to="{
@@ -92,7 +92,7 @@ export default {
     this.$Progress.start()
     that.pageCount = Math.ceil(that.totalItems / that.itemsPerPage);
     console.log("Page Count", that.pageCount);
-    analysisAPI.orfanBaseGenesByPage(that.page, that.itemsPerPage).then((response) => {
+    analysisAPI.orfanBaseGenesByPage(that.page - 1, that.itemsPerPage).then((response) => {
       console.log(response);
       that.totalItems = response.data.total;
       console.log("Total Items", that.totalItems);
@@ -129,15 +129,15 @@ export default {
 
       return items;
     },
-    fetchData({ page, itemsPerPage, sortDesc }) {
+    fetchData({ page, itemsPerPage }) {
       const that = this;
       this.$Progress.start();
       let sortDir = 'desc';
-      if (sortDesc && sortDesc.length > 0) {
-        sortDir = sortDesc[0] ? 'desc' : 'asc';
+      if (this.sortDesc && this.sortDesc.length > 0) {
+        sortDir = this.sortDesc[0] ? 'desc' : 'asc';
       }
       analysisAPI
-        .orfanBaseGenesByPage(page, itemsPerPage, sortDir)
+        .orfanBaseGenesByPage(page - 1, itemsPerPage, sortDir)
         .then((response) => {
           console.log(response);
           that.totalItems = response.data.total;
