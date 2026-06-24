@@ -3,6 +3,7 @@ import Vue from 'vue';
 import VueTextareaAutosize from 'vue-textarea-autosize';
 // import Loading from 'vue-loading-overlay';
 import App from './App.vue';
+import PageGuide from './components/PageGuide.vue';
 import './registerServiceWorker';
 import router from './router';
 import store from './store';
@@ -13,6 +14,7 @@ import 'vue-loading-overlay/dist/vue-loading.css';
 
 Vue.config.productionTip = false;
 Vue.use(VueTextareaAutosize);
+Vue.component('PageGuide', PageGuide);
 
 // Vue.use(VueSession)
 // Vue.use(Loading);

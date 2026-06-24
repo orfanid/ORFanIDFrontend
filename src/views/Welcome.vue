@@ -25,6 +25,15 @@
       </div>
     </div>
     <div class="container">
+      <PageGuide
+        description="This page introduces ORFanID and explains how the tool supports discovery of orphan and taxonomically restricted genes."
+        :steps="[
+          'Click Get Started to open the ORFanID input form.',
+          'Read the overview section to understand the analysis purpose.',
+          'Review the background sections for context about ORFan genes, biology, and discovery.',
+          'Use the site navigation to continue to instructions, results, ORFanBase, or related tools.'
+        ]"
+      />
       <div class="section">
         <div class="row">
           <div class="col s12 center">

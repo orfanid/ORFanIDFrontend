@@ -1,5 +1,14 @@
 <template>
      <div class="container">
+         <PageGuide
+            description="This page describes comparative genomic studies of ORFan genes in mammalian genomes using the Clamp filtering method."
+            :steps="[
+              'Read the purpose section to understand the study goal.',
+              'Review the methods section to see the six filtering steps used in the pipeline.',
+              'Inspect the Clamp method image for a visual summary.',
+              'Click View Clamp Results to open the summarized chromosome-level results.'
+            ]"
+         />
          <div class="row">
             <h4>Comparative Genomic Studies of ORFan genes in Mammalian Genomes
             </h4>

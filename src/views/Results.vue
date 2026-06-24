@@ -1,9 +1,33 @@
 <template>
   <div class="container results-container">
+    <PageGuide
+      description="This page displays submitted ORFanID analyses and their current processing status."
+      :steps="[
+        'Use New Query to start another ORFanID analysis.',
+        'Search the table to find an analysis by date, submitter, organism, or analysis ID.',
+        'Check the status chip to see whether an analysis is queued, processing, completed, or errored.',
+        'Open completed results with the chart icon, or cancel and delete records when appropriate.',
+        'Use pagination and items per page to browse additional analyses.'
+      ]"
+    />
     <div class="section">
       <div id="savedResultView" class="row">
         <div class="col s10 offset-s1 center-align">
           <div>
+            <v-alert
+              v-if="hasActiveAnalyses"
+              class="processing-time-alert text-left"
+              border="left"
+              colored-border
+              color="teal"
+              elevation="1"
+              icon="mdi-clock-outline"
+            >
+              <strong>Processing time:</strong>
+              submissions usually take about 30-40 minutes on average. Larger jobs may take longer
+              depending on the number of sequences, sequence length, selected program, organism,
+              server workload, and BLAST or DIAMOND search complexity.
+            </v-alert>
             <v-card-title>
               <router-link
                 :to="{
@@ -165,7 +189,7 @@ export default {
       itemsPerPage: 10,
       headers: [
         {
-          text: "Date and time",
+          text: "Submitted",
           align: "start",
           sortable: true,
           value: "date",
@@ -178,7 +202,7 @@ export default {
           formatter: (x) => (x ? moment(x).format(this.dateFormat) : null),
         },
         { text: "Analysis ID", value: "analysisId", sortable: false },
-        { text: "Nickname", value: "email", sortable: false },
+        { text: "Submitter", value: "email", sortable: false },
         { text: "Organism", value: "organism", sortable: false },
         { text: "Genes", value: "genes", sortable: false },
         { text: "Status", value: "status", sortable: false },
@@ -195,6 +219,11 @@ export default {
   passcode: "",
   passcodeError: "",
     };
+  },
+  computed: {
+    hasActiveAnalyses() {
+      return this.desserts.some(item => item.status === "START_PROCESSING" || item.status === "PENDING");
+    }
   },
   mounted() {
     this.loadData();
@@ -271,7 +300,7 @@ export default {
         that.desserts = response.data.results.map(element => ({
           date: moment.utc(element.analysisDate).local().format("YYYY-MM-DD HH:mm:ss"),
           analysisId: element.analysisId,
-          email: element.email,
+          email: that.getSubmitterName(element) || "Not provided",
           organism: element.organism,
           genes: element.numberOfGenes,
           analysisIdNav: element.analysisId,
@@ -284,9 +313,24 @@ export default {
         that.$Progress.fail();
       });
     },
+    getSubmitterName(data) {
+      return (
+        data.email ||
+        data.submitterName ||
+        data.nickname ||
+        data.submitterNickname ||
+        data.submiterNickname ||
+        data.name ||
+        ""
+      );
+    },
   },
 };
 </script>
 
 
-<style></style>
+<style scoped>
+.processing-time-alert {
+  margin-bottom: 18px;
+}
+</style>

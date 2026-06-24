@@ -1,5 +1,15 @@
 <template>
   <v-container class="query-container">
+    <PageGuide
+      description="This page lets you submit protein or gene sequences, accession numbers, organism details, and analysis parameters for ORFanID processing."
+      :steps="[
+        'Enter a real name or recognizable name so we can help you more easily if support or further explanation is needed.',
+        'Choose whether to search by sequence or accession, or load one of the example datasets.',
+        'Provide the sequence, upload a FASTA file, or enter NCBI or UniProt accession numbers.',
+        'Select or enter the organism name in the required scientific name and taxonomy ID format.',
+        'Adjust advanced parameters if needed, then submit the analysis.'
+      ]"
+    />
     <v-form @submit.prevent="submitFormConfirmation">
       <!-- Nickname -->
       <!-- <pre>{{ $v }}</pre> -->
@@ -8,7 +18,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
-                label="Nickname - (Optional)"
+                label="Name / Nickname"
                 required
                 v-model="submiterNickname"
                 v-bind="attrs"
@@ -17,13 +27,16 @@
               <!-- {{ !$v.submiterNickname.required }}
               {{ $v.submiterNickname.$dirty }} -->
             </template>
-            <span>Optional. Nickname will be useful to find your dataset quickly</span>
+            <span>Please use a real name or recognizable name so we can help you more easily if something goes wrong or if you need further explanation.</span>
           </v-tooltip>
+          <div class="nickname-help">
+            Please enter a real name or recognizable name. This makes it easier for us to help if support or further explanation is needed.
+          </div>
           <div
             class="error-message"
             v-if="!$v.submiterNickname.required && $v.submiterNickname.$dirty"
           >
-            Please enter a Nickname
+            Please enter a name or nickname.
           </div>
         </v-col>
       </v-row>
@@ -723,4 +736,12 @@ export default {
   pointer-events: none; /* Prevents clicking on the area */
   opacity: 0.5; /* Makes the area look faded out */
 }
+
+.nickname-help {
+  color: #555;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  margin-top: -12px;
+}
+
 </style>

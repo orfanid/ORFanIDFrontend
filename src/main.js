@@ -6,6 +6,7 @@ import ECharts from 'vue-echarts'
 import "echarts";
 import Vuelidate from 'vuelidate'
 import VueProgressBar from 'vue-progressbar'
+import PageGuide from './components/PageGuide.vue'
 
 Vue.use(VueProgressBar, {
   color: 'rgb(143, 255, 199)',
@@ -19,6 +20,7 @@ Vue.use(VueProgressBar, {
   },
 })
 Vue.component('v-chart', ECharts)
+Vue.component('PageGuide', PageGuide)
 
 Vue.use(Vuelidate)
 Vue.config.productionTip = false
