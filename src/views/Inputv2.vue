@@ -191,6 +191,90 @@
 
           <!-- Invalid Accession -->
           <v-chip class="ma-n3 float-right" x-small>/100</v-chip>
+          <v-card class="accession-help-card" outlined>
+            <div class="accession-help-header">
+              <v-icon color="teal" class="mr-2">mdi-compass-outline</v-icon>
+              <div>
+                <h6>Need help finding accession numbers?</h6>
+                <p>
+                  Use these NCBI resources to search by organism, gene name,
+                  accession, species assembly, or taxonomy ID.
+                </p>
+              </div>
+            </div>
+
+            <div class="accession-resource-grid">
+              <a
+                class="accession-resource"
+                href="https://www.ncbi.nlm.nih.gov/nuccore/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <v-icon color="teal">mdi-dna</v-icon>
+                <span>
+                  <strong>Nucleotide</strong>
+                  <small>GenBank / RefSeq</small>
+                </span>
+              </a>
+              <a
+                class="accession-resource"
+                href="https://www.ncbi.nlm.nih.gov/protein/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <v-icon color="teal">mdi-alpha-p-circle-outline</v-icon>
+                <span>
+                  <strong>Protein</strong>
+                  <small>NP_ accessions</small>
+                </span>
+              </a>
+              <a
+                class="accession-resource"
+                href="https://www.ncbi.nlm.nih.gov/datasets/genome/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <v-icon color="teal">mdi-database-search</v-icon>
+                <span>
+                  <strong>Genome Assembly</strong>
+                  <small>Reference assemblies</small>
+                </span>
+              </a>
+              <a
+                class="accession-resource"
+                href="https://www.ncbi.nlm.nih.gov/taxonomy/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <v-icon color="teal">mdi-file-tree-outline</v-icon>
+                <span>
+                  <strong>NCBI Taxonomy</strong>
+                  <small>Taxon IDs</small>
+                </span>
+              </a>
+            </div>
+
+            <div class="accession-format-panel">
+              <div class="accession-format-title">Accession formats to know</div>
+              <div class="accession-format-list">
+                <v-chip small class="format-chip">
+                  NC_ complete genomic reference
+                </v-chip>
+                <v-chip small class="format-chip">
+                  NM_ mRNA / transcript
+                </v-chip>
+                <v-chip small class="format-chip">NP_ protein</v-chip>
+                <v-chip small class="format-chip">
+                  WP_ prokaryote protein
+                </v-chip>
+              </div>
+              <p>
+                For ORFan mining, complete genomic reference accessions such as
+                <strong>NC_</strong> chromosomes or plasmids are often the most
+                useful.
+              </p>
+            </div>
+          </v-card>
         </v-col>
       </v-row>
 
@@ -742,6 +826,102 @@ export default {
   font-size: 0.85rem;
   line-height: 1.35;
   margin-top: -12px;
+}
+
+.accession-help-card {
+  background: #f8fbfa;
+  border-color: #d7ebe7 !important;
+  border-radius: 8px;
+  margin-top: 24px;
+  padding: 16px;
+}
+
+.accession-help-header {
+  align-items: flex-start;
+  display: flex;
+  margin-bottom: 14px;
+}
+
+.accession-help-header h6 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.accession-help-header p,
+.accession-format-panel p {
+  color: #546662;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.accession-resource-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 14px;
+}
+
+.accession-resource {
+  align-items: center;
+  background: white;
+  border: 1px solid #dcebe8;
+  border-radius: 8px;
+  color: #263330;
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  text-decoration: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.accession-resource:hover {
+  border-color: #009688;
+  box-shadow: 0 4px 12px rgba(0, 150, 136, 0.12);
+}
+
+.accession-resource strong,
+.accession-resource small {
+  display: block;
+}
+
+.accession-resource small {
+  color: #607d78;
+  font-size: 0.76rem;
+}
+
+.accession-format-panel {
+  border-top: 1px solid #dcebe8;
+  padding-top: 12px;
+}
+
+.accession-format-title {
+  color: #00796b;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.accession-format-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.format-chip {
+  background: #e0f2ef !important;
+  color: #00695c !important;
+  font-weight: 600;
+}
+
+@media (max-width: 960px) {
+  .accession-resource-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 </style>
