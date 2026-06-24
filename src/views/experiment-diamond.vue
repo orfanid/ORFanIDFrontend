@@ -1,5 +1,15 @@
 <template>
   <v-container>
+    <PageGuide
+      description="This page contains the experimental DIAMOND-based ORFanID submission form for testing protein or gene inputs."
+      :steps="[
+        'Enter a real name or recognizable name so we can help you more easily if support or further explanation is needed.',
+        'Choose whether to search by sequence or accession.',
+        'Load an example dataset, upload a FASTA file, enter a sequence, or provide accession numbers.',
+        'Select or enter the organism name in the required taxonomy format.',
+        'Review the form values before attempting submission.'
+      ]"
+    />
     <v-form id="input_form">
       <v-row>
         <v-col cols="4">
@@ -7,14 +17,17 @@
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
                 v-model="from.email"
-                label="Nickname - (Optional)"
+                label="Name / Nickname"
                 required
                 v-bind="attrs"
                 v-on="on"
               ></v-text-field>
             </template>
-            <span>Optional. Nickname will be useful to find your dataset quickly</span>
+            <span>Please use a real name or recognizable name so we can help you more easily if something goes wrong or if you need further explanation.</span>
           </v-tooltip>
+          <div class="nickname-help">
+            Please enter a real name or recognizable name. This makes it easier for us to help if support or further explanation is needed.
+          </div>
         </v-col>
         <v-col cols="8"></v-col>
       </v-row>
@@ -924,6 +937,13 @@ export default {
 
 .v-icon {
   cursor: pointer;
+}
+
+.nickname-help {
+  color: #555;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  margin-top: -12px;
 }
 </style>
 <!--export default class Home extends Vue {}-->

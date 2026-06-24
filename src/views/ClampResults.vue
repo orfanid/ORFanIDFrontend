@@ -1,5 +1,13 @@
 <template>
   <div class="container">
+    <PageGuide
+      description="This page displays chromosome-level Clamp study results for candidate and protein-coding orphan genes."
+      :steps="[
+        'Review each chromosome row to compare human genes, filtered categories, candidate orphan genes, and protein-coding orphan genes.',
+        'Use the download icon in a row to download orphan gene FASTA data for that chromosome.',
+        'Use the pagination controls to move through additional result pages when available.'
+      ]"
+    />
     <div class="row"><h4>Clamp Results</h4></div>
     <div class="row">
       <div class="col">

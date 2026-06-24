@@ -1,88 +1,58 @@
 <template>
   <v-container>
+    <PageGuide
+      description="This page summarizes one ORFanID analysis, including the submitted parameters, ORFan gene categories, and homology evidence."
+      :steps="[
+        'Review the analysis parameters to confirm the organism, sequence type, E-value, target sequence limit, and identity threshold.',
+        'Use the ORFan gene summary chart to compare the categories identified in the analysis.',
+        'Search the categorization table to locate a specific gene or description.',
+        'Open the homology evidence graph for non-strict ORFan genes to inspect the taxonomy tree.',
+        'Download the BLAST results when you need the raw evidence file.'
+      ]"
+    />
     <v-row class="text-center">
       <v-col cols="12">
-        <v-card class="pa-3 ma-md-6 pa-md-6 ps-md-16" max-width="1600" min-height="400">
+        <v-card class="result-overview-card ma-md-6" max-width="1600" min-height="400">
           <v-row>
             <v-col cols="12" md="6">
-              <v-card-title class="justify-center">Analysis Parameters</v-card-title>
-              <div>
-                <div id="orfanGenesSummary" class="text-left">
-                  <div class="border-bottom">
-                    <v-row>
-                      <v-col cols="4">
-                        <div class="info-item"><strong>Organism:</strong></div>
-                      </v-col>
-                      <v-col>
-                        <span id="parameters_organism">{{ analysisParameters.organism }}</span>
-                      </v-col>
-                    </v-row>
-                  </div>
-                  <div class="border-bottom">
-                    <v-row>
-                      <v-col cols="4">
-                        <div class="info-item"><strong>Analysis ID:</strong></div>
-                      </v-col>
-                      <v-col>
-                        <span>{{ analysisParameters.analysisId }}</span>
-                      </v-col>
-                    </v-row>
-                  </div>
-                  <div>
-                    <v-row>
-                      <v-col cols="4">
-                        <div class="info-item"><strong>Sequence Type:</strong></div>
-                      </v-col>
-                      <v-col>
-                        <span id="parameters_sequence_type">{{
-                          analysisParameters.sequenceType
-                        }}</span>
-                      </v-col>
-                    </v-row>
-                  </div>
-                  <div>
-                    <v-row>
-                      <v-col cols="4">
-                        <div class="info-item"><strong>Evalue(e-10):</strong></div>
-                      </v-col>
-                      <v-col>
-                        <span id="parameters_evalue">{{ analysisParameters.evalue }}</span>
-                      </v-col>
-                    </v-row>
-                  </div>
-                  <div>
-                    <v-row>
-                      <v-col cols="4"
-                        ><div class="info-item">
-                          <strong>Maximum Target Sequences:</strong>
-                        </div></v-col
-                      >
-                      <v-col
-                        ><span id="parameters_max_tar_seq">{{
-                          analysisParameters.maximumTargetSequences
-                        }}</span></v-col
-                      >
-                    </v-row>
-                  </div>
-                  <div>
-                    <v-row>
-                      <v-col cols="4"
-                        ><div class="info-item"><strong>Identity:</strong></div></v-col
-                      >
-                      <v-col
-                        ><div id="myProgress">
-                          <v-progress-linear v-model="analysisParameters.identity" height="25">
-                            <strong>{{ Math.ceil(analysisParameters.identity) }}%</strong>
-                          </v-progress-linear>
-                        </div></v-col
-                      >
-                    </v-row>
+              <div class="result-section-heading">
+                <div class="section-eyebrow">Analysis Overview</div>
+                <h2>Result Details</h2>
+                <div class="summary-chip-row">
+                  <v-chip small color="teal" text-color="white">
+                    {{ displayValue(analysisParameters.sequenceType, "Sequence type unavailable") }}
+                  </v-chip>
+                  <v-chip small outlined color="teal">
+                    {{ analysisParameters.totalGenes }} gene{{ analysisParameters.totalGenes === 1 ? "" : "s" }}
+                  </v-chip>
+                </div>
+              </div>
+              <div id="orfanGenesSummary" class="detail-grid text-left">
+                <div
+                  class="detail-item"
+                  v-for="item in analysisDetailRows"
+                  :key="item.label"
+                >
+                  <div class="detail-label">{{ item.label }}</div>
+                  <div class="detail-value" :title="item.title || item.value">{{ item.value }}</div>
+                </div>
+                <div class="detail-item detail-item-full">
+                  <div class="detail-label">Identity Threshold</div>
+                  <div class="identity-row">
+                    <v-progress-linear
+                      v-model="analysisParameters.identity"
+                      color="teal"
+                      background-color="#d9ece9"
+                      height="22"
+                    >
+                      <strong>{{ Math.ceil(analysisParameters.identity || 0) }}%</strong>
+                    </v-progress-linear>
                   </div>
                 </div>
               </div>
             </v-col>
             <v-col cols="12" md="6">
-              <v-card-title class="justify-center">ORFan gene summary</v-card-title>
+              <v-card-title class="justify-center chart-title">ORFan gene summary</v-card-title>
               <!-- <BarChart :chartData="chartSummary" /> -->
               <GeneSummary :dataChart="chartSummary" />
             </v-col>
@@ -201,11 +171,14 @@ export default {
       analysisParameters: {
         organism: "",
         sequenceType: "",
+        submitterName: "",
+        submittedQuery: "",
         evalue: "",
         maximumTargetSequences: "",
         identity: "",
         analysisId: "",
-        organismImg: ""
+        organismImg: "",
+        totalGenes: 0
       },
       chartSummary: {
         xAxis: {
@@ -292,6 +265,49 @@ export default {
       treeData: {}
     };
   },
+  computed: {
+    analysisDetailRows() {
+      return [
+        {
+          label: "Submitter",
+          value: this.displayValue(this.analysisParameters.submitterName, "Not provided")
+        },
+        {
+          label: "Analysis ID",
+          value: this.displayValue(this.analysisParameters.analysisId)
+        },
+        {
+          label: "Organism",
+          value: this.displayValue(this.analysisParameters.organism)
+        },
+        {
+          label: "Sequence Type",
+          value: this.displayValue(this.analysisParameters.sequenceType)
+        },
+        ...this.submittedQueryRow,
+        {
+          label: "E-value (e-10)",
+          value: this.displayValue(this.analysisParameters.evalue)
+        },
+        {
+          label: "Maximum Target Sequences",
+          value: this.displayValue(this.analysisParameters.maximumTargetSequences)
+        }
+      ];
+    },
+    submittedQueryRow() {
+      if (!this.analysisParameters.submittedQuery) {
+        return [];
+      }
+      return [
+        {
+          label: "Submitted Query",
+          value: this.truncateText(this.analysisParameters.submittedQuery, 80),
+          title: this.analysisParameters.submittedQuery
+        }
+      ];
+    }
+  },
   mounted() {
     const that = this;
     analysisAPI.getOrganismList().then(response => {
@@ -307,15 +323,21 @@ export default {
       that.analysisParameters.analysisId = response.data.analysisId;
       that.analysisParameters.organism = response.data.organism;
       that.analysisParameters.sequenceType = response.data.sequenceType;
+      that.analysisParameters.submitterName = that.getSubmitterName(response.data);
+      if (!that.analysisParameters.submitterName) {
+        that.loadSubmitterNameFromResults();
+      }
+      that.analysisParameters.submittedQuery = that.getSubmittedQuery(response.data);
       that.analysisParameters.evalue = response.data.evalue;
       that.analysisParameters.maximumTargetSequences = response.data.maximumTargetSequences;
       that.analysisParameters.identity = response.data.identity;
+      that.analysisParameters.totalGenes = response.data.numberOfGenes || (response.data.geneList ? response.data.geneList.length : 0);
       let selectOrganism = that.organismList.filter(function(item) {
         return item.key.includes(response.data.organism);
       });
-      that.analysisParameters.organismImg = selectOrganism[0].value;
+      that.analysisParameters.organismImg = selectOrganism.length > 0 ? selectOrganism[0].value : "";
 
-      response.data.geneList.forEach(element => {
+      (response.data.geneList || []).forEach(element => {
         that.genesCategorization.desserts.push({
           id: element.id,
           geneId: element.geneId,
@@ -345,6 +367,38 @@ export default {
     });
   },
   methods: {
+    displayValue(value, fallback = "Not available") {
+      return value !== undefined && value !== null && value !== "" ? value : fallback;
+    },
+    getSubmitterName(data) {
+      return (
+        data.email ||
+        data.submitterName ||
+        data.nickname ||
+        data.submitterNickname ||
+        data.submiterNickname ||
+        data.name ||
+        ""
+      );
+    },
+    loadSubmitterNameFromResults() {
+      analysisAPI.getByDesc(0, 1000, "desc").then(response => {
+        const results = response.data && response.data.results ? response.data.results : [];
+        const matchingAnalysis = results.find(item => item.analysisId === this.analysisParameters.analysisId);
+        if (matchingAnalysis) {
+          this.analysisParameters.submitterName = this.getSubmitterName(matchingAnalysis);
+        }
+      });
+    },
+    getSubmittedQuery(data) {
+      return data.accession || data.accessions || data.ncbiAccessionInput || data.sequence || "";
+    },
+    truncateText(value, maxLength) {
+      if (!value) {
+        return "Not available";
+      }
+      return value.length > maxLength ? `${value.slice(0, maxLength)}...` : value;
+    },
     searchGene(gene) {
       window.location.href = "https://www.ncbi.nlm.nih.gov/search/all/?term=" + gene;
     },
@@ -419,6 +473,86 @@ export default {
 <style>
 .info-item {
   padding-right: 10px; /* Adjust as needed */
+}
+
+.result-overview-card {
+  padding: 40px 48px;
+}
+
+.result-section-heading {
+  margin-bottom: 22px;
+  text-align: left;
+}
+
+.result-section-heading h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 4px 0 10px;
+}
+
+.section-eyebrow {
+  color: #00796b;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.summary-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.detail-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.detail-item {
+  background: #f7faf9;
+  border: 1px solid #e0ece9;
+  border-radius: 6px;
+  padding: 12px 14px;
+}
+
+.detail-item-full {
+  grid-column: 1 / -1;
+}
+
+.detail-label {
+  color: #607d78;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.detail-value {
+  color: #263330;
+  font-size: 1rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.identity-row {
+  margin-top: 8px;
+}
+
+.chart-title {
+  font-weight: 600;
+}
+
+@media (max-width: 960px) {
+  .result-overview-card {
+    padding: 24px;
+  }
+
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .v-application--is-ltr .v-data-footer__pagination {

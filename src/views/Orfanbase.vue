@@ -1,5 +1,15 @@
 <template>
   <div class="container orfanbase-wrapper">
+    <PageGuide
+      description="This page lists ORFan genes that have been categorized by ORFanID analyses and submitted to the ORFanBase database."
+      :steps="[
+        'Search the table to filter genes by organism, gene ID, description, or ORFan level.',
+        'Sort columns to review records by date, organism, gene ID, description, or ORFan level.',
+        'Use the chart icon to open the related ORFanID result details.',
+        'Move through pages with the pagination controls.',
+        'Change the items per page value to show more or fewer database records.'
+      ]"
+    />
     <div class="section">
       <div id="savedResultView" class="row">
         <div class="col s10 offset-s1 center-align">

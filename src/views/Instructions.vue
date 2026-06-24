@@ -1,5 +1,15 @@
 <template>
   <div class="container instructions-container">
+    <PageGuide
+      description="This page explains how to submit ORFanID analyses, interpret results, use ORFanBase, and search for accession numbers."
+      :steps="[
+        'Read the sequence submission section before preparing your input data.',
+        'Follow the screenshots and written steps to choose accessions, sequences, organism names, and parameters.',
+        'Use the interpreting results section to understand charts, tables, homology evidence, and downloads.',
+        'Review the ORFanBase section to learn how categorized genes are searched and used.',
+        'Contact the listed support email if you need help with analysis input or result interpretation.'
+      ]"
+    />
     <v-row>
       <v-spacer />
       <v-col cols="10">

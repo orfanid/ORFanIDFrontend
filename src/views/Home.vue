@@ -1,27 +1,5 @@
 <template>
   <v-layout wrap>
-    <v-app-bar color="white" hide-on-scroll>
-      <v-spacer></v-spacer>
-      <v-toolbar-title w-100>
-        <v-row>
-          <v-spacer />
-          <v-col cols="9">
-            <h4>ORFanID</h4>
-          </v-col>
-          <v-spacer />
-        </v-row>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-spacer></v-spacer>
-      <v-spacer></v-spacer>
-      <v-spacer></v-spacer>
-      <v-spacer></v-spacer>
-      <v-spacer></v-spacer>
-      <v-spacer></v-spacer>
-      <v-spacer></v-spacer>
-      <v-spacer></v-spacer>
-      <v-spacer></v-spacer>
-    </v-app-bar>
     <v-flex xs12 sm12>
       <v-parallax src="../../public/ORFanID_files/background1.jpg">
         <v-layout column align-center justify-center row="4">
@@ -35,13 +13,25 @@
           <div class="row center justify mt-2">
             <v-btn class="center" to="input" color="teal"><span color="white">Get Started</span></v-btn>
           </div>
-          <div class="row center justify mt-2">
-            <ul>
-              <li><v-icon large color="green darken-2">mdi-video</v-icon> <a href="https://youtu.be/wQY0_BBsJRk"
-                  target="_blank"><span style="font-size:1.35em">Video Tutorial for ORFanID</span></a></li>
-              <li><v-icon large color="green darken-2">mdi-video</v-icon><a href="https://youtu.be/B9QnPtKNA9c"
-                  target="_blank"><span style="font-size:1.35em">Navigating NCBI for ORFanID Video</span></a></li>
-            </ul>
+          <div class="video-actions">
+            <v-btn
+              class="video-action"
+              href="https://youtu.be/wQY0_BBsJRk"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <v-icon left>mdi-video</v-icon>
+              Video Tutorial
+            </v-btn>
+            <v-btn
+              class="video-action"
+              href="https://youtu.be/B9QnPtKNA9c"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <v-icon left>mdi-compass-outline</v-icon>
+              Navigating NCBI
+            </v-btn>
           </div>
         </v-layout>
       </v-parallax>
@@ -232,8 +222,6 @@
 </template>
 
 <script>
-import { mdiMessageVideo } from "@mdi/js";
-
 export default {
   name: "Home",
   data() {
@@ -299,5 +287,21 @@ export default {
 
 li {
   list-style-type: none;
+}
+
+.video-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+.video-action {
+  background-color: rgba(255, 255, 255, 0.94) !important;
+  color: #00695c !important;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  min-width: 190px !important;
 }
 </style>
