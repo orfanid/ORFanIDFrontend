@@ -1,5 +1,11 @@
+:root {
+    --orfan-font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+}
+
 html{
     /* width: 100vw; */
+    font-family: var(--orfan-font-family) !important;
 }
 html, body {
     width: 100%;
@@ -9,8 +15,7 @@ html, body {
   
 body{
     line-height: 1.5;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-        Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+    font-family: var(--orfan-font-family) !important;
     font-weight: normal;
     color: rgba(0, 0, 0, 0.87);
 }

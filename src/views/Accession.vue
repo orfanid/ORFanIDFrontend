@@ -1,5 +1,14 @@
 <template>
   <v-container>
+    <PageGuide
+      description="This page provides a search utility to find multiple accession numbers associated with a species name."
+      :steps="[
+        'Enter a species name in the search field provided.',
+        'Click the magnifying glass icon to start the search.',
+        'Review the accession numbers affiliated with the species name that you entered.',
+        'Download the accession list as a CSV file for use as ORFanID input.'
+      ]"
+    />
     <v-form>
       <v-row>
         <v-container fluid class="secondary-header" style="border-bottom: none !important">
@@ -25,21 +34,6 @@
             </v-row>
             <v-row class="mt-0">
               <v-col md="6" class="d-flex align-items-end p-0 pl-3"> </v-col>
-            </v-row>
-            <v-row>
-              <v-spacer />
-              <v-col cols="6">
-                <PageGuide
-                  description="This page provides a search utility to find multiple accession numbers associated with a species name."
-                  :steps="[
-                    'Enter a species name in the search field provided.',
-                    'Click the magnifying glass icon to start the search.',
-                    'Review the accession numbers affiliated with the species name that you entered.',
-                    'Download the accession list as a CSV file for use as ORFanID input.'
-                  ]"
-                />
-              </v-col>
-              <v-spacer />
             </v-row>
           </v-container>
         </v-container>
