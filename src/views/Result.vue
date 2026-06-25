@@ -40,10 +40,12 @@
                   <div class="detail-label">Identity Threshold</div>
                   <div class="identity-row">
                     <v-progress-linear
-                      v-model="analysisParameters.identity"
+                      class="identity-readonly-bar"
+                      :value="analysisParameters.identity"
                       color="teal"
                       background-color="#d9ece9"
                       height="22"
+                      readonly
                     >
                       <strong>{{ Math.ceil(analysisParameters.identity || 0) }}%</strong>
                     </v-progress-linear>
@@ -539,6 +541,12 @@ export default {
 
 .identity-row {
   margin-top: 8px;
+}
+
+.identity-readonly-bar {
+  cursor: default;
+  pointer-events: none;
+  user-select: none;
 }
 
 .chart-title {
