@@ -29,12 +29,17 @@
               </div>
               <div id="orfanGenesSummary" class="detail-grid text-left">
                 <div
-                  class="detail-item"
+                  :class="['detail-item', { 'detail-item-full submitted-query-item': item.fullWidth }]"
                   v-for="item in analysisDetailRows"
                   :key="item.label"
                 >
                   <div class="detail-label">{{ item.label }}</div>
-                  <div class="detail-value" :title="item.title || item.value">{{ item.value }}</div>
+                  <div
+                    :class="['detail-value', { 'submitted-query-value': item.fullWidth }]"
+                    :title="item.title || item.value"
+                  >
+                    {{ item.value }}
+                  </div>
                 </div>
                 <div class="detail-item detail-item-full">
                   <div class="detail-label">Identity Threshold</div>
@@ -303,9 +308,12 @@ export default {
       }
       return [
         {
-          label: "Submitted Query",
-          value: this.truncateText(this.analysisParameters.submittedQuery, 80),
-          title: this.analysisParameters.submittedQuery
+          label: this.analysisParameters.sequenceType === "protein" || this.analysisParameters.sequenceType === "nucleotide"
+            ? "Submitted Sequence / Accession"
+            : "Submitted Query",
+          value: this.truncateText(this.analysisParameters.submittedQuery, 180),
+          title: this.analysisParameters.submittedQuery,
+          fullWidth: true
         }
       ];
     }
@@ -339,7 +347,12 @@ export default {
       });
       that.analysisParameters.organismImg = selectOrganism.length > 0 ? selectOrganism[0].value : "";
 
-      (response.data.geneList || []).forEach(element => {
+      const geneList = response.data.geneList || [];
+      if (!that.analysisParameters.submittedQuery) {
+        that.analysisParameters.submittedQuery = that.getSubmittedQueryFromGenes(geneList);
+      }
+
+      geneList.forEach(element => {
         that.genesCategorization.desserts.push({
           id: element.id,
           geneId: element.geneId,
@@ -394,6 +407,25 @@ export default {
     },
     getSubmittedQuery(data) {
       return data.accession || data.accessions || data.ncbiAccessionInput || data.sequence || "";
+    },
+    getSubmittedQueryFromGenes(geneList) {
+      if (!geneList || geneList.length === 0) {
+        return "";
+      }
+
+      const geneIds = geneList
+        .map(gene => gene.geneId)
+        .filter(geneId => geneId && geneId !== "Query_1");
+
+      if (geneIds.length > 0) {
+        return geneIds.join(", ");
+      }
+
+      const sequences = geneList
+        .map(gene => gene.sequence)
+        .filter(sequence => sequence);
+
+      return sequences.length > 0 ? sequences.join("\n") : "";
     },
     truncateText(value, maxLength) {
       if (!value) {
@@ -537,6 +569,19 @@ export default {
   font-size: 1rem;
   font-weight: 600;
   overflow-wrap: anywhere;
+}
+
+.submitted-query-item {
+  background: #f2fbf9;
+}
+
+.submitted-query-value {
+  font-family: "Roboto Mono", Consolas, monospace;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  max-height: 92px;
+  overflow-y: auto;
+  white-space: pre-wrap;
 }
 
 .identity-row {
