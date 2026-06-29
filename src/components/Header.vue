@@ -12,7 +12,10 @@
         <v-list-item
           v-for="item in menuItems"
           :key="item.title"
-          :to="item.path"
+          :to="item.external ? undefined : item.path"
+          :href="item.external ? item.path : undefined"
+          :target="item.external ? '_blank' : undefined"
+          :rel="item.external ? 'noopener noreferrer' : undefined"
           class="drawer-item"
           active-class="drawer-item-active"
           @click="sidebar = false"
@@ -52,6 +55,18 @@
           </v-btn>
 
           <v-btn value="nearby" text color="white" to="/orfanBase" class="nav-link">
+            <span>Database</span>
+          </v-btn>
+
+          <v-btn
+            value="orfanbase"
+            text
+            color="white"
+            href="https://orfanbase.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="nav-link"
+          >
             <span>ORFanBase</span>
           </v-btn>
 
@@ -103,7 +118,13 @@ export default {
       menuItems: [
         { title: "New Query", path: "/input", icon: "mdi-plus-circle-outline" },
         { title: "Results", path: "/results", icon: "mdi-chart-bar" },
-        { title: "ORFanBase", path: "/orfanBase", icon: "mdi-database-search" },
+        { title: "Database", path: "/orfanBase", icon: "mdi-database-search" },
+        {
+          title: "ORFanBase",
+          path: "https://orfanbase.com",
+          icon: "mdi-open-in-new",
+          external: true
+        },
         { title: "Accessions", path: "/accession", icon: "mdi-format-list-bulleted-square" },
         { title: "Instructions", path: "/instructions", icon: "mdi-book-open-page-variant" },
         { title: "Experiment", path: "/experiment-diamond", icon: "mdi-flask-outline" }
@@ -131,7 +152,7 @@ export default {
 
 .nav-items {
   align-items: center;
-  gap: 22px;
+  gap: 16px;
   justify-content: center;
   width: 100%;
 }
@@ -150,7 +171,7 @@ export default {
   font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: 0.04em;
-  min-width: 150px !important;
+  min-width: 145px !important;
 }
 
 .mobile-drawer {
