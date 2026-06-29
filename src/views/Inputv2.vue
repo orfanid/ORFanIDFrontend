@@ -331,8 +331,30 @@
             Please enter Sequence.
           </div>
           <div class="error-message" v-if="!$v.sequence.maxLength && $v.sequence.$dirty">
-            Sequence can only have a maximum of 500 characters.
+            Sequence can only have a maximum of 5000 characters.
           </div>
+          <div
+            v-for="message in visibleSequenceValidationErrors"
+            :key="message"
+            class="error-message"
+          >
+            {{ message }}
+          </div>
+          <v-alert
+            v-if="visibleSequenceValidationWarnings.length"
+            dense
+            text
+            type="warning"
+            class="sequence-validation-alert"
+          >
+            <div
+              v-for="message in visibleSequenceValidationWarnings"
+              :key="message"
+              class="sequence-validation-message"
+            >
+              {{ message }}
+            </div>
+          </v-alert>
           <v-chip class="ma-n3 float-right" x-small>{{ sequence.length }}/5000</v-chip>
         </v-col>
       </v-row>
@@ -502,6 +524,22 @@
         <v-card-text>
           <div class="pa-3">
             <h5><center>Please Confirm Sequence Submission</center></h5>
+            <v-alert
+              v-if="sequenceValidationWarnings.length"
+              dense
+              text
+              type="warning"
+              class="mt-4 mb-0"
+            >
+              <div class="font-weight-bold mb-1">Please review before submitting:</div>
+              <div
+                v-for="message in sequenceValidationWarnings"
+                :key="message"
+                class="sequence-validation-message"
+              >
+                {{ message }}
+              </div>
+            </v-alert>
           </div>
         </v-card-text>
 
@@ -537,6 +575,7 @@ export default {
       submiterNickname: "",
       NCBIAccession: "",
       sequence: "",
+      sequenceValidationAttempted: false,
       organismName: "",
       showSubmissionConfirmation: false,
       uploadedSequenceFile: null,
@@ -588,6 +627,32 @@ export default {
       }
     };
   },
+  computed: {
+    sequenceValidation() {
+      return this.validateSequenceInput();
+    },
+    sequenceValidationErrors() {
+      return this.sequenceValidation.errors;
+    },
+    sequenceValidationWarnings() {
+      return this.sequenceValidation.warnings;
+    },
+    visibleSequenceValidationErrors() {
+      if (this.identifier !== "sequence" || !this.shouldShowSequenceValidation) {
+        return [];
+      }
+      return this.sequenceValidationErrors;
+    },
+    visibleSequenceValidationWarnings() {
+      if (this.identifier !== "sequence" || !this.shouldShowSequenceValidation) {
+        return [];
+      }
+      return this.sequenceValidationWarnings;
+    },
+    shouldShowSequenceValidation() {
+      return Boolean(this.sequenceValidationAttempted || this.sequence);
+    }
+  },
   methods: {
     getOrganismList() {
       let that = this;
@@ -610,8 +675,193 @@ export default {
     remove_linebreaks(str) {
       return str.replace(/[\r]+/gm, "");
     },
+    parseSequenceInput(value) {
+      const raw = value || "";
+      const normalized = raw.replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim();
+      const result = {
+        hasFastaHeaders: normalized.includes(">"),
+        records: [],
+        errors: []
+      };
+
+      if (!normalized) {
+        return result;
+      }
+
+      if (!result.hasFastaHeaders) {
+        result.records.push({
+          header: "",
+          sequence: normalized.replace(/\s+/g, "").toUpperCase()
+        });
+        return result;
+      }
+
+      const lines = normalized.split("\n");
+      let currentRecord = null;
+      let sequenceLines = [];
+
+      lines.forEach(line => {
+        const trimmedLine = line.trim();
+        if (!trimmedLine) {
+          return;
+        }
+        if (trimmedLine.startsWith(">")) {
+          if (currentRecord) {
+            currentRecord.sequence = sequenceLines.join("").replace(/\s+/g, "").toUpperCase();
+            result.records.push(currentRecord);
+          }
+          const header = trimmedLine.substring(1).trim();
+          if (!header) {
+            result.errors.push("FASTA headers must include an identifier after the > symbol.");
+          }
+          currentRecord = { header, sequence: "" };
+          sequenceLines = [];
+        } else if (currentRecord) {
+          sequenceLines.push(trimmedLine);
+        } else {
+          result.errors.push("FASTA sequence lines must appear after a header line beginning with >.");
+        }
+      });
+
+      if (currentRecord) {
+        currentRecord.sequence = sequenceLines.join("").replace(/\s+/g, "").toUpperCase();
+        result.records.push(currentRecord);
+      }
+
+      result.records.forEach((record, index) => {
+        if (!record.sequence) {
+          result.errors.push(`Sequence ${index + 1} is missing sequence characters.`);
+        }
+      });
+
+      return result;
+    },
+    validateSequenceInput() {
+      const errors = [];
+      const warnings = [];
+
+      if (this.identifier !== "sequence" || !this.sequence) {
+        return { errors, warnings };
+      }
+
+      const parsedInput = this.parseSequenceInput(this.sequence);
+      errors.push(...parsedInput.errors);
+
+      const isProtein = this.dna_sequence === "protein";
+      const allowedProteinPattern = /^[ACDEFGHIKLMNPQRSTVWYBXZUOJ*]+$/i;
+      const allowedNucleotidePattern = /^[ACGTUNRYKMSWBDHV]+$/i;
+      const nucleotideOnlyPattern = /^[ACGTUN]+$/i;
+      const proteinOnlyCharacterPattern = /[EFILPQXZJO]/i;
+      const proteinAccessionPattern = /\b(?:NP|XP|YP|WP|AP|AAI|CAA|AAB)_[A-Z0-9.]+|\b[A-Z]{3}\d{5,}(?:\.\d+)?\b/i;
+      const nucleotideAccessionPattern = /\b(?:NC|NM|NZ|XM|XR|NR|NG|NW)_[A-Z0-9.]+/i;
+      const selectedOrganismName = this.extractOrganismName(this.organismName);
+
+      parsedInput.records.forEach((record, index) => {
+        const label = parsedInput.records.length > 1 ? `Sequence ${index + 1}` : "Sequence";
+        const sequence = record.sequence;
+
+        if (!sequence) {
+          return;
+        }
+
+        const isValidForSelectedType = isProtein
+          ? allowedProteinPattern.test(sequence)
+          : allowedNucleotidePattern.test(sequence);
+
+        if (!isValidForSelectedType) {
+          const invalidCharacters = this.getInvalidSequenceCharacters(
+            sequence,
+            isProtein ? allowedProteinPattern : allowedNucleotidePattern
+          );
+          errors.push(
+            `${label} contains characters that are not valid for ${
+              isProtein ? "protein" : "gene/nucleotide"
+            } input: ${invalidCharacters.join(", ")}.`
+          );
+        }
+
+        if (!isProtein && proteinOnlyCharacterPattern.test(sequence)) {
+          errors.push(
+            `${label} looks like a protein sequence, but Gene was selected. Please choose Protein or enter a nucleotide sequence.`
+          );
+        }
+
+        if (isProtein && nucleotideOnlyPattern.test(sequence) && sequence.length >= 30) {
+          warnings.push(
+            `${label} only contains nucleotide letters. Please confirm Protein is the correct sequence type.`
+          );
+        }
+
+        if (isProtein && sequence.length < 30) {
+          warnings.push(
+            `${label} is very short (${sequence.length} aa). Short peptides can produce limited BLAST evidence and may classify as strict ORFan.`
+          );
+        }
+
+        if (!isProtein && sequence.length < 90) {
+          warnings.push(
+            `${label} is short (${sequence.length} bp). Please confirm this is the intended nucleotide sequence.`
+          );
+        }
+
+        if (record.header) {
+          if (isProtein && nucleotideAccessionPattern.test(record.header)) {
+            warnings.push(
+              `${label} header looks like a nucleotide accession, but Protein was selected.`
+            );
+          }
+          if (!isProtein && proteinAccessionPattern.test(record.header)) {
+            warnings.push(`${label} header looks like a protein accession, but Gene was selected.`);
+          }
+          const headerOrganism = this.extractBracketedOrganism(record.header);
+          if (
+            headerOrganism &&
+            selectedOrganismName &&
+            !this.organismNamesMatch(headerOrganism, selectedOrganismName)
+          ) {
+            warnings.push(
+              `${label} header mentions ${headerOrganism}, but the selected organism is ${selectedOrganismName}.`
+            );
+          }
+        }
+      });
+
+      return {
+        errors: [...new Set(errors)],
+        warnings: [...new Set(warnings)]
+      };
+    },
+    getInvalidSequenceCharacters(sequence, allowedPattern) {
+      return [...new Set(sequence.split("").filter(character => !allowedPattern.test(character)))];
+    },
+    extractOrganismName(value) {
+      if (!value) {
+        return "";
+      }
+      return value
+        .replace(/\(\s*\d+\s*\)/g, "")
+        .trim()
+        .toLowerCase();
+    },
+    extractBracketedOrganism(header) {
+      const matches = header.match(/\[([A-Z][a-z]+(?:\s+[a-z][a-z.-]+)+)\]/);
+      return matches ? matches[1].trim().toLowerCase() : "";
+    },
+    organismNamesMatch(headerOrganism, selectedOrganism) {
+      return headerOrganism === selectedOrganism || headerOrganism.includes(selectedOrganism);
+    },
+    formatSequenceForSubmission() {
+      const parsedInput = this.parseSequenceInput(this.sequence);
+      if (!parsedInput.hasFastaHeaders) {
+        return parsedInput.records.length ? parsedInput.records[0].sequence : this.sequence;
+      }
+      return parsedInput.records
+        .map(record => `>${record.header}\n${record.sequence}`)
+        .join("\n");
+    },
     identifierChanged() {
       console.log("Radio Button Group Changed");
+      this.sequenceValidationAttempted = false;
       this.clearAccessionSequenceAndOrganism();
     },
     loadExampleData(_exampleName) {
@@ -632,8 +882,9 @@ export default {
     },
     submitFormConfirmation() {
       console.log("Submit Form");
+      this.sequenceValidationAttempted = true;
       this.$v.$touch();
-      if (!this.$v.$invalid) {
+      if (!this.$v.$invalid && this.sequenceValidationErrors.length === 0) {
         this.showSubmissionConfirmation = true;
       }
     },
@@ -652,7 +903,7 @@ export default {
         maxEvalue: this.maxEvalue,
         maxTargetSequence: this.maxTargetSequence,
         organismName: this.organismName,
-        sequence: this.sequence,
+        sequence: this.identifier === "sequence" ? this.formatSequenceForSubmission() : this.sequence,
         email: this.submiterNickname,
         isPsiBlast: this.program == "PSI-BLAST" ? true : false,
         num_iteration: parseInt(this.num_iteration),
@@ -738,6 +989,7 @@ export default {
     },
     changeAccessionType() {
       console.log("Reset Sequence");
+      this.sequenceValidationAttempted = false;
       this.sequence = "";
       this.NCBIAccession = "";
       this.accessionSearchResult.idList.length = 0;
@@ -804,6 +1056,15 @@ export default {
 .error-message {
   color: red; /* Red color for error message */
   animation: fadeInRed 0.5s ease; /* Animation for fading in */
+}
+
+.sequence-validation-alert {
+  margin-top: 18px;
+}
+
+.sequence-validation-message {
+  line-height: 1.45;
+  margin-bottom: 4px;
 }
 
 /* Keyframes for animation */
