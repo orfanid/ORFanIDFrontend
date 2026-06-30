@@ -4,8 +4,7 @@ const SESSION_HOURS = 8;
 function expectedPassword() {
   return (
     process.env.VUE_APP_ADMIN_PASSWORD ||
-    process.env.VUE_APP_DELETE_PASSCODE ||
-    "admin123"
+    "ChesalonAdmin123!"
   );
 }
 
