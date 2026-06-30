@@ -8,6 +8,7 @@ import OrfanBase from "../views/Orfanbase";
 import Input from "../views/Inputv2";
 import Accession from "../views/Accession.vue";
 import experimentdiamond from "../views/experiment-diamond.vue"
+import { isAdminAuthenticated } from "../utils/adminAuth";
 
 Vue.use(VueRouter);
 
@@ -57,11 +58,46 @@ const routes = [
     name: "experiment-diamond",
     component: experimentdiamond
   },
+  {
+    path: "/admin",
+    redirect: "/admin/dashboard"
+  },
+  {
+    path: "/admin/login",
+    name: "admin-login",
+    component: () => import("../views/AdminLogin.vue")
+  },
+  {
+    path: "/admin/dashboard",
+    name: "admin-dashboard",
+    component: () => import("../views/AdminDashboard.vue"),
+    meta: { requiresAdmin: true }
+  },
+  {
+    path: "/admin/analysis/:analysisId",
+    name: "admin-analysis-detail",
+    component: () => import("../views/AdminAnalysisDetail.vue"),
+    meta: { requiresAdmin: true }
+  },
 ];
 
 const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(route => route.meta.requiresAdmin) && !isAdminAuthenticated()) {
+    next({ name: "admin-login" });
+    return;
+  }
+
+  if (to.name === "admin-login" && isAdminAuthenticated()) {
+    next({ name: "admin-dashboard" });
+    return;
+  }
+
+  next();
 });
 
 export default router;
