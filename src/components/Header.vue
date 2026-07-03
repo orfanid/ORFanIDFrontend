@@ -55,19 +55,7 @@
           </v-btn>
 
           <v-btn value="nearby" text color="white" to="/orfanBase" class="nav-link">
-            <span>Database</span>
-          </v-btn>
-
-          <v-btn
-            value="orfanbase"
-            text
-            color="white"
-            href="https://orfanbase.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="nav-link"
-          >
-            <span>ORFanBase</span>
+            <span>ORFanBase Database</span>
           </v-btn>
 
           <v-btn value="nearby" text color="white" to="/accession" class="nav-link">

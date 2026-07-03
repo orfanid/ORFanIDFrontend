@@ -180,6 +180,13 @@ import moment from "moment";
 import _ from "lodash";
 
 export default {
+  name: "Results",
+  metaInfo: {
+    title: 'Results | ORFanID',
+    meta: [
+      { name: 'description', content: 'View and manage your ORFanID analysis results.' }
+    ]
+  },
   data() {
     return {
       search: "",

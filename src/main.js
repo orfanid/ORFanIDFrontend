@@ -23,6 +23,8 @@ Vue.component('v-chart', ECharts)
 Vue.component('PageGuide', PageGuide)
 
 Vue.use(Vuelidate)
+import VueMeta from 'vue-meta'
+Vue.use(VueMeta)
 Vue.config.productionTip = false
 new Vue({
   vuetify,

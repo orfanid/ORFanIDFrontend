@@ -163,6 +163,12 @@ import VueProgressBar from "vue-progressbar";
 
 export default {
   name: "Result",
+  metaInfo: {
+    title: 'Analysis Result | ORFanID',
+    meta: [
+      { name: 'description', content: 'Detailed summary of an ORFanID analysis and ORFan gene categories.' }
+    ]
+  },
   components: {
     BarChart,
     TreeChart,
