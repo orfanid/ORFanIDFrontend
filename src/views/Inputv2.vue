@@ -98,6 +98,32 @@
                 @click:clear="clearUploadedFile"
                 v-bind="attrs"
               ></v-file-input>
+              <div v-if="identifier == 'sequence'" class="sequence-sample-panel">
+                <div class="sequence-sample-header">
+                  <v-icon color="teal" class="mr-2">mdi-file-code-outline</v-icon>
+                  <div>
+                    <h6>Sequence upload test files</h6>
+                    <p>
+                      Download a small FASTA file to test sequence upload and validation.
+                    </p>
+                  </div>
+                </div>
+                <div class="sequence-sample-grid">
+                  <a
+                    v-for="sample in sequenceSampleFiles"
+                    :key="sample.file"
+                    class="sequence-sample-link"
+                    :href="sample.file"
+                    download
+                  >
+                    <v-icon small color="teal" class="mr-2">mdi-download</v-icon>
+                    <span>
+                      <strong>{{ sample.name }}</strong>
+                      <small>{{ sample.description }}</small>
+                    </span>
+                  </a>
+                </div>
+              </div>
             </v-col>
           </v-row>
         </v-col>
@@ -582,6 +608,23 @@ export default {
       NCBIAccession: "",
       sequence: "",
       sequenceValidationAttempted: false,
+      sequenceSampleFiles: [
+        {
+          name: "Protein FASTA",
+          description: "Valid single protein sequence",
+          file: "/test-data/orfanid/protein_single_valid.fasta"
+        },
+        {
+          name: "Multi-protein FASTA",
+          description: "Valid multi-record protein file",
+          file: "/test-data/orfanid/protein_multi_valid.fasta"
+        },
+        {
+          name: "Nucleotide FASTA",
+          description: "Valid gene/nucleotide sequence",
+          file: "/test-data/orfanid/nucleotide_single_valid.fasta"
+        }
+      ],
       organismName: "",
       showSubmissionConfirmation: false,
       uploadedSequenceFile: null,
@@ -1071,6 +1114,70 @@ export default {
 .sequence-validation-message {
   line-height: 1.45;
   margin-bottom: 4px;
+}
+
+.sequence-sample-panel {
+  background: #f8fbfa;
+  border: 1px solid #d7ebe7;
+  border-radius: 8px;
+  margin-top: 8px;
+  padding: 14px;
+}
+
+.sequence-sample-header {
+  align-items: flex-start;
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.sequence-sample-header h6 {
+  color: #00796b;
+  font-size: 0.94rem;
+  font-weight: 700;
+  margin: 0 0 3px;
+}
+
+.sequence-sample-header p {
+  color: #546662;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.sequence-sample-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.sequence-sample-link {
+  align-items: center;
+  background: white;
+  border: 1px solid #dcebe8;
+  border-radius: 8px;
+  color: #263330;
+  display: flex;
+  padding: 8px 10px;
+  text-decoration: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sequence-sample-link:hover {
+  border-color: #009688;
+  box-shadow: 0 4px 12px rgba(0, 150, 136, 0.12);
+}
+
+.sequence-sample-link strong,
+.sequence-sample-link small {
+  display: block;
+}
+
+.sequence-sample-link strong {
+  font-size: 0.84rem;
+}
+
+.sequence-sample-link small {
+  color: #607d78;
+  font-size: 0.72rem;
 }
 
 /* Keyframes for animation */

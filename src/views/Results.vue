@@ -154,7 +154,7 @@
             </v-dialog>
             <v-row>
               <v-col cols="12" class="mt-3">
-                <v-pagination v-model="page" :length="pageCountR"></v-pagination>
+                <v-pagination v-model="page" :length="paginationLength"></v-pagination>
               </v-col>
             </v-row>
             <v-row>
@@ -179,6 +179,8 @@ import analysisAPI from "../api/analysis";
 import moment from "moment";
 import _ from "lodash";
 
+const SEARCH_RESULTS_PAGE_SIZE = 1000;
+
 export default {
   name: "Results",
   metaInfo: {
@@ -192,6 +194,7 @@ export default {
       search: "",
       page: 1,
       pageCount: 0,
+      pageCountR: 0,
       itemsSort: 'desc',
       itemsPerPage: 10,
       headers: [
@@ -220,6 +223,7 @@ export default {
       sortBy: ["date"],
       sortDesc: [true],
       intervalHandler: null,
+      searchFetchTimer: null,
   // delete dialog state
   deleteDialog: false,
   deleteTargetId: null,
@@ -228,6 +232,12 @@ export default {
     };
   },
   computed: {
+    isSearchActive() {
+      return this.search.trim().length > 0;
+    },
+    paginationLength() {
+      return this.isSearchActive ? this.pageCount : this.pageCountR;
+    },
     hasActiveAnalyses() {
       return this.desserts.some(item => item.status === "START_PROCESSING" || item.status === "PENDING");
     }
@@ -238,15 +248,28 @@ export default {
   },
   beforeDestroy() {
     clearInterval(this.intervalHandler);
+    clearTimeout(this.searchFetchTimer);
     this.intervalHandler = 0;
+    this.searchFetchTimer = null;
   },
   watch: {
     page() {
-      this.loadData();
+      if (!this.isSearchActive) {
+        this.loadData();
+      }
     },
     itemsPerPage() {
       this.page = 1; // Reset to the first page on itemsPerPage change
-      this.loadData();
+      if (!this.isSearchActive) {
+        this.loadData();
+      }
+    },
+    search() {
+      this.page = 1;
+      clearTimeout(this.searchFetchTimer);
+      this.searchFetchTimer = setTimeout(() => {
+        this.loadData();
+      }, 300);
     },
   },
   methods: {
@@ -300,25 +323,62 @@ export default {
       }
     },
     loadData() {
+      if (this.isSearchActive) {
+        this.loadSearchData();
+      } else {
+        this.loadPagedData();
+      }
+    },
+    loadPagedData() {
       const that = this;
       that.$Progress.start();
       that.desserts = [];
+
       analysisAPI.getByDesc(this.page - 1, this.itemsPerPage, this.itemsSort).then((response) => {
-        that.desserts = response.data.results.map(element => ({
-          date: moment.utc(element.analysisDate).local().format("YYYY-MM-DD HH:mm:ss"),
-          analysisId: element.analysisId,
-          email: that.getSubmitterName(element) || "Not provided",
-          organism: element.organism,
-          genes: element.numberOfGenes,
-          analysisIdNav: element.analysisId,
-          status: element.status,
-        }));
+        that.desserts = response.data.results.map(this.mapAnalysisRow);
         that.pageCountR = response.data.totalPages;
         that.$Progress.finish();
       }).catch((error) => {
         console.error("Error fetching data:", error);
         that.$Progress.fail();
       });
+    },
+    loadSearchData() {
+      const that = this;
+      that.$Progress.start();
+      that.desserts = [];
+
+      analysisAPI.getByDesc(0, SEARCH_RESULTS_PAGE_SIZE, this.itemsSort).then((response) => {
+        const firstPage = response.data.results || [];
+        const totalPages = response.data.totalPages || 1;
+        const requests = [];
+
+        for (let pageIndex = 1; pageIndex < totalPages; pageIndex++) {
+          requests.push(analysisAPI.getByDesc(pageIndex, SEARCH_RESULTS_PAGE_SIZE, this.itemsSort));
+        }
+
+        return Promise.all(requests).then((responses) => {
+          const remainingRows = responses.reduce((rows, pageResponse) => {
+            return rows.concat(pageResponse.data.results || []);
+          }, []);
+          that.desserts = firstPage.concat(remainingRows).map(this.mapAnalysisRow);
+          that.$Progress.finish();
+        });
+      }).catch((error) => {
+        console.error("Error fetching searchable data:", error);
+        that.$Progress.fail();
+      });
+    },
+    mapAnalysisRow(element) {
+      return {
+        date: moment.utc(element.analysisDate).local().format("YYYY-MM-DD HH:mm:ss"),
+        analysisId: element.analysisId,
+        email: this.getSubmitterName(element) || "Not provided",
+        organism: element.organism,
+        genes: element.numberOfGenes,
+        analysisIdNav: element.analysisId,
+        status: element.status,
+      };
     },
     getSubmitterName(data) {
       return (
