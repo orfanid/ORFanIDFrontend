@@ -58,8 +58,6 @@
 import analysisAPI from "../api/analysis";
 import moment from "moment";
 
-const SEARCH_RESULTS_PAGE_SIZE = 1000;
-
 export default {
   name: "Orfanbase",
   metaInfo: {
@@ -222,23 +220,10 @@ export default {
         sortDir = this.sortDesc[0] ? 'desc' : 'asc';
       }
 
-      analysisAPI.orfanBaseGenesByPage(0, SEARCH_RESULTS_PAGE_SIZE, sortDir).then((response) => {
-        const firstPage = this.extractOrfanbaseRows(response);
-        const total = this.extractOrfanbaseTotal(response, firstPage.length);
-        const totalPages = Math.max(1, Math.ceil(total / SEARCH_RESULTS_PAGE_SIZE));
-        const requests = [];
-
-        for (let pageIndex = 1; pageIndex < totalPages; pageIndex++) {
-          requests.push(analysisAPI.orfanBaseGenesByPage(pageIndex, SEARCH_RESULTS_PAGE_SIZE, sortDir));
-        }
-
-        return Promise.all(requests).then((responses) => {
-          const remainingRows = responses.reduce((rows, pageResponse) => {
-            return rows.concat(this.extractOrfanbaseRows(pageResponse));
-          }, []);
-          that.searchDesserts = firstPage.concat(remainingRows).map(this.mapOrfanbaseRow);
-          that.$Progress.finish();
-        });
+      analysisAPI.orfanBaseGenes().then((response) => {
+        const rows = this.extractOrfanbaseRows(response);
+        that.searchDesserts = this.sortRowsByDate(rows.map(this.mapOrfanbaseRow), sortDir);
+        that.$Progress.finish();
       }).catch((error) => {
         console.error("Error fetching searchable ORFanBase data:", error);
         that.$Progress.fail();
@@ -281,6 +266,13 @@ export default {
       return Number.isFinite(numericTotal) && numericTotal >= fallbackTotal
         ? numericTotal
         : fallbackTotal;
+    },
+    sortRowsByDate(rows, sortDir) {
+      return rows.sort((a, b) => {
+        const left = moment(a.date, "YYYY-MM-DD HH:mm:ss");
+        const right = moment(b.date, "YYYY-MM-DD HH:mm:ss");
+        return sortDir === "asc" ? left - right : right - left;
+      });
     },
     mapOrfanbaseRow(element) {
       return {
