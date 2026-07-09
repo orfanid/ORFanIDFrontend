@@ -39,7 +39,12 @@
             </v-row>
             <v-row>
               <v-col cols="12" class="items-dropdown">
-                <v-combobox v-model="itemsPerPage" :items="[5, 10, 15, 20, 25, 30]" label="Items per page" type="number"></v-combobox>
+                <v-select
+                  v-model.number="itemsPerPage"
+                  :items="itemsPerPageOptions"
+                  label="Items per page"
+                  @change="handleItemsPerPageChange"
+                ></v-select>
               </v-col>
             </v-row>
           </div>
@@ -63,6 +68,7 @@ export default {
       pageCount: 0,
       localPageCount: 0,
       itemsPerPage: 10,
+      itemsPerPageOptions: [5, 10, 15, 20, 25, 30],
       totalItems: 0,
       headers: [
         {
@@ -136,11 +142,6 @@ export default {
         this.loadPagedData();
       }
     },
-    itemsPerPage(value) {
-      this.itemsPerPage = Number(value) || 10;
-      this.page = 1;
-      this.loadData();
-    },
     search() {
       this.page = 1;
       clearTimeout(this.searchFetchTimer);
@@ -169,6 +170,12 @@ export default {
       } else {
         this.loadPagedData();
       }
+    },
+    handleItemsPerPageChange(value) {
+      const selectedValue = Number(value);
+      this.itemsPerPage = this.itemsPerPageOptions.includes(selectedValue) ? selectedValue : 10;
+      this.page = 1;
+      this.loadData();
     },
     loadPagedData() {
       const that = this;
