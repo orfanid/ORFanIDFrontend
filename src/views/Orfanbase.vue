@@ -109,6 +109,14 @@ export default {
         return this.desserts;
       }
 
+      const start = (this.page - 1) * this.itemsPerPage;
+      return this.filteredSearchDesserts.slice(start, start + this.itemsPerPage);
+    },
+    filteredSearchDesserts() {
+      if (!this.isSearchActive) {
+        return [];
+      }
+
       return this.searchDesserts.filter(item => {
         return [
           item.date,
@@ -121,12 +129,12 @@ export default {
     },
     paginationLength() {
       if (this.isSearchActive) {
-        return Math.max(1, Math.ceil(this.displayedDesserts.length / this.itemsPerPage));
+        return Math.max(1, Math.ceil(this.filteredSearchDesserts.length / this.itemsPerPage));
       }
       return this.pageCount;
     },
     serverItemsLength() {
-      return this.isSearchActive ? -1 : this.totalItems;
+      return this.isSearchActive ? this.filteredSearchDesserts.length : this.totalItems;
     }
   },
   mounted() {
@@ -187,9 +195,10 @@ export default {
       analysisAPI
         .orfanBaseGenesByPage(this.page - 1, this.itemsPerPage, sortDir)
         .then((response) => {
-          that.totalItems = response.data.total;
-          that.pageCount = Math.ceil(that.totalItems / that.itemsPerPage);
-          that.desserts = response.data.data.map(this.mapOrfanbaseRow);
+          const rows = this.extractOrfanbaseRows(response);
+          that.totalItems = this.extractOrfanbaseTotal(response, rows.length);
+          that.pageCount = Math.max(1, Math.ceil(that.totalItems / that.itemsPerPage));
+          that.desserts = rows.map(this.mapOrfanbaseRow);
           that.$Progress.finish();
         })
         .catch((error) => {
@@ -207,8 +216,8 @@ export default {
       }
 
       analysisAPI.orfanBaseGenesByPage(0, SEARCH_RESULTS_PAGE_SIZE, sortDir).then((response) => {
-        const firstPage = response.data.data || [];
-        const total = response.data.total || firstPage.length;
+        const firstPage = this.extractOrfanbaseRows(response);
+        const total = this.extractOrfanbaseTotal(response, firstPage.length);
         const totalPages = Math.max(1, Math.ceil(total / SEARCH_RESULTS_PAGE_SIZE));
         const requests = [];
 
@@ -218,7 +227,7 @@ export default {
 
         return Promise.all(requests).then((responses) => {
           const remainingRows = responses.reduce((rows, pageResponse) => {
-            return rows.concat(pageResponse.data.data || []);
+            return rows.concat(this.extractOrfanbaseRows(pageResponse));
           }, []);
           that.searchDesserts = firstPage.concat(remainingRows).map(this.mapOrfanbaseRow);
           that.$Progress.finish();
@@ -227,6 +236,44 @@ export default {
         console.error("Error fetching searchable ORFanBase data:", error);
         that.$Progress.fail();
       });
+    },
+    extractOrfanbaseRows(response) {
+      const payload = response && response.data ? response.data : {};
+
+      if (Array.isArray(payload)) {
+        return payload;
+      }
+      if (Array.isArray(payload.data)) {
+        return payload.data;
+      }
+      if (Array.isArray(payload.content)) {
+        return payload.content;
+      }
+      if (payload.data && Array.isArray(payload.data.data)) {
+        return payload.data.data;
+      }
+      if (payload.data && Array.isArray(payload.data.content)) {
+        return payload.data.content;
+      }
+      return [];
+    },
+    extractOrfanbaseTotal(response, fallbackTotal) {
+      const payload = response && response.data ? response.data : {};
+      const total =
+        payload.total ||
+        payload.totalElements ||
+        payload.totalItems ||
+        payload.count ||
+        (payload.data &&
+          (payload.data.total ||
+            payload.data.totalElements ||
+            payload.data.totalItems ||
+            payload.data.count));
+
+      const numericTotal = Number(total);
+      return Number.isFinite(numericTotal) && numericTotal >= fallbackTotal
+        ? numericTotal
+        : fallbackTotal;
     },
     mapOrfanbaseRow(element) {
       return {
