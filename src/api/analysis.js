@@ -129,6 +129,13 @@ const analysisAPI = {
       headers: getHeaders(),
     });
   },
+  orfanBaseGenesSearch(query, currentPage, pageSize, sortByDate = 'desc') {
+    return axios({
+      method: 'get',
+      url: `${config.baseUrl()}/orfanbase-genes/search?query=${encodeURIComponent(query)}&page=${currentPage}&size=${pageSize}&sortByDate=${sortByDate}`,
+      headers: getHeaders(),
+    });
+  },
   getBotResponse(request) {
    return axios({
       method: 'post',
