@@ -19,8 +19,21 @@
               <v-text-field v-model="search" append-icon="mdi-magnify" label="Enter Search Term Here" single-line
                 hide-details></v-text-field>
             </v-card-title>
-            <v-data-table :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :headers="headers" :items="displayedDesserts"
-              :page.sync="page" :items-per-page="itemsPerPage" :server-items-length="serverItemsLength" hide-default-footer class="elevation-1"
+            <v-data-table v-if="isSearchActive" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :headers="headers"
+              :items="displayedDesserts" :page.sync="page" :items-per-page="itemsPerPage" hide-default-footer class="elevation-1"
+              @page-count="localPageCount = $event" @update:sort-desc="loadData">
+
+              <template v-slot:item.analysisIdNav="{ item }">
+                <router-link :to="{
+                  name: 'result',
+                  params: { analysisId: item.analysisIdNav },
+                }">
+                  <v-icon large>mdi-chart-bar</v-icon>
+                </router-link>
+              </template>
+            </v-data-table>
+            <v-data-table v-else :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :headers="headers" :items="displayedDesserts"
+              :page.sync="page" :items-per-page="itemsPerPage" :server-items-length="totalItems" hide-default-footer class="elevation-1"
               @page-count="localPageCount = $event" @update:sort-desc="loadData">
 
               <template v-slot:item.analysisIdNav="{ item }">
@@ -132,9 +145,6 @@ export default {
       }
       return this.pageCount;
     },
-    serverItemsLength() {
-      return this.isSearchActive ? this.filteredSearchDesserts.length : this.totalItems;
-    }
   },
   mounted() {
     this.loadData();
