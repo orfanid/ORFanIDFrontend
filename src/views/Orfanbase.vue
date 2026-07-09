@@ -116,8 +116,7 @@ export default {
         return this.desserts;
       }
 
-      const start = (this.page - 1) * this.itemsPerPage;
-      return this.filteredSearchDesserts.slice(start, start + this.itemsPerPage);
+      return this.filteredSearchDesserts;
     },
     filteredSearchDesserts() {
       if (!this.isSearchActive) {
