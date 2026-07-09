@@ -58,6 +58,8 @@
 import analysisAPI from "../api/analysis";
 import moment from "moment";
 
+const SEARCH_RESULTS_PAGE_SIZE = 1000;
+
 export default {
   name: "Orfanbase",
   metaInfo: {
@@ -225,7 +227,35 @@ export default {
         that.searchDesserts = this.sortRowsByDate(rows.map(this.mapOrfanbaseRow), sortDir);
         that.$Progress.finish();
       }).catch((error) => {
-        console.error("Error fetching searchable ORFanBase data:", error);
+        console.warn("Full ORFanBase search endpoint failed; falling back to paged search data.", error);
+        this.loadSearchDataFromPagedEndpoint(sortDir);
+      });
+    },
+    loadSearchDataFromPagedEndpoint(sortDir) {
+      const that = this;
+
+      analysisAPI.orfanBaseGenesByPage(0, SEARCH_RESULTS_PAGE_SIZE, sortDir).then((response) => {
+        const firstPage = this.extractOrfanbaseRows(response);
+        const total = this.extractOrfanbaseTotal(response, firstPage.length);
+        const totalPages = Math.max(1, Math.ceil(total / SEARCH_RESULTS_PAGE_SIZE));
+        const requests = [];
+
+        for (let pageIndex = 1; pageIndex < totalPages; pageIndex++) {
+          requests.push(analysisAPI.orfanBaseGenesByPage(pageIndex, SEARCH_RESULTS_PAGE_SIZE, sortDir));
+        }
+
+        return Promise.all(requests).then((responses) => {
+          const remainingRows = responses.reduce((rows, pageResponse) => {
+            return rows.concat(this.extractOrfanbaseRows(pageResponse));
+          }, []);
+          that.searchDesserts = this.sortRowsByDate(
+            firstPage.concat(remainingRows).map(this.mapOrfanbaseRow),
+            sortDir
+          );
+          that.$Progress.finish();
+        });
+      }).catch((error) => {
+        console.error("Error fetching searchable ORFanBase data from paged endpoint:", error);
         that.$Progress.fail();
       });
     },
