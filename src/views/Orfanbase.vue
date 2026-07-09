@@ -71,7 +71,7 @@
 import analysisAPI from "../api/analysis";
 import moment from "moment";
 
-const SEARCH_RESULTS_PAGE_SIZE = 1000;
+const SEARCH_RESULTS_PAGE_SIZE = 100;
 
 export default {
   data() {
@@ -129,15 +129,7 @@ export default {
         return [];
       }
 
-      return this.searchDesserts.filter(item => {
-        return [
-          item.date,
-          item.organism,
-          item.geneId,
-          item.description,
-          item.orfanLevel
-        ].some(value => String(value || "").toLowerCase().includes(this.normalizedSearch));
-      });
+      return this.searchDesserts.filter(item => item.searchText.includes(this.normalizedSearch));
     },
     paginationLength() {
       if (this.isSearchActive) {
@@ -240,16 +232,8 @@ export default {
         const firstPage = this.extractOrfanbaseRows(response);
         const total = this.extractOrfanbaseTotal(response, firstPage.length);
         const totalPages = Math.max(1, Math.ceil(total / SEARCH_RESULTS_PAGE_SIZE));
-        const requests = [];
 
-        for (let pageIndex = 1; pageIndex < totalPages; pageIndex++) {
-          requests.push(analysisAPI.orfanBaseGenesByPage(pageIndex, SEARCH_RESULTS_PAGE_SIZE, sortDir));
-        }
-
-        return Promise.all(requests).then((responses) => {
-          const remainingRows = responses.reduce((rows, pageResponse) => {
-            return rows.concat(this.extractOrfanbaseRows(pageResponse));
-          }, []);
+        return this.fetchRemainingOrfanbasePages(totalPages, sortDir).then((remainingRows) => {
           that.searchDesserts = this.sortRowsByDate(
             firstPage.concat(remainingRows).map(this.mapOrfanbaseRow),
             sortDir
@@ -260,6 +244,26 @@ export default {
         console.error("Error fetching searchable ORFanBase data from paged endpoint:", error);
         that.$Progress.fail();
       });
+    },
+    async fetchRemainingOrfanbasePages(totalPages, sortDir) {
+      const rows = [];
+      const batchSize = 5;
+
+      for (let startPage = 1; startPage < totalPages; startPage += batchSize) {
+        const requests = [];
+        const endPage = Math.min(startPage + batchSize, totalPages);
+
+        for (let pageIndex = startPage; pageIndex < endPage; pageIndex++) {
+          requests.push(analysisAPI.orfanBaseGenesByPage(pageIndex, SEARCH_RESULTS_PAGE_SIZE, sortDir));
+        }
+
+        const responses = await Promise.all(requests);
+        responses.forEach(response => {
+          rows.push(...this.extractOrfanbaseRows(response));
+        });
+      }
+
+      return rows;
     },
     extractOrfanbaseRows(response) {
       const payload = response && response.data ? response.data : {};
@@ -318,6 +322,10 @@ export default {
         orfanLevel: element.orfanLevel,
         analysisId: element.analysisId,
         analysisIdNav: element.analysisId,
+        searchText: Object.values(element)
+          .map(value => String(value || ""))
+          .join(" ")
+          .toLowerCase(),
       };
     },
   },
