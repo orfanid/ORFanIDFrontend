@@ -276,7 +276,15 @@ The organism name should be typed in the correct format, which includes the full
 </template>
 
 <script>
-export default {};
+export default {
+  name: "Instructions",
+  metaInfo: {
+    title: 'Instructions | ORFanID',
+    meta: [
+      { name: 'description', content: 'ORFanID Operating Instructions.' }
+    ]
+  }
+};
 </script>
 <style scoped>
 .center {

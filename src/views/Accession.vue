@@ -83,6 +83,12 @@ import csvDownload from "json-to-csv-export";
 
 export default {
   layout: "search",
+  metaInfo: {
+    title: 'Accession Search | ORFanID',
+    meta: [
+      { name: 'description', content: 'Search to find multiple accession numbers associated with a species name.' }
+    ]
+  },
   data() {
     return {
       availableDatabases: [{ key: "Gene", label: "Gene" }],

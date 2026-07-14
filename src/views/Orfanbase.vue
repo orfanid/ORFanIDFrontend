@@ -72,6 +72,13 @@ import analysisAPI from "../api/analysis";
 import moment from "moment";
 
 export default {
+  name: "Orfanbase",
+  metaInfo: {
+    title: 'ORFanbase | ORFanID',
+    meta: [
+      { name: 'description', content: 'Search and filter categorized ORFan genes in the ORFanbase database.' }
+    ]
+  },
   data() {
     return {
       search: "",

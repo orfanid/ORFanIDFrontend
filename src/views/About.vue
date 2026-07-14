@@ -10,3 +10,15 @@
     />
   </div>
 </template>
+
+<script>
+export default {
+  name: "About",
+  metaInfo: {
+    title: 'About | ORFanID',
+    meta: [
+      { name: 'description', content: 'About the ORFanID application and general information.' }
+    ]
+  }
+};
+</script>

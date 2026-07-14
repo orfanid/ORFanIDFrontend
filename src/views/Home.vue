@@ -224,6 +224,12 @@
 <script>
 export default {
   name: "Home",
+  metaInfo: {
+    title: 'Home | ORFanID',
+    meta: [
+      { name: 'description', content: 'ORFanID - Identifying Orphan Genes and finding their origins.' }
+    ]
+  },
   data() {
     return {
       videoOneUrl: "https://youtu.be/wQY0_BBsJRk",

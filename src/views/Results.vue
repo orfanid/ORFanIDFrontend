@@ -182,6 +182,13 @@ import _ from "lodash";
 const SEARCH_RESULTS_PAGE_SIZE = 1000;
 
 export default {
+  name: "Results",
+  metaInfo: {
+    title: 'Results | ORFanID',
+    meta: [
+      { name: 'description', content: 'View and manage your ORFanID analysis results.' }
+    ]
+  },
   data() {
     return {
       search: "",

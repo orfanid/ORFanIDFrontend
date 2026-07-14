@@ -587,7 +587,13 @@ import analysis from "@/api/analysis";
 import { getAccessionESearch } from "@/api/accessionSearch";
 import lodash from "lodash";
 export default {
-  name: "Home",
+  name: "Input",
+  metaInfo: {
+    title: 'New Query | ORFanID',
+    meta: [
+      { name: 'description', content: 'Submit protein or gene sequences for ORFanID analysis.' }
+    ]
+  },
   data() {
     return {
       dna_sequence: "protein", // protein or nucleotide
