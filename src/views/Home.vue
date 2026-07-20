@@ -2,67 +2,45 @@
   <v-layout wrap>
     <v-flex xs12 sm12>
       <v-parallax src="../../public/ORFanID_files/background1.jpg">
-        <v-layout column align-center justify-center row="4">
-          <v-spacer />
-          <h1 class="center white-text text-lighten-2 h1">
+        <v-layout column align-center justify-center class="hero-content">
+          <h1 class="center white-text text-lighten-2 hero-title">
             ORFanID
           </h1>
-          <h5 class="center white-text text-lighten-2">
+          <h5 class="center white-text text-lighten-2 hero-subtitle">
             Identifying Orfan Genes
           </h5>
-          <div class="row center justify mt-2">
-            <v-btn class="center" to="input" color="teal"><span color="white">Get Started</span></v-btn>
-          </div>
-          <div class="video-actions">
-            <v-btn
-              class="video-action"
-              href="https://youtu.be/wQY0_BBsJRk"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <v-icon left>mdi-video</v-icon>
-              Video Tutorial
-            </v-btn>
-            <v-btn
-              class="video-action"
-              href="https://youtu.be/B9QnPtKNA9c"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <v-icon left>mdi-compass-outline</v-icon>
-              Navigating NCBI
-            </v-btn>
+          <p class="hero-description">
+            ORFanID is a web-based software engine that identifies ORFan genes from the genomes of specified species or from a given list of DNA sequences. It searches candidate genes against NCBI databases and depicts orphan and taxonomically restricted genes for scientific research and inquiry.
+          </p>
+          <div class="hero-actions">
+            <div class="hero-primary-row">
+              <v-btn class="hero-primary-action" to="input" color="teal">
+                Get Started
+              </v-btn>
+            </div>
+            <div class="hero-secondary-row">
+              <v-btn
+                class="video-action"
+                href="https://youtu.be/wQY0_BBsJRk"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <v-icon left>mdi-video</v-icon>
+                Video Tutorial
+              </v-btn>
+              <v-btn
+                class="video-action"
+                href="https://youtu.be/B9QnPtKNA9c"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <v-icon left>mdi-compass-outline</v-icon>
+                Navigating NCBI
+              </v-btn>
+            </div>
           </div>
         </v-layout>
       </v-parallax>
-      <v-row>
-        <v-col cols="s12">
-          <div class="parallex-container-wrapper">
-            <v-container>
-              <v-row>
-                <v-col cols="12">
-                  <v-card-title class="justify-center">
-                    <h4>ORFanID</h4>
-                  </v-card-title>
-                  <v-card-text class="headerPara">
-                    <p>
-                      ORFanID is a web-based software engine that identifies ORFan
-                      genes from the genomes of specified species or from a given
-                      list of DNA sequences. The scope of the search for orphan
-                      genes can be defined by the selection of the taxonomy level
-                      of interest. Detectable homologous sequences are found for
-                      candidate gene in the NCBI databases. From these findings
-                      the ORFanID engine identifies and depicts orphan genes.
-                      Results may be viewed and analyzed graphically for the
-                      purpose of scientific research and inquiry.
-                    </p>
-                  </v-card-text>
-                </v-col>
-              </v-row>
-            </v-container>
-          </div>
-        </v-col>
-      </v-row>
       <v-parallax src="../../public/ORFanID_files/background2.jpg">
         <v-layout align-center justify-center row="4">
           <v-container>
@@ -295,12 +273,67 @@ li {
   list-style-type: none;
 }
 
-.video-actions {
+.hero-content {
+  align-items: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  min-height: 700px;
+  padding: 72px 24px 96px;
+  text-align: center;
+}
+
+.hero-title {
+  color: white;
+  font-size: 5rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.05;
+  margin-bottom: 18px;
+}
+
+.hero-subtitle {
+  color: white;
+  font-size: 2rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  margin: 0 0 22px;
+}
+
+.hero-description {
+  color: white;
+  font-size: 1.35rem;
+  font-weight: 400;
+  line-height: 1.55;
+  margin: 0 auto 30px;
+  max-width: 980px;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+}
+
+.hero-actions {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  justify-content: center;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.hero-primary-row,
+.hero-secondary-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: 16px;
   justify-content: center;
-  margin-top: 18px;
+}
+
+.hero-primary-action {
+  color: white !important;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  min-width: 175px !important;
+  min-height: 52px;
 }
 
 .video-action {
@@ -309,5 +342,46 @@ li {
   font-weight: 700;
   letter-spacing: 0.03em;
   min-width: 190px !important;
+  min-height: 52px;
+}
+
+@media (max-width: 960px) {
+  .hero-content {
+    min-height: 660px;
+    padding: 54px 18px 84px;
+  }
+
+  .hero-title {
+    font-size: 3.5rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.55rem;
+  }
+
+  .hero-description {
+    font-size: 1.05rem;
+  }
+
+  .hero-actions {
+    gap: 22px;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-secondary-row {
+    align-items: stretch;
+    flex-direction: column;
+    width: min(100%, 300px);
+  }
+
+  .hero-primary-row {
+    width: min(100%, 300px);
+  }
+
+  .hero-primary-action,
+  .video-action {
+    width: 100%;
+  }
 }
 </style>
