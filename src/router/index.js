@@ -7,7 +7,6 @@ import Home from "../views/Home";
 import OrfanBase from "../views/Orfanbase";
 import Input from "../views/Inputv2";
 import Accession from "../views/Accession.vue";
-import experimentdiamond from "../views/experiment-diamond.vue"
 import { isAdminAuthenticated } from "../utils/adminAuth";
 
 Vue.use(VueRouter);
@@ -55,8 +54,7 @@ const routes = [
   },
   {
     path: "/experiment-diamond",
-    name: "experiment-diamond",
-    component: experimentdiamond
+    redirect: "/input"
   },
   {
     path: "/admin",

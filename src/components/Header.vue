@@ -66,28 +66,6 @@
             <span>Instructions</span>
           </v-btn>
 
-          <v-menu offset-y>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="white"
-                  class="experiment-btn"
-                  depressed
-                  v-bind="attrs"
-                  v-on="on"
-                  to="/experiment-diamond"
-                >
-                Experiment
-                </v-btn>
-              </template>
-              <v-list>
-                <v-list-item
-                  v-for="(item, index) in items"
-                  :key="index"
-                >
-                  <v-list-item-title >{{ item.title }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
         </v-toolbar-items>
       </v-container>
     </v-toolbar>
@@ -99,10 +77,7 @@ export default {
   data() {
     return {
       value: null,
-      items: [
-      { title: 'DIAMOND BLASTX' }
-    ],
-    sidebar: false,
+      sidebar: false,
       menuItems: [
         { title: "New Query", path: "/input", icon: "mdi-plus-circle-outline" },
         { title: "Results", path: "/results", icon: "mdi-chart-bar" },
@@ -114,8 +89,7 @@ export default {
           external: true
         },
         { title: "Accessions", path: "/accession", icon: "mdi-format-list-bulleted-square" },
-        { title: "Instructions", path: "/instructions", icon: "mdi-book-open-page-variant" },
-        { title: "Experiment", path: "/experiment-diamond", icon: "mdi-flask-outline" }
+        { title: "Instructions", path: "/instructions", icon: "mdi-book-open-page-variant" }
         // { title: 'Careers', path: '/signin' }
       ],
     };
@@ -152,14 +126,6 @@ export default {
   min-width: auto !important;
   padding-left: 10px !important;
   padding-right: 10px !important;
-}
-
-.experiment-btn {
-  color: #222 !important;
-  font-size: 0.95rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  min-width: 145px !important;
 }
 
 .mobile-drawer {

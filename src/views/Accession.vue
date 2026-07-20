@@ -26,7 +26,7 @@
                   </template>
                 </v-text-field>
                 <v-icon>mdi-cloud-download</v-icon>
-                <a style="text-decoration: right;" href="#" @click="downloadPageFile(downloadSummaryResult)">
+                <a style="text-decoration: right;" href="#" @click.prevent="downloadPageFile">
                   Download current page result
                 </a>
               </v-col>
@@ -65,6 +65,11 @@
                   <tr v-for="(result, index) in searchResult.resultSummary" :key="index">
                     <td>{{ result.accessionversion }}</td>
                     <td>{{ result.organism }}</td>
+                  </tr>
+                  <tr v-if="searchResult.resultSummary.length === 0">
+                    <td colspan="2" class="text-center grey--text">
+                      No accession results to display.
+                    </td>
                   </tr>
                 </tbody>
               </template>
@@ -106,7 +111,7 @@ export default {
         currentPage: 1
       },
       pubMedApi: null,
-      downloadSummaryResult:[]
+      downloadSummaryResult: []
     };
   },
   async mounted() {
@@ -114,22 +119,35 @@ export default {
   },
   methods: {
     SearchResult: async function(query) {
-      
-      this.getESearch(query);
-
+      await this.getESearch(query);
     },
     getESearch: async function(query) {
+      if (!query || !query.trim()) {
+        this.searchResult.idList = [];
+        this.searchResult.resultSummary = [];
+        this.downloadSummaryResult = [];
+        this.paginationConfig.currentPage = 1;
+        this.paginationConfig.noOfPages = 1;
+        return;
+      }
+
       this.$Progress.start();
       this.searchResult.idList = [];
       this.searchResult.resultSummary = [];
+      this.downloadSummaryResult = [];
+      this.paginationConfig.currentPage = 1;
+      this.paginationConfig.noOfPages = 1;
       const options = {
-        retStart: "1",
+        retStart: "0",
         retMax: "1000"
       };
       try {
         let that = this;
-        const results = await this.pubMedApi.eSearch.search(that.selectedDatabase, query, options);
-        this.$Progress.finish();
+        const results = await this.pubMedApi.eSearch.search(
+          that.selectedDatabase,
+          this.buildOrganismSearchQuery(query),
+          options
+        );
         var result = JSON.parse(results);
         if (
           result.esearchresult &&
@@ -146,18 +164,12 @@ export default {
             that.searchResult.idList.length / that.paginationConfig.itemPerPage
           );
         }
-        let pageIds = await that.getCurretPageIds();
 
-        that.downloadSummaryResult = await that.getESearchSummary(pageIds);
-        if (that.downloadSummaryResult && that.downloadSummaryResult.result) {
-          Object.values(that.downloadSummaryResult.result).forEach(val => {
-            that.searchResult.resultSummary.push(val);
-          });
-
-          //this.downloadPageFile(that.downloadSummaryResult);
-        }
+        await that.loadCurrentPageSummary();
       } catch (error) {
         console.log(error);
+      } finally {
+        this.$Progress.finish();
       }
     },
     getESearchSummary: async function(queryids) {
@@ -173,8 +185,8 @@ export default {
     },
     getCurretPageIds() {
       let minIndex =
-        (this.paginationConfig.currentPage - 1) * this.paginationConfig.itemPerPage + 1;
-      let maxIndex = minIndex + this.paginationConfig.itemPerPage;
+        (this.paginationConfig.currentPage - 1) * this.paginationConfig.itemPerPage;
+      let maxIndex = minIndex + this.paginationConfig.itemPerPage - 1;
       let selecteditems = lodash.filter(this.searchResult.idList, function(e) {
         return e.index >= minIndex && e.index <= maxIndex;
       });
@@ -185,6 +197,48 @@ export default {
 
       return idArray.toString();
     },
+    normalizeSummaryRows(summaryResult) {
+      if (!summaryResult || !summaryResult.result) {
+        return [];
+      }
+
+      return Object.values(summaryResult.result)
+        .filter(item => item && item.accessionversion)
+        .filter(item => this.organismMatchesSearch(item.organism))
+        .map(item => ({
+          accessionversion: item.accessionversion,
+          organism: item.organism || "",
+          title: item.title || ""
+        }));
+    },
+    buildOrganismSearchQuery(query) {
+      const trimmedQuery = (query || "").trim();
+      if (!trimmedQuery || /\[[^\]]+\]/.test(trimmedQuery)) {
+        return trimmedQuery;
+      }
+      return `"${trimmedQuery}"[Organism]`;
+    },
+    normalizeOrganismName(value) {
+      return (value || "")
+        .replace(/\(\s*\d+\s*\)/g, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .toLowerCase();
+    },
+    organismMatchesSearch(organism) {
+      const searchedOrganism = this.normalizeOrganismName(this.search.query);
+      const resultOrganism = this.normalizeOrganismName(organism);
+
+      if (!searchedOrganism) {
+        return true;
+      }
+
+      return (
+        resultOrganism === searchedOrganism ||
+        resultOrganism.includes(searchedOrganism) ||
+        searchedOrganism.includes(resultOrganism)
+      );
+    },
     generateUri(doi) {
       if (doi) {
         let uriPart = doi.split(":");
@@ -194,28 +248,39 @@ export default {
       }
     },
     async pageChanged() {
-      let that = this;
-      that.searchResult.resultSummary = [];
-      let pageIds = await that.getCurretPageIds();
+      await this.loadCurrentPageSummary();
+    },
+    async loadCurrentPageSummary() {
+      this.searchResult.resultSummary = [];
+      this.downloadSummaryResult = [];
+      const pageIds = await this.getCurretPageIds();
 
-      that.downloadSummaryResult = await that.getESearchSummary(pageIds);
-      if (that.downloadSummaryResult && that.downloadSummaryResult.result) {
-        Object.values(that.downloadSummaryResult.result).forEach(val => {
-          that.searchResult.resultSummary.push(val);
-        });
+      if (!pageIds) {
+        return;
       }
 
-      //this.downloadPageFile(summaryResult);
+      const summaryResult = await this.getESearchSummary(pageIds);
+      const rows = this.normalizeSummaryRows(summaryResult);
+      this.searchResult.resultSummary = rows;
+      this.downloadSummaryResult = rows;
     },
-    downloadPageFile(summaryResult) {
-      let acceessionList = lodash.map(summaryResult.result, function(i) {
-        if (i.accessionversion != undefined && i.accessionversion != null) {
-          return { accession: i.accessionversion };
-        } else {
-          return { accession: "" };
-        }
+    downloadPageFile() {
+      if (!this.downloadSummaryResult.length) {
+        alert("No accession results are available to download.");
+        return;
+      }
+
+      let accessionList = lodash.map(this.downloadSummaryResult, function(i) {
+        return {
+          accession: i.accessionversion,
+          organism: i.organism
+        };
       });
-      csvDownload(acceessionList);
+      csvDownload({
+        data: accessionList,
+        filename: "AccessionResult",
+        delimiter: ","
+      });
 
       //csvDownload({data:acceessionList,filename:'AccessionResult'});
     }

@@ -63,6 +63,9 @@
               class="mb-2"
               @change="exampleDataChanged"
             ></v-switch>
+            <div v-if="useExampleData" class="example-data-note">
+              Example data is locked while Use Example Data is enabled. Turn it off to enter your own sequence or accession.
+            </div>
             <div :class="{ 'disabled-area': !useExampleData }">
               <h6>Examples</h6>
               <v-tooltip bottom v-for="example in examples" :key="example.label">
@@ -92,7 +95,7 @@
                 placeholder="Upload your documents"
                 label="Upload File"
                 prepend-icon="mdi-cloud-upload"
-                :disabled="identifier == 'accession'"
+                :disabled="identifier == 'accession' || useExampleData"
                 v-model="uploadedSequenceFile"
                 @change="readUploadedFile"
                 @click:clear="clearUploadedFile"
@@ -346,6 +349,7 @@
                 v-bind="attrs"
                 v-on="on"
                 v-model="sequence"
+                :disabled="useExampleData"
               ></v-textarea>
             </template>
             <span
@@ -668,7 +672,7 @@ export default {
         "Homo sapiens(9606)": "NP_001119584.1",
         "Arabidopsis thaliana(3702)": "NP_187663.1"
       },
-      exampleNucliotideDataValues: {
+      exampleNucleotideDataValues: {
         "Escherichia coli(562)": "NZ_JAACYZ010000241.1,X86971.1",
         "Drosophila melanogaster(7227)": "NM_080120.3",
         "Homo sapiens(9606)": "NM_001126112.2",
@@ -804,6 +808,14 @@ export default {
       const proteinAccessionPattern = /\b(?:NP|XP|YP|WP|AP|AAI|CAA|AAB)_[A-Z0-9.]+|\b[A-Z]{3}\d{5,}(?:\.\d+)?\b/i;
       const nucleotideAccessionPattern = /\b(?:NC|NM|NZ|XM|XR|NR|NG|NW)_[A-Z0-9.]+/i;
       const selectedOrganismName = this.extractOrganismName(this.organismName);
+      const sequenceOccurrences = {};
+
+      parsedInput.records.forEach(record => {
+        if (!record.sequence) {
+          return;
+        }
+        sequenceOccurrences[record.sequence] = (sequenceOccurrences[record.sequence] || 0) + 1;
+      });
 
       parsedInput.records.forEach((record, index) => {
         const label = parsedInput.records.length > 1 ? `Sequence ${index + 1}` : "Sequence";
@@ -826,6 +838,12 @@ export default {
             `${label} contains characters that are not valid for ${
               isProtein ? "protein" : "gene/nucleotide"
             } input: ${invalidCharacters.join(", ")}.`
+          );
+        }
+
+        if (sequenceOccurrences[sequence] > 1) {
+          errors.push(
+            `${label} is repeated in this submission. Please remove duplicate sequences before submitting.`
           );
         }
 
@@ -1049,8 +1067,9 @@ export default {
     exampleDataChanged() {
       console.log("Example Data Changed");
       if (this.useExampleData) {
-        this.identifier == "accession";
-        this.dna_sequence == "protein";
+        this.identifier = "accession";
+        this.dna_sequence = "protein";
+        this.program = "BLAST";
       }else {
       }
       this.clearAccessionSequenceAndOrganism();
@@ -1200,6 +1219,17 @@ export default {
   font-size: 0.85rem;
   line-height: 1.35;
   margin-top: -12px;
+}
+
+.example-data-note {
+  background: #eef8f6;
+  border-left: 4px solid #009688;
+  border-radius: 4px;
+  color: #36524d;
+  font-size: 0.86rem;
+  line-height: 1.4;
+  margin: -4px 0 12px;
+  padding: 8px 10px;
 }
 
 .accession-help-card {
